@@ -46,7 +46,7 @@ Plant Lifetime, 30
 Reservoir Model, 1
 
 Reservoir Volume Option, 1, -- FRAC_NUM_SEP: Reservoir volume calculated with fracture separation and number of fractures as input
-Number of Fractures, 1663, -- 55 fractures per well
+Number of Fractures per Stimulated Well, 55
 Fracture Shape, 3, -- Square
 Fracture Separation, 26,
 

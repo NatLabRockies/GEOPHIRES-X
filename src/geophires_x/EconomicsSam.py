@@ -446,7 +446,15 @@ def _cash_flow_profile_entry(cash_flow: list[list[Any]], row_name: str, year_ind
 
 def _calculate_nominal_discount_rate_pct(model: Model) -> float:
     econ = model.economics
-    return ((1 + econ.discountrate.value) * (1 + econ.RINFL.value) - 1) * 100
+    return _calculate_nominal_discount_rate_from_real_and_inflation_pct(econ.discountrate.value, econ.RINFL.value)
+
+
+def _calculate_nominal_discount_rate_from_real_and_inflation_pct(discount_rate: float, inflation_rate: float) -> float:
+    """
+    Calculated per https://samrepo.nrelcloud.org/help/fin_single_owner.html?q=nominal+discount+rate
+    """
+
+    return ((1 + discount_rate) * (1 + inflation_rate) - 1) * 100
 
 
 def _calculate_nominal_discount_rate_and_wacc_pct(model: Model, single_owner: Singleowner) -> tuple[float]:

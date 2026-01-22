@@ -1,7 +1,7 @@
 # GEOPHIRES Reference Materials
 
 ## GEOPHIRES
-* **[GEOPHIRES Reference Manual](https://nrel.github.io/GEOPHIRES-X/overview.html)**
+* **[GEOPHIRES Reference Manual](https://softwareengineerprogrammer.github.io/GEOPHIRES/overview.html)**
 * [GEOPHIRES v3 User Manual](https://github.com/softwareengineerprogrammer/GEOPHIRES/blob/9c7d95648140886609776f154d25a0dcbf240851/References/GEOPHIRES_v3_UserManual.pdf)
 * [GEOPHIRES v2.0 User Manual.pdf](https://github.com/NREL/GEOPHIRES-X/blob/fb5caadfa419c3bd05de656a33700d085fbc0432/References/GEOPHIRES%20v2.0%20User%20Manual.pdf) [![](https://zenodo.org/badge/doi/10.1186/s40517-019-0119-6.svg)](https://doi.org/10.1186/s40517-019-0119-6)
 * [Beckers 2019 GEOPHIRES v2.pdf](https://github.com/NREL/GEOPHIRES-X/blob/fb5caadfa419c3bd05de656a33700d085fbc0432/References/Beckers%202019%20GEOPHIRES%20v2.pdf)

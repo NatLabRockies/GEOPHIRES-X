@@ -63,7 +63,7 @@ Free software: `MIT license <LICENSE>`__
     :target: https://github.com/softwareengineerprogrammer/GEOPHIRES-X/compare/v3.10.24...main
 
 .. |docs| image:: https://readthedocs.org/projects/GEOPHIRES-X/badge/?style=flat
-    :target: https://nrel.github.io/GEOPHIRES-X
+    :target: https://softwareengineerprogrammer.github.io/GEOPHIRES
     :alt: Documentation Status
 
 .. |coverage| image:: https://coveralls.io/repos/github/NREL/GEOPHIRES-X/badge.svg?branch=main
@@ -129,20 +129,20 @@ electricity: (1) fixed charge rate (FCR) model;
 (2) standard discounting levelized cost model;
 (3) BICYCLE model;
 (4) CLGS;
-(5) `SAM Single-owner PPA <https://nrel.github.io/GEOPHIRES-X/SAM-Economic-Models.html>`__.
+(5) `SAM Single-owner PPA <https://softwareengineerprogrammer.github.io/GEOPHIRES/SAM-Economic-Models.html>`__.
 
 The capital and O&M costs for the different geothermal system components (exploration,
 well drilling, surface plant, etc.) are either provided by the user or calculated with built-in
 correlations.
 
 For more information on the theoretical basis for GEOPHIRES see the
-`Theoretical Basis for GEOPHIRES <https://nrel.github.io/GEOPHIRES-X/Theoretical-Basis-for-GEOPHIRES.html>`__
+`Theoretical Basis for GEOPHIRES <https://softwareengineerprogrammer.github.io/GEOPHIRES/Theoretical-Basis-for-GEOPHIRES.html>`__
 and `GEOPHIRES Reference Materials <References/README.md#geophires>`__.
 
 Parameters
 ----------
 
-Available parameters are documented in the `Parameters Reference <https://nrel.github.io/GEOPHIRES-X/parameters.html>`__.
+Available parameters are documented in the `Parameters Reference <https://softwareengineerprogrammer.github.io/GEOPHIRES/parameters.html>`__.
 
 Note that many parameters are interrelated and/or conditionally dependent on one another;
 reviewing the GEOPHIRES example(s) relevant to your use case in the following section
@@ -288,7 +288,7 @@ Example-specific web interface deeplinks are listed in the Link column.
      - `Fervo_Project_Cape-3.txt <tests/examples/Fervo_Project_Cape-3.txt>`__
      - `.out <tests/examples/Fervo_Project_Cape-3.out>`__
      - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-3>`__
-   * - Case Study: 500 MWe EGS Project Modeled on Fervo Cape Station (`documentation <https://nrel.github.io/GEOPHIRES-X/Fervo_Project_Cape-4.html>`__)
+   * - Case Study: 500 MWe EGS Project Modeled on Fervo Cape Station (`documentation <https://softwareengineerprogrammer.github.io/GEOPHIRES/Fervo_Project_Cape-4.html>`__)
      - `Fervo_Project_Cape-4.txt <tests/examples/Fervo_Project_Cape-4.txt>`__
      - `.out <tests/examples/Fervo_Project_Cape-4.out>`__
      - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-4>`__
@@ -332,7 +332,7 @@ HIP-RA: Heat in Place - Resource Assessment
 
 `HIP-RA-X README <src/hip_ra_x/README.md>`__
 
-`HIP-RA-X Parameters Reference <https://nrel.github.io/GEOPHIRES-X/hip_ra_x_parameters.html>`__
+`HIP-RA-X Parameters Reference <https://softwareengineerprogrammer.github.io/GEOPHIRES/hip_ra_x_parameters.html>`__
 
 A HIP-RA web interface is available at `gtp.scientificwebservices.com/hip-ra <https://gtp.scientificwebservices.com/hip-ra>`__.
 
@@ -340,7 +340,7 @@ A HIP-RA web interface is available at `gtp.scientificwebservices.com/hip-ra <ht
 Monte Carlo
 -----------
 
-`Monte Carlo User Guide <https://nrel.github.io/GEOPHIRES-X/Monte-Carlo-User-Guide.html>`__
+`Monte Carlo User Guide <https://softwareengineerprogrammer.github.io/GEOPHIRES/Monte-Carlo-User-Guide.html>`__
 
 A Monte Carlo web interface is available at `gtp.scientificwebservices.com/monte-carlo <https://gtp.scientificwebservices.com/monte-carlo>`__.
 
@@ -355,7 +355,7 @@ Resources
 
 `GEOPHIRES v3 User Manual <https://github.com/softwareengineerprogrammer/GEOPHIRES/blob/9c7d95648140886609776f154d25a0dcbf240851/References/GEOPHIRES_v3_UserManual.pdf>`__: A comprehensive, point-in-time snapshot of the software in PDF format, covering installation, usage, example problems, and parameter lists in detail.
 
-`GEOPHIRES Reference Manual <https://nrel.github.io/GEOPHIRES-X/overview.html>`__: A living document with the most current, authoritative information on frequently updated topics like the GEOPHIRES Parameters.
+`GEOPHIRES Reference Manual <https://softwareengineerprogrammer.github.io/GEOPHIRES/overview.html>`__: A living document with the most current, authoritative information on frequently updated topics like the GEOPHIRES Parameters.
 
 Additional materials can be found in `/References </References/README.md>`__.
 
