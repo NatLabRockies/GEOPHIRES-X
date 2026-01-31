@@ -3,6 +3,7 @@ graft src
 graft ci
 graft tests
 
+include .aiexclude
 include .bumpversion.cfg
 include .cookiecutterrc
 include .coveragerc

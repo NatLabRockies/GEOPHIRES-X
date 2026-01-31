@@ -4,10 +4,10 @@
 
 Simulation Metadata
 ----------------------
- GEOPHIRES Version: 3.10.22
- Simulation Date: 2025-12-15
- Simulation Time:  09:15
- Calculation Time:      1.196 sec
+ GEOPHIRES Version: 3.11.9
+ Simulation Date: 2026-01-28
+ Simulation Time:  12:07
+ Calculation Time:      1.275 sec
 
                            ***SUMMARY OF RESULTS***
 
@@ -28,13 +28,14 @@ Simulation Metadata
       Real Discount Rate:                                    8.00 %
       Nominal Discount Rate:                                10.16 %
       WACC:                                                  7.57 %
+      Investment Tax Credit:                                67.74 MUSD
       Project lifetime:                                      20 yr
       Capacity factor:                                       90.0 %
       Project NPV:                                         126.12 MUSD
       After-tax IRR:                                        24.35 %
       Project VIR=PI=PIR:                                    1.93
       Project MOIC:                                          3.85
-      Project Payback Period:                                       3.91 yr
+      Project Payback Period:                                       4.91 yr
       Estimated Jobs Created:                                 125
 
                           ***ENGINEERING PARAMETERS***
@@ -309,13 +310,13 @@ After-tax cumulative NPV ($)                     	-135,485,121 	-59,880,129	-45,
 AFTER-TAX LCOE AND PPA PRICE
 Annual costs ($)                                 	-135,485,121 	49,002,062 	-17,560,699	-17,985,061	-18,405,081	-18,824,489	-19,244,598	-19,666,059	-20,089,270	-20,514,516	-20,942,027	-21,372,001	-21,804,622	-22,240,066	-22,678,507	-23,120,121	-23,565,084	-24,013,582	-24,465,803	-24,921,943	57,568,641
 PPA revenue ($)                                  	0            	34,284,397 	34,499,207 	35,955,353 	37,387,962 	38,810,736 	40,228,246 	41,642,549 	43,054,733 	44,465,440 	45,875,072 	47,283,899 	48,692,110 	50,099,838 	51,507,184 	52,914,222 	54,321,010 	55,727,598 	57,134,026 	58,540,317 	59,946,188
-Electricity to grid (kWh)                        	0.0          	428,554,957	431,240,089	432,051,822	432,530,792	432,865,667	433,120,646	433,325,167	433,495,101	433,639,945	433,765,810	433,876,853	433,976,022	434,065,480	434,146,861	434,221,417	434,290,137	434,353,843	434,413,216	434,468,735	434,518,614
+Electricity to grid (kWh)                        	0            	428,554,957	431,240,089	432,051,822	432,530,792	432,865,667	433,120,646	433,325,167	433,495,101	433,639,945	433,765,810	433,876,853	433,976,022	434,065,480	434,146,861	434,221,417	434,290,137	434,353,843	434,413,216	434,468,735	434,518,614
 
-Present value of annual costs ($)                	230,967,710
+Present value of annual costs ($)                	230,967,711
 Present value of annual energy nominal (kWh)     	3,643,623,190
 LCOE Levelized cost of energy nominal (cents/kWh)	6.34
 
-Present value of PPA revenue ($)                 	357,085,538
+Present value of PPA revenue ($)                 	357,085,539
 Present value of annual energy nominal (kWh)     	3,643,623,190
 LPPA Levelized PPA price nominal (cents/kWh)     	9.80
 

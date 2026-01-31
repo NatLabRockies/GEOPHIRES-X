@@ -1,4 +1,11 @@
+from __future__ import annotations
+
+import json
+from typing import Any
+
+from geophires_x_client import GeophiresXClient
 from geophires_x_client import GeophiresXResult
+from geophires_x_client import ImmutableGeophiresInputParameters
 from tests.base_test_case import BaseTestCase
 
 
@@ -67,3 +74,15 @@ class GeophiresXResultTestCase(BaseTestCase):
     def test_sutra_reservoir_model_in_summary(self) -> None:
         r: GeophiresXResult = GeophiresXResult(self._get_test_file_path('../examples/SUTRAExample1.out'))
         self.assertEqual('SUTRA Model', r.result['SUMMARY OF RESULTS']['Reservoir Model'])
+
+    def test_produced_temperature_json_output(self) -> None:
+        r: GeophiresXResult = GeophiresXClient().get_geophires_result(
+            ImmutableGeophiresInputParameters(from_file_path=self._get_test_file_path('client_test_input_1.txt'))
+        )
+        with open(r.json_output_file_path, encoding='utf-8') as f:
+            r_json_obj: dict[str, Any] = json.load(f)
+
+        prod_temp_key: str = 'Produced Temperature'
+        self.assertIn(prod_temp_key, r_json_obj)
+        self.assertGreater(len(r_json_obj[prod_temp_key]['value']), 100)
+        self.assertTrue(all(it > 0 for it in r_json_obj[prod_temp_key]['value']))

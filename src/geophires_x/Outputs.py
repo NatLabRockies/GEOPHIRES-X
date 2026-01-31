@@ -266,6 +266,12 @@ class Outputs:
                         label = Outputs._field_label(field.Name, 49)
                         f.write(f'      {label}{field.value:10.2f} {field.CurrentUnits.value}\n')
 
+                if econ.RITCValue.value and is_sam_econ_model:
+                    # Non-SAM-EMs (inaccurately) treat ITC as a capital cost and thus are displayed in the capital
+                    # costs category rather than here.
+                    f.write(
+                        f'      {econ.RITCValue.display_name}:                           {abs(econ.RITCValue.value):10.2f} {econ.RITCValue.CurrentUnits.value}\n')
+
                 if not is_sam_econ_model:  # (parameter is ambiguous to the point of meaninglessness for SAM-EM)
                     acf: OutputParameter = econ.accrued_financing_during_construction_percentage
                     acf_label = Outputs._field_label(acf.display_name, 49)
@@ -346,15 +352,15 @@ class Outputs:
                 f.write(NL)
                 f.write('                         ***RESOURCE CHARACTERISTICS***\n')
                 f.write(NL)
-                f.write(f'      Maximum reservoir temperature:                   {model.reserv.Tmax.value:10.1f} ' + model.reserv.Tmax.CurrentUnits.value + NL)
-                f.write(f'      Number of segments:                            {model.reserv.numseg.value:10.0f} ' + NL)
+                f.write(f'      Maximum reservoir temperature:                   {model.reserv.Tmax.value:10.1f} {model.reserv.Tmax.CurrentUnits.value}\n')
+                f.write(f'      Number of segments:                            {model.reserv.numseg.value:10.0f}\n')
                 if model.reserv.numseg.value == 1:
-                    f.write(f'      Geothermal gradient:                                {model.reserv.gradient.value[0]:10.4g} ' + model.reserv.gradient.CurrentUnits.value + NL)
+                    f.write(f'      Geothermal gradient:                                {model.reserv.gradient.value[0]:10.4g} {model.reserv.gradient.CurrentUnits.value}\n')
                 else:
                     for i in range(1, model.reserv.numseg.value):
-                        f.write(f'      Segment {str(i):s}   Geothermal gradient:                    {model.reserv.gradient.value[i-1]:10.4g} ' + model.reserv.gradient.CurrentUnits.value +NL)
+                        f.write(f'      Segment {str(i):s}   Geothermal gradient:                    {model.reserv.gradient.value[i-1]:10.4g} {model.reserv.gradient.CurrentUnits.value}\n')
                         f.write(f'      Segment {str(i):s}   Thickness:                         {round(model.reserv.layerthickness.value[i-1], 10)} {model.reserv.layerthickness.CurrentUnits.value}\n')
-                    f.write(f'      Segment {str(i+1):s}   Geothermal gradient:                    {model.reserv.gradient.value[i]:10.4g} ' + model.reserv.gradient.CurrentUnits.value + NL)
+                    f.write(f'      Segment {str(i+1):s}   Geothermal gradient:                    {model.reserv.gradient.value[i]:10.4g} {model.reserv.gradient.CurrentUnits.value}\n')
 
                 f.write(NL)
                 f.write(NL)
@@ -373,6 +379,7 @@ class Outputs:
                         f.write('      Warning: the reservoir dimensions and thermo-physical properties \n')
                         f.write('               listed below are default values if not provided by the user.   \n')
                         f.write('               They are only used for calculating remaining heat content.  \n')
+                        # TODO parse this note in GeophiresXResult
 
                     if model.reserv.resoption.value in [ReservoirModel.MULTIPLE_PARALLEL_FRACTURES, ReservoirModel.LINEAR_HEAT_SWEEP]:
                         f.write(f'      Fracture model = {model.reserv.fracshape.value.value}\n')
@@ -495,17 +502,9 @@ class Outputs:
                     f.write(f'      Drilling and completion costs per redrilled well: {(econ.Cwell.value/(model.wellbores.nprod.value+model.wellbores.ninj.value)):10.2f} {econ.Cwell.CurrentUnits.value}\n')
                     f.write(f'         Stimulation costs (for redrilling):            {econ.Cstim.value:10.2f} {econ.Cstim.CurrentUnits.value}\n')
 
-                if model.economics.RITCValue.value:
-                    if not is_sam_econ_model:
-                        f.write(f'         {model.economics.RITCValue.display_name}:                         {-1*model.economics.RITCValue.value:10.2f} {model.economics.RITCValue.CurrentUnits.value}\n')
-                    else:
-                        # TODO Extract value from SAM Cash Flow Profile per
-                        #  https://github.com/NREL/GEOPHIRES-X/issues/404.
-                        #  For now we skip displaying the value because it can be/probably is usually mathematically
-                        #  inaccurate, and even if it's not, it's redundant with the cash flow profile and also
-                        #  misleading/confusing/wrong to display it as a capital cost since it is not a capital
-                        #  expenditure.
-                        pass
+                if model.economics.RITCValue.value and not is_sam_econ_model:
+                    # Note ITC is in ECONOMIC PARAMETERS category for SAM-EM (not capital costs)
+                    f.write(f'         {econ.RITCValue.display_name}:                         {-1 * econ.RITCValue.value:10.2f} {econ.RITCValue.CurrentUnits.value}\n')
 
                 display_occ_and_inflation_during_construction_in_capital_costs = is_sam_econ_model
                 if display_occ_and_inflation_during_construction_in_capital_costs:
@@ -909,15 +908,15 @@ class Outputs:
         # number that results in a separator line at least as wide as the table (narrower would be unsightly).
         spaces_per_tab = 4
 
-        # The tabluate library has native separating line functionality (per https://pypi.org/project/tabulate/) but
+        # The tabulate library has native separating line functionality (per https://pypi.org/project/tabulate/) but
         # I wasn't able to get it to replicate the formatting as coded below.
-        separator_line = len(cfp_o.split('\n')[0].replace('\t',' ' * spaces_per_tab)) * '-'
+        separator_line = len(cfp_o.split('\n')[0].replace('\t', ' ' * spaces_per_tab)) * '-'
 
         ret += separator_line + '\n'
         ret += cfp_o
         ret += '\n' + separator_line
 
-        ret += '\n\n'
+        ret += '\n'
 
         return ret
 

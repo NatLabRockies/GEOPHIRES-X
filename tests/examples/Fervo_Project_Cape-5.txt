@@ -1,0 +1,123 @@
+# Case Study: 500 MWe EGS Project Modeled on Fervo Cape Station Phase II
+# See documentation: https://softwareengineerprogrammer.github.io/GEOPHIRES/Fervo_Project_Cape-5.html
+
+# *** ECONOMIC/FINANCIAL PARAMETERS ***
+# *************************************
+Economic Model, 5, -- The SAM Single Owner PPA economic model is used to calculate financial results including LCOE, NPV, IRR, and pro-forma cash flow analysis. See [GEOPHIRES documentation of SAM Economic Models](https://softwareengineerprogrammer.github.io/GEOPHIRES/SAM-Economic-Models.html) for details on how System Advisor Model financial models are integrated into GEOPHIRES.
+Inflation Rate, .027, -- US inflation as of December 2025. Note: [2024b ATB models lower inflation](https://atb.nrel.gov/electricity/2024b/definitions#inflation).
+
+Starting Electricity Sale Price, 0.095, -- Aligns with Geysers - Sacramento pricing in [2024b ATB](https://atb.nrel.gov/electricity/2024/geothermal) (NREL, 2025). See Sensitivity Analysis for effect of different prices on results.
+Electricity Escalation Rate Per Year, 0.00057, -- Calibrated to reach $100/MWh at project year 11
+Ending Electricity Sale Price, 1, -- Note that this value does not directly determine price at the end of the project life, but rather as a cap as the maximum price to which the starting price can escalate.
+Electricity Escalation Start Year, 1
+
+Fraction of Investment in Bonds, .7, -- Approximate debt required to cover CAPEX after $1 billion sponsor equity per [Matson, 2024](https://www.linkedin.com/pulse/fervo-energy-technology-day-2024-entering-geothermal-decade-matson-n4stc/). Note that this source says that Fervo ultimately wants to target “15% sponsor equity, 15% bridge loan, and 70% construction to term loans”, but this case study does not attempt to model that capital structure precisely.
+Discount Rate, 0.12, -- Typical discount rates for higher-risk projects may be 12–15%.
+Inflated Bond Interest Rate, .07, -- 2024b ATB (NREL, 2025)
+
+Inflated Bond Interest Rate During Construction, 0.105, -- Higher than interest rate during normal operation to account for increased risk of default prior to COD. Value aligns with ATB discount rate (NREL, 2025).
+Bond Financing Start Year, -2, -- Equity-only for first 2 construction years (ATB)
+
+Construction Years, 5, -- Ground broken in 2023 (Fervo Energy, 2023). Expected to reach full scale production in 2028 (Fervo Energy, 2025). See [GEOPHIRES documentation](SAM-EM_Multiple-Construction-Years.html) for details on how construction years affect CAPEX, IRR, and other calculations.
+
+# ATB advanced scenario
+# Construction CAPEX Schedule, 0.09,0.28,0.1,0.34,0.28
+
+# DOE scenario (alternative)
+# Construction CAPEX Schedule, 0.014,0.027,0.137,0.274,0.548
+
+# DOE-ATB hybrid scenario
+Construction CAPEX Schedule, 0.014,0.027,0.139,0.431,0.389
+
+Investment Tax Credit Rate, 0.3, -- Geothermal Drilling and Completions Apprenticeship Program ensures compliance with ITC labor requirements (Southern Utah University, 2024).
+Combined Income Tax Rate, .2555, -- Federal Corporate Income Tax Rate of 21% plus Utah Corporate Franchise and Income Tax Rate of 4.55%. (Note: This input uses a simple summation of statutory rates; the effective combined rate calculated in the model may differ due to standard federal-state tax interactions.)
+Property Tax Rate, 0.0022, -- Utah Inland Port Authority (UIPA) tax differential incentive
+
+Capital Cost for Power Plant for Electricity Generation, 1900, -- [US DOE, 2021](https://betterbuildingssolutioncenter.energy.gov/sites/default/files/attachments/Waste_Heat_to_Power_Fact_Sheet.pdf). Pricing information not publicly available for Turboden or Baker Hughes Gen 2 ORC units (Turboden, 2025; Jacobs, 2025).
+Exploration Capital Cost, 30, -- Equivalent to 2024b ATB NF-EGS conservative scenario exploration assumption of 5 full-size wells (NREL, 2025), plus $1M for geophysical and field work, plus 15% contingency, plus 12% indirect costs.
+
+Well Drilling Cost Correlation, 3, -- 2025 NREL Geothermal Drilling Cost Curve Update (Akindipe and Witter, 2025).
+Well Drilling and Completion Capital Cost Adjustment Factor, 0.9, -- 2024b Geothermal ATB ([NREL, 2025](https://atb.nrel.gov/electricity/2024b/geothermal)). Note: Fervo has claimed lower drilling costs equivalent to an adjustment factor of 0.8 (Latimer, 2025); the case study conservatively uses the higher ATB-aligned value. See [Sensitivity Analysis](#sensitivity-analysis-section) for effect of different drilling costs on results.
+
+Reservoir Stimulation Capital Cost per Injection Well, 4, -- The baseline stimulation cost is calibrated from costs of high-intensity U.S. shale wells (Baytex Energy, 2024; Quantum Proppant Technologies, 2020), which are the closest technological analogue for multi-stage EGS (Gradl, 2018). Costs are also driven by the requirement for high-strength ceramic proppant rather than standard sand, which would crush or chemically degrade (diagenesis) over a 30-year lifecycle at 200℃ (Ko et al., 2023; Shiozawa and McClure, 2014) and the premium for ultra-high-temperature (HT) downhole tools. Note that all-in costs per well are higher than the baseline cost because they include additional indirect costs and contingency. See [Sensitivity Analysis](#sensitivity-analysis-section) for effect of different stimulation costs on results.
+Reservoir Stimulation Capital Cost per Production Well, 4, -- See Reservoir Stimulation Capital Cost per Injection Well
+
+Field Gathering System Capital Cost Adjustment Factor, 0.54, -- Gathering costs represent 2% of facilities CAPEX per [Matson, 2024](https://www.linkedin.com/pulse/fervo-energy-technology-day-2024-entering-geothermal-decade-matson-n4stc/).
+
+Royalty Rate, 0.0175, -- The BLM royalty structure is 1.75% of gross proceeds from electricity sales for the first 10 years of production (Code of Federal Regulations, 2024).
+Royalty Rate Escalation Start Year, 11, -- After the first 10 years of production, the royalty rate escalates to 3.5%.
+Royalty Rate Escalation, 0.0175, -- Escalation at Year 11 from 1.75% to 3.5%.
+Royalty Rate Maximum, 0.035, -- No further escalation beyond 3.5%.
+
+
+# *** SURFACE & SUBSURFACE TECHNICAL PARAMETERS ***
+# *************************************************
+End-Use Option, 1, -- Electricity
+Power Plant Type, 2, -- Gen 2 ORC units (Turboden, 2025).
+Plant Lifetime, 30, -- Sets the project economic horizon, aligned with Fervo's anticipated 30-year well life (Fervo Energy, 2025). Modeling Distinction: While Fervo projects physical wellbore integrity for 30 years, GEOPHIRES simulates "redrilling events" to model thermal management of the reservoir volume. This treats the 30-year lifespan as an aggregate of shorter-lived thermal cycles delineated by discrete redrilling events occurring at intervals dictated by the Maximum Drawdown parameter. The modeled cost of each redrilling event is equivalent to the drilling and stimulation cost of the entire wellfield, serving as a conservative cost proxy for the major interventions (e.g., sidetracking and stimulating laterals into fresh rock, or drilling new wells if necessary) required to sustain the PPA target against thermal depletion.
+
+Reservoir Model, 1
+
+Surface Temperature, 13, -- Surface temperature near Milford, UT (38.4987670, -112.9163432) ([Project InnerSpace, 2025](https://geomap.projectinnerspace.org/test/)).
+
+Number of Segments, 3
+Gradient 1, 74, -- Sedimentary overburden. 200℃ at 8500 ft depth (Fercho et al. 2024); 228.89℃ at 9824 ft (Norbeck et al. 2024).
+Thickness 1, 2.5
+Gradient 2, 41, -- Crystalline reservoir
+Thickness 2, 0.5
+Gradient 3, 39.1, -- Sugarloaf appraisal
+
+Reservoir Depth, 2.68, -- Extrapolated from surface temperature, gradient, and average production temperature of shallower and deeper producers in Singh et al., 2025.
+
+Reservoir Density, 2800, -- phyllite + quartzite + diorite + granodiorite ([Norbeck et al., 2023](https://doi.org/10.31223/X52X0B))
+Reservoir Heat Capacity, 790
+Reservoir Thermal Conductivity, 3.05
+Reservoir Porosity, 0.0118
+
+Reservoir Volume Option, 1, -- FRAC_NUM_SEP: Reservoir volume calculated with fracture separation and number of fractures as input
+
+Number of Fractures per Stimulated Well, 150, -- The model assumes an Extreme Limited Entry stimulation design (Fervo Energy, 2023) utilizing 12 stages with 15 clusters per stage (derived from Singh et al., 2025) and 81–85% stimulation success rate per 2024b ATB Moderate Scenario (NREL, 2025).
+Fracture Separation, 9.8255, -- Based on 30 foot cluster spacing (Singh et al., 2025) marginally uprated to align with long-term thermal decline behavior trend towards wider fracture spacing (Fercho et al., 2025).
+
+Fracture Shape, 4, -- Bench design and fracture geometry in Singh et al., 2025 are given in rectangular dimensions.
+Fracture Width, 305, -- Matches intra-bench well spacing of 500 ft (corresponding to fracture length of 1000 ft) (Singh. et al., 2025)
+Fracture Height, 95, -- Actual fracture geometry is irregular and heterogeneous; this height complies with the minimum height required by the implemented bench design (200 ft; 60.96 meters) and yields an effective fracture surface area consistent with simulation results in Singh. et al., 2025.
+
+Water Loss Fraction, 0.01, -- "Long-term modeling, calibrated to early field data, predicts circulation recapture rates exceeding 99%" ([Geothermal Mythbusting: Water Use and Impacts](https://fervoenergy.com/geothermal-mythbusting-water-use-and-impacts/); Fervo Energy, 2025). Modeling in Singh et al., 2025 predicts fluid loss of 0.36% to 0.49%.
+Water Cost Adjustment Factor, 2, -- Local scarcity may increase procurement costs. Development near/on land with active/shut-in oil and gas wells could potentially utilize waste water to recover losses and offset costs.
+
+Ambient Temperature, 11.17, -- Average annual temperature of Milford, Utah ([NCEI](https://www.ncei.noaa.gov/access/us-climate-normals/#dataset=normals-annualseasonal&timeframe=30&station=USC00425654)). Note that this value affects heat to power conversion efficiency. The effects of hourly and seasonal ambient temperature fluctuations on efficiency and power generation are not modeled in this version of the case study.
+
+Utilization Factor, .9
+Plant Outlet Pressure, 2000 psi, -- McClure, 2024; Singh et al., 2025.
+Circulation Pump Efficiency, 0.80
+
+# *** Well Bores Parameters ***
+
+Number of Production Wells, 56, -- Number of production wells required to produce net generation greater than the PPA minimum and total generation less than nameplate capacity (Gen 2 ORCs gross capacity).
+Number of Injection Wells per Production Well, 0.666, -- Modeled on the reference case 5-well bench pattern (3 producers : 2 injectors) described in Singh et al., 2025.
+
+Nonvertical Length per Multilateral Section, 5000 feet, -- Target lateral length given in environmental assessment (BLM, 2024). Note that lateral length is assumed to be an upper bound constraining the number of fractures per well for a given cluster spacing.
+Number of Multilateral Sections, 0, -- This parameter is set to 0 because, for this case study, the cost of horizontal drilling is included within the 'vertical drilling cost.' This approach allows us to more directly convey the overall well drilling and completion cost.
+
+Production Flow Rate per Well, 103, -- Cape Station pilot testing reported a sustained flow rate of 95–100 kg/s and maximum flow rate of 107 kg/s (Fervo Energy, 2024). Modeling by Singh et al. suggests initial flow rates of 120–130 kg/sec that gradually decrease over time (Singh et al., 2025). The case study flow rate is chosen both as a conservative target for long-term sustainability and to achieve a more economically favorable drawdown and redrilling schedule.
+# The ATB Advanced Scenario models sustained flow rates of 110 kg/s (NREL, 2024).
+
+Production Well Diameter, 8.535, -- Inner diameter of 9⅝ inch casing size, the next standard casing size up from 7 inches, implied by announcement of “increasing casing diameter” (Fervo Energy, 2025).
+Injection Well Diameter, 8.535, -- See Production Well Diameter
+
+Production Wellhead Pressure, 303 psi, -- Modeled at a constant 300 psi in Singh et al., 2025. We use a marginally uprated value to conform to GEOPHIRES's calculated minimum wellhead pressure and nominally align with the gradual increase in WHP for constant flow rates modeled by Singh et al.
+
+Injectivity Index, 1.809, -- Based on ATB Conservative Scenario (NREL, 2025) derated by 40% per analyses that suggest lower productivity/injectivitity (Xing et al., 2025; Yearsley and Kombrink, 2024).
+Productivity Index, 1.4964, -- See Injectivity Index
+
+Ramey Production Wellbore Model, True, -- Ramey's model estimates the geofluid temperature drop in production wells
+Injection Temperature, 53.6, -- Calibrated with GEOPHIRES model-calculated reinjection temperature (Beckers and McCabe, 2019). Close to upper bound of Project Red injection temperatures (75–125℉; 23.89–51.67℃) (Norbeck and Latimer, 2023). Note: GEOPHIRES enforces a thermodynamic optimum that overrides higher values, such as Fervo's considered operational target of 80°C (intended for silica scaling mitigation), resulting in a "maximum theoretical power" scenario. Support for higher reinjection temperatures may be added in future GEOPHIRES versions.
+Injection Wellbore Temperature Gain, 3, -- Empirical estimate for high-flow rate wells where rapid fluid velocity minimizes heat uptake during descent (Ramey, 1962).
+
+Maximum Drawdown, 0.0025, -- This value represents the fractional drop in production temperature compared to the initial temperature that is allowed before the wellfield is redrilled. It is calibrated to maintain the PPA minimum net electricity generation requirement. It is a very small percentage because it is relative to the initial production temperature; the temperature quickly rises higher due to thermal conditioning and plateaus until breakthrough, so any drawdown relative to the initial value signals that the temperature has already declined from its stabilized peak.
+
+# *** SIMULATION PARAMETERS ***
+# *****************************
+Maximum Temperature, 500
+Time steps per year, 12

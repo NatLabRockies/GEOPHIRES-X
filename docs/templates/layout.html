@@ -1,19 +1,46 @@
 {% extends "!layout.html" %}
 
 {%- block extrahead %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        crossorigin="anonymous"></script>
 <script type="text/javascript">
-    console.debug('Referrer:', document.referrer)
-
-        ['python-geophires-x', 'GEOPHIRES-X'].map((repositoryName) => {
-        if (location.href.indexOf(`nrel.github.io/${repositoryName}`) !== -1
-            && document.referrer.indexOf(`https://github.com/softwareengineerprogrammer/${repositoryName}`) !== -1) {
-            /* Redirect links from fork's GitHub docs to fork's docs deployment */
-            location.href = location.href.replace(
-                `nrel.github.io/${repositoryName}`,
-                `softwareengineerprogrammer.github.io/${repositoryName}`
-            )
-        }
+    // Define $u utility object expected by sidebar.js
+    window.$u = {
+        min: function(arr) { return Math.min.apply(Math, arr); },
+        max: function(arr) { return Math.max.apply(Math, arr); }
+    };
+</script>
+<script type="text/javascript">
+    /*
+    The README (and other docs files) contain links to sphinx documentation hosted on GitHub Pages.
+    Those links, by necessity, must have absolute github.io URLs whose subdomain is the same in both the fork's
+    README and the main repo's README. However, if the user came from the forked repo, we should redirect to the
+    forked repo's docs instead, since they may differ from the main repo's (e.g. when there is a pending PR to merge).
+    */
+    const locationHref = location?.href?.toLowerCase();
+    ["nrel", "natlabrockies"].map((organizationName) => {
+        ["python-geophires-x", "GEOPHIRES-X"].map((repositoryName) => {
+            if (locationHref.indexOf(`${organizationName}.github.io/${repositoryName}`) !== -1
+                && document.referrer.indexOf(`https://github.com/softwareengineerprogrammer/${repositoryName}`) !== -1) {
+                console.debug('Redirecting to fork docs based on referrer:', document.referrer);
+                location.href = locationHref.replace(
+                    `${organizationName}.github.io/${repositoryName}`,
+                    `softwareengineerprogrammer.github.io/${repositoryName}`
+                )
+            }
+        })
     })
+
+    setTimeout(function() {
+        // sidebar.js erroneously adds a second sidebar button
+        let sidebarbuttonIdElts = document.querySelectorAll('#sidebarbutton');
+        if (sidebarbuttonIdElts.length > 1) {
+            for(let i = 1; i < sidebarbuttonIdElts.length; i++) {
+                sidebarbuttonIdElts[i].remove();
+            }
+        }
+    }, 1000)
 </script>
 <style>
     div.body {
@@ -24,6 +51,62 @@
     body > div.badge {
         /* Hide goofy-looking "Fork me on GitHub" badge */
         display: none;
+    }
+
+    a.footnote-reference[role="doc-noteref"] {
+        vertical-align: super;
+        font-size: 0.75em;
+        margin-left: 0.1em;
+        margin-right: 0.05em;
+    }
+
+    img.no-active:active {
+        max-width: 100%;
+    }
+
+    /* Fix sidebar button chevron positioning */
+    #sidebarbutton {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #3c6e83 !important;
+    }
+
+    #sidebarbutton:hover {
+        background-color: #345e70 !important;
+    }
+
+    #sidebarbutton span {
+        position: static !important;
+        top: auto !important;
+    }
+
+    span.metric-tooltip-text:hover {
+        cursor: help;
+    }
+
+    /* Show interactive SVG on screen, hide print version */
+    @media screen {
+      .sensitivity-chart-interactive {
+        display: block;
+        width: 100%;
+      }
+      .sensitivity-chart-print {
+        display: none;
+      }
+    }
+
+    /* Show print version when printing, hide interactive SVG */
+    @media print {
+      .sensitivity-chart-interactive {
+        display: none;
+      }
+      .sensitivity-chart-print {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+      }
     }
 </style>
 {% endblock %}

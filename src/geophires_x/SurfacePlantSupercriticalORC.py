@@ -14,7 +14,7 @@ class SurfacePlantSupercriticalOrc(SurfacePlant):
         :return: None
         """
 
-        model.logger.info("Init " + self.__class__.__name__ + ": " + __name__)
+        model.logger.info(f'Init {self.__class__.__name__}: {__name__}')
         super().__init__(model)  # Initialize all the parameters in the superclass
 
         # Set up all the Parameters that will be predefined by this class using the different types of parameter classes.
@@ -33,7 +33,7 @@ class SurfacePlantSupercriticalOrc(SurfacePlant):
         sclass = self.__class__.__name__
         self.MyClass = sclass
         self.MyPath = __file__
-        model.logger.info("Complete " + self.__class__.__name__ + ": " + __name__)
+        model.logger.info(f"Complete {self.__class__.__name__}: {__name__}")
 
     def __str__(self):
         return "SurfacePlantSupercriticalORC"

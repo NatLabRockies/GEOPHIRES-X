@@ -4,10 +4,10 @@
 
 Simulation Metadata
 ----------------------
- GEOPHIRES Version: 3.10.22
- Simulation Date: 2025-12-15
- Simulation Time:  09:15
- Calculation Time:      1.777 sec
+ GEOPHIRES Version: 3.11.3
+ Simulation Date: 2026-01-17
+ Simulation Time:  09:41
+ Calculation Time:      2.234 sec
 
                            ***SUMMARY OF RESULTS***
 
@@ -28,13 +28,14 @@ Simulation Metadata
       Real Discount Rate:                                   12.00 %
       Nominal Discount Rate:                                14.58 %
       WACC:                                                  8.30 %
+      Investment Tax Credit:                               798.26 MUSD
       Project lifetime:                                      30 yr
       Capacity factor:                                       90.0 %
       Project NPV:                                         483.35 MUSD
       After-tax IRR:                                        27.55 %
       Project VIR=PI=PIR:                                    1.45
       Project MOIC:                                          4.20
-      Project Payback Period:                                       2.33 yr
+      Project Payback Period:                                       3.33 yr
       Estimated Jobs Created:                                 1300
 
                           ***ENGINEERING PARAMETERS***

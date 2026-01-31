@@ -1,3 +1,5 @@
+*.env
+
 HIP.out
 *.log
 MC_*Result.json

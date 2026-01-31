@@ -33,7 +33,7 @@ class TestBaseTestCase(BaseTestCase):
 
             self.assertIn(str(msg_type_error), '(you may have meant to pass percent=10)')
 
-        with self.assertLogs(level='INFO') as logs:
+        with self.assertLogs('tests.base_test_case', level='INFO') as logs:
             with self.assertRaises(AssertionError):
                 self.assertAlmostEqualWithinPercentage([1, 2, 3], [1.1, 2.2, 3.3], percent=10.5)
 

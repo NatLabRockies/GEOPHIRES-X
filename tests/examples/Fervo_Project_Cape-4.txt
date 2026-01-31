@@ -1,4 +1,4 @@
-# Case Study: 500 MWe EGS Project Modeled on Fervo Cape Station
+# [Deprecated] Case Study: 500 MWe EGS Project Modeled on Fervo Cape Station
 # 500 MWe EGS Case Study Modeled on Fervo Cape Station after Fervo's April 2025 upsizing announcement:
 #   https://fervoenergy.com/fervo-energy-announces-31-mw-power-purchase-agreement-with-shell-energy/
 # See documentation: https://softwareengineerprogrammer.github.io/GEOPHIRES/Fervo_Project_Cape-4.html

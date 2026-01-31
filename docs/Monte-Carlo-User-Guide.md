@@ -1,4 +1,4 @@
-# GEOPHIRES Monte Carlo User Guide
+# Monte Carlo User Guide
 
 ## Example Setup
 

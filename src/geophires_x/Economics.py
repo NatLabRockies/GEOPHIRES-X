@@ -15,7 +15,7 @@ from geophires_x.EconomicsUtils import BuildPricingModel, wacc_output_parameter,
     project_payback_period_parameter, inflation_cost_during_construction_output_parameter, \
     interest_during_construction_output_parameter, total_capex_parameter_output_parameter, \
     overnight_capital_cost_output_parameter, CONSTRUCTION_CAPEX_SCHEDULE_PARAMETER_NAME, \
-    _YEAR_INDEX_VALUE_EXPLANATION_SNIPPET
+    _YEAR_INDEX_VALUE_EXPLANATION_SNIPPET, investment_tax_credit_output_parameter
 from geophires_x.GeoPHIRESUtils import quantity
 from geophires_x.OptionList import Configuration, WellDrillingCostCorrelation, EconomicModel, EndUseOptions, PlantType, \
     _WellDrillingCostCorrelationCitation
@@ -1011,9 +1011,9 @@ class Economics:
             'Royalty Rate Escalation Start Year',
             DefaultValue=1,
             AllowableRange=list(range(1, model.surfaceplant.plant_lifetime.AllowableRange[-1], 1)),
-            UnitType=Units.PERCENT,
-            PreferredUnits=PercentUnit.TENTH,
-            CurrentUnits=PercentUnit.TENTH,
+            UnitType=Units.NONE,
+            PreferredUnits=TimeUnit.YEAR,
+            CurrentUnits=TimeUnit.YEAR,
             ToolTipText=f'The first year that the {self.royalty_escalation_rate.Name} is applied. '
                         f'{_YEAR_INDEX_VALUE_EXPLANATION_SNIPPET}.'
         )
@@ -2302,13 +2302,7 @@ class Economics:
         self.ProjectMOIC = self.OutputParameterDict[self.ProjectMOIC.Name] = moic_parameter()
         self.ProjectPaybackPeriod = self.OutputParameterDict[self.ProjectPaybackPeriod.Name] = (
             project_payback_period_parameter())
-        self.RITCValue = self.OutputParameterDict[self.RITCValue.Name] = OutputParameter(
-            Name="Investment Tax Credit Value",
-            display_name='Investment Tax Credit',
-            UnitType=Units.CURRENCY,
-            PreferredUnits=CurrencyUnit.MDOLLARS,
-            CurrentUnits=CurrencyUnit.MDOLLARS
-        )
+        self.RITCValue = self.OutputParameterDict[self.RITCValue.Name] = investment_tax_credit_output_parameter()
         self.cost_one_production_well = self.OutputParameterDict[self.cost_one_production_well.Name] = OutputParameter(
             Name="Cost of One Production Well",
             UnitType=Units.CURRENCY,
@@ -3585,8 +3579,10 @@ class Economics:
         self.ProjectMOIC.value = self.sam_economics_calculations.moic.value
         self.ProjectVIR.value = self.sam_economics_calculations.project_vir.value
 
-        # TODO remove or clarify project payback period: https://github.com/NREL/GEOPHIRES-X/issues/413
         self.ProjectPaybackPeriod.value = self.sam_economics_calculations.project_payback_period.value
+
+        self.RITCValue.value = self.sam_economics_calculations.investment_tax_credit.quantity().to(
+            self.RITCValue.CurrentUnits).magnitude
 
     # noinspection SpellCheckingInspection
     def _calculate_derived_outputs(self, model: Model) -> None:

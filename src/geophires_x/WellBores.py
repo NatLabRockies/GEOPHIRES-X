@@ -520,10 +520,11 @@ def ProdPressureDropAndPumpingPowerUsingIndexes(
         else:
             Pprodwellhead = ppwellhead_kPa
             if Pprodwellhead < Pminimum_kPa:
-                Pprodwellhead = Pminimum_kPa
-                msg = (f'Provided production wellhead pressure ({Pprodwellhead:.2f} kPa) '
-                       f'under minimum pressure ({Pminimum_kPa:.2f} kPa). '
+                msg = (f'Provided production wellhead pressure ({Pprodwellhead:.3f} kPa) '
+                       f'under minimum pressure ({Pminimum_kPa:.3f} kPa). '
                        f'GEOPHIRES will assume minimum wellhead pressure.')
+
+                Pprodwellhead = Pminimum_kPa
 
                 print(f'Warning: {msg}')
                 model.logger.warning(msg)
@@ -739,6 +740,18 @@ class WellBores:
             UnitType=Units.NONE,
             ToolTipText="Pass this parameter to set the Number of Production Wells and Number of Injection Wells to "
                         "same value."
+        )
+        # noinspection SpellCheckingInspection
+        self.ninj_per_production_well = self.ParameterDict[self.ninj_per_production_well.Name] = floatParameter(
+            "Number of Injection Wells per Production Well",
+            DefaultValue=1,
+            Min=0,
+            Max=max_doublets-1,
+            UnitType=Units.NONE,
+            Required=False,
+            ToolTipText="Number of (identical) injection wells per production well. "
+                        "For example, provide 0.666 to specify a 3:2 production:injection well ratio. "
+                        "The number of injection wells will be rounded up to the nearest integer."
         )
 
         # noinspection SpellCheckingInspection
@@ -1140,8 +1153,20 @@ class WellBores:
         )
         self.redrill = self.OutputParameterDict[self.redrill.Name] = OutputParameter(
             Name="redrill",
+            # TODO pivot Name to more user-friendly display name in all contexts if feasible (such as output parameters
+            #  documentation, where Name is prepended to ToolTipText, resulting in the documentation entry beginning
+            #  clumsily and confusingly with "redrill. The total number of redrilling events [...]")
             display_name='Number of times redrilling',
-            UnitType=Units.NONE
+            UnitType=Units.NONE,
+            ToolTipText="The total number of redrilling events triggered when production temperature drops below "
+                        "the 'Maximum Drawdown' threshold. In the reservoir simulation, this resets the thermal "
+                        "decline curve by repeating the initial production temperature profile. Economically, each "
+                        "event incurs the full cost of drilling and stimulating the wellfield. "
+                        "The cost of all redrilling events is summed and amortized over the project lifetime as an "
+                        "operational expense. "
+                        # "This accounts for the heavy capital expenditure (e.g., sidetracking and stimulating "
+                        # "laterals into fresh rock) required to access undepleted reservoir volume and sustain "
+                        # "target power output."
         )
         self.PumpingPowerProd = self.OutputParameterDict[self.PumpingPowerProd.Name] = OutputParameter(
             Name="PumpingPowerProd",
@@ -1228,7 +1253,7 @@ class WellBores:
             PreferredUnits=PressureUnit.KPASCAL,
             CurrentUnits=PressureUnit.KPASCAL
         )
-        self.NonverticalProducedTemperature = self.OutputParameterDict[self.ProducedTemperature.Name] = OutputParameter(
+        self.NonverticalProducedTemperature = self.OutputParameterDict[self.NonverticalProducedTemperature.Name] = OutputParameter(
             Name="Nonvertical Produced Temperature",
             value=[0.0],
             UnitType=Units.TEMPERATURE,
@@ -1361,20 +1386,35 @@ class WellBores:
 
         coerce_int_params_to_enum_values(self.ParameterDict)
 
-        if self.doublets_count.Provided:
-            def _error(num_wells_param_:intParameter):
-                msg = f'{num_wells_param_.Name} may not be provided when {self.doublets_count.Name} is provided.'
-                model.logger.error(msg)
-                raise ValueError(msg)
+        self._set_well_counts_from_parameters(model)
 
+        model.logger.info(f"read parameters complete {self.__class__.__name__}: {__name__}")
+
+    def _set_well_counts_from_parameters(self, model: Model):
+        mutually_exclusive_well_count_params = [self.doublets_count, self.ninj_per_production_well]
+        provided_well_count_params = [it for it in mutually_exclusive_well_count_params if it.Provided]
+        if len(provided_well_count_params) > 1:
+            raise ValueError(f'Only one of [{", ".join([it.Name for it in mutually_exclusive_well_count_params])}] '
+                             f'may be provided.')
+
+        def _raise_incompatible_param_error(incompatible_param: intParameter, with_param: intParameter):
+            msg = f'{incompatible_param.Name} may not be provided when {with_param.Name} is provided.'
+            model.logger.error(msg)
+            raise ValueError(msg)
+
+        if self.doublets_count.Provided:
             for num_wells_param in [self.ninj, self.nprod]:
                 if num_wells_param.Provided:
-                    _error(num_wells_param)
+                    _raise_incompatible_param_error(num_wells_param, self.doublets_count)
 
             self.ninj.value = self.doublets_count.value
             self.nprod.value = self.doublets_count.value
 
-        model.logger.info(f"read parameters complete {self.__class__.__name__}: {__name__}")
+        if self.ninj_per_production_well.Provided:
+            if self.ninj.Provided:
+                _raise_incompatible_param_error(self.ninj, self.ninj_per_production_well)
+
+            self.ninj.value = int(math.ceil(self.nprod.value * self.ninj_per_production_well.value))
 
     def Calculate(self, model: Model) -> None:
         """
@@ -1481,21 +1521,7 @@ class WellBores:
 
         self.ProducedTemperature.value = model.reserv.Tresoutput.value - self.ProdTempDrop.value
 
-        # redrilling
-        # only applies to the built-in analytical reservoir models
-        if model.reserv.resoption.value in \
-            [ReservoirModel.MULTIPLE_PARALLEL_FRACTURES, ReservoirModel.LINEAR_HEAT_SWEEP,
-             ReservoirModel.SINGLE_FRACTURE, ReservoirModel.ANNUAL_PERCENTAGE]:
-            indexfirstmaxdrawdown = np.argmax(self.ProducedTemperature.value < (1 - model.wellbores.maxdrawdown.value) *
-                                              self.ProducedTemperature.value[0])
-            if indexfirstmaxdrawdown > 0:  # redrilling necessary
-                self.redrill.value = int(np.floor(len(self.ProducedTemperature.value) / indexfirstmaxdrawdown))
-                ProducedTemperatureRepeatead = np.tile(self.ProducedTemperature.value[0:indexfirstmaxdrawdown],
-                                                       self.redrill.value + 1)
-                self.ProducedTemperature.value = ProducedTemperatureRepeatead[0:len(self.ProducedTemperature.value)]
-                TResOutputRepeated = np.tile(model.reserv.Tresoutput.value[0:indexfirstmaxdrawdown],
-                                             self.redrill.value + 1)
-                model.reserv.Tresoutput.value = TResOutputRepeated[0:len(self.ProducedTemperature.value)]
+        self.calculate_redrilling(model)
 
         # calculate pressure drops and pumping power
         self.DPProdWell.value, f3, vprod, self.rhowaterprod = WellPressureDrop(
@@ -1560,6 +1586,24 @@ class WellBores:
         self._sync_output_params_from_input_params()
 
         model.logger.info(f'complete {self.__class__.__name__}: {__name__}')
+
+    def calculate_redrilling(self, model: Model) -> None:
+        # Redrilling applies to the built-in analytical reservoir models and user-provided profile.
+        if model.reserv.resoption.value in \
+            [ReservoirModel.MULTIPLE_PARALLEL_FRACTURES, ReservoirModel.LINEAR_HEAT_SWEEP,
+             ReservoirModel.SINGLE_FRACTURE, ReservoirModel.ANNUAL_PERCENTAGE, ReservoirModel.USER_PROVIDED_PROFILE]:
+            index_first_max_drawdown = np.argmax(
+                self.ProducedTemperature.value < (1 - model.wellbores.maxdrawdown.value) *
+                self.ProducedTemperature.value[0])
+
+            if index_first_max_drawdown > 0:  # redrilling necessary
+                self.redrill.value = int(np.floor(len(self.ProducedTemperature.value) / index_first_max_drawdown))
+                ProducedTemperatureRepeated = np.tile(self.ProducedTemperature.value[0:index_first_max_drawdown],
+                                                      self.redrill.value + 1)
+                self.ProducedTemperature.value = ProducedTemperatureRepeated[0:len(self.ProducedTemperature.value)]
+                TResOutputRepeated = np.tile(model.reserv.Tresoutput.value[0:index_first_max_drawdown],
+                                             self.redrill.value + 1)
+                model.reserv.Tresoutput.value = TResOutputRepeated[0:len(self.ProducedTemperature.value)]
 
     def _sync_output_params_from_input_params(self) -> None:
         """

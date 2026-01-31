@@ -58,9 +58,9 @@ Free software: `MIT license <LICENSE>`__
     :alt: Supported implementations
     :target: https://pypi.org/project/geophires-x
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/softwareengineerprogrammer/GEOPHIRES-X/v3.10.24.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/softwareengineerprogrammer/GEOPHIRES-X/v3.11.12.svg
     :alt: Commits since latest release
-    :target: https://github.com/softwareengineerprogrammer/GEOPHIRES-X/compare/v3.10.24...main
+    :target: https://github.com/softwareengineerprogrammer/GEOPHIRES-X/compare/v3.11.12...main
 
 .. |docs| image:: https://readthedocs.org/projects/GEOPHIRES-X/badge/?style=flat
     :target: https://softwareengineerprogrammer.github.io/GEOPHIRES
@@ -168,6 +168,10 @@ Example-specific web interface deeplinks are listed in the Link column.
      - Input file
      - Case report file
      - Link
+   * - Case Study: 500 MWe EGS modeled on Fervo Cape Station (`documentation <https://nrel.github.io/GEOPHIRES-X/Fervo_Project_Cape-4.html>`__)
+     - `Fervo_Project_Cape-4.txt <tests/examples/Fervo_Project_Cape-4.txt>`__
+     - `.out <tests/examples/Fervo_Project_Cape-4.out>`__
+     - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-4>`__
    * - Example 1: EGS Electricity
      - `example1.txt <tests/examples/example1.txt>`__
      - `.out <tests/examples/example1.out>`__
@@ -188,10 +192,14 @@ Example-specific web interface deeplinks are listed in the Link column.
      - `example4.txt <tests/examples/example4.txt>`__
      - `.out <tests/examples/example4.out>`__
      - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=example4>`__
-   * - Example 5: User-Provided Reservoir Data
+   * - Example 5: User-Provided Reservoir Data (File Parameter)
      - `example5.txt <tests/examples/example5.txt>`__
      - `.out <tests/examples/example5.out>`__
      - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=example5>`__
+   * - Example 5b: User-Provided Reservoir Data (Profile Parameter)
+     - `example5b.txt <tests/examples/example5b.txt>`__
+     - `.out <tests/examples/example5b.out>`__
+     - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=example5b>`__
    * - Example 6: TOUGH2 (Multiple Gradients)
      - `example6.txt <tests/examples/example6.txt>`__
      - `.out <tests/examples/example6.out>`__
@@ -288,10 +296,14 @@ Example-specific web interface deeplinks are listed in the Link column.
      - `Fervo_Project_Cape-3.txt <tests/examples/Fervo_Project_Cape-3.txt>`__
      - `.out <tests/examples/Fervo_Project_Cape-3.out>`__
      - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-3>`__
-   * - Case Study: 500 MWe EGS Project Modeled on Fervo Cape Station (`documentation <https://softwareengineerprogrammer.github.io/GEOPHIRES/Fervo_Project_Cape-4.html>`__)
-     - `Fervo_Project_Cape-4.txt <tests/examples/Fervo_Project_Cape-4.txt>`__
-     - `.out <tests/examples/Fervo_Project_Cape-4.out>`__
-     - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-4>`__
+   * - Fervo Cape Station 5: [Preview] Case Study: 500 MW EGS modeled on Fervo Cape Station (2026 Update)
+     - `Fervo_Project_Cape-5.txt <tests/examples/Fervo_Project_Cape-5.txt>`__
+     - `.out <tests/examples/Fervo_Project_Cape-5.out>`__
+     - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-5>`__
+   * - Fervo Cape Station 6: [Preview] Case Study: 100 MW EGS modeled on Fervo Cape Station
+     - `Fervo_Project_Cape-6.txt <tests/examples/Fervo_Project_Cape-6.txt>`__
+     - `.out <tests/examples/Fervo_Project_Cape-6.out>`__
+     - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-6>`__
    * - Superhot Rock (SHR) Example 1
      - `example_SHR-1.txt <tests/examples/example_SHR-1.txt>`__
      - `.out <tests/examples/example_SHR-1.out>`__

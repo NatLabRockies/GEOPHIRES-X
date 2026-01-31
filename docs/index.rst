@@ -7,9 +7,8 @@ Contents
 
    overview
    Theoretical-Basis-for-GEOPHIRES
-   GEOPHIRES-Examples
-   Monte-Carlo-User-Guide
    SAM-Economic-Models
+   Monte-Carlo-User-Guide
    How-to-extend-GEOPHIRES-X
 
 .. toctree::
@@ -18,6 +17,15 @@ Contents
 
    parameters
    hip_ra_x_parameters
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Examples
+
+   GEOPHIRES-Examples
+   Fervo_Project_Cape-5
+
+
 ..   reference/index
 
 Indices and tables

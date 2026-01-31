@@ -284,7 +284,9 @@ class Reservoir:
             PreferredUnits=LengthUnit.METERS,
             CurrentUnits=LengthUnit.METERS,
             ErrMessage="assume default fracture width (500 m)",
-            ToolTipText="Width of each fracture"
+            ToolTipText="Total horizontal length of each fracture plane (from tip to tip). "
+                        "Note: In some contexts this is called 'Fracture Length'; it refers to the fracture's lateral "
+                        "extent, not its aperture or thickness."
         )
 
         fracnumb_allowable_range = list(range(1, _MAX_ALLOWED_FRACTURES + 1, 1))

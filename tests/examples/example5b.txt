@@ -1,0 +1,66 @@
+# Example 5b: Geothermal Direct-Use Example Problem using User-Provided Temperature Data
+# The reservoir output temperature is provided via the Reservoir Output Profile parameter
+
+# *** Subsurface technical parameters ***
+# ****************************************
+Reservoir Model,5,			--- User provided reservoir output temperature data
+Reservoir Output Profile, 150,150,150,150,149.9999,149.9992,149.9958,149.9854,149.9628,149.9226,149.8604,149.773,149.6587,149.5168,149.3479,149.153,148.9337,148.6919,148.4295,148.1487,147.8515,147.5397,147.2153,146.88,146.5353,146.1828,145.8237,145.4592,145.0905,144.7184,144.3439,143.9677,143.5905,143.213,142.8356,142.4589,142.0832,141.709,141.3365,140.9661,140.598,140.2324,139.8696,139.5096,139.1526,138.7987,138.448,138.1007,137.7566,137.4161,137.0789,136.7453,136.4152,136.0885,135.7655,135.4459,135.1299,134.8173,134.5083,134.2027,133.9006,133.6019,133.3066,133.0146,132.726,132.4407,132.1586,131.8797,131.6041,131.3315,131.0621,130.7957,130.5324,130.272,130.0146,129.7601,129.5084,129.2595,129.0135,128.7701,128.5295,128.2915,128.0561,127.8233,127.593,127.3653,127.1399,126.9171,126.6966,126.4784,126.2626,126.049,125.8377,125.6286,125.4217,125.217,125.0143,124.8137,124.6152,124.4186,124.2241,124.0315,123.8409,123.6521,123.4652,123.2801,123.0969,122.9154,122.7357,122.5578,122.3815,122.2069,122.034,121.8627,121.693,121.525,121.3584,121.1934,121.03,120.868,120.7075
+Reservoir Output Profile Time Step, 0.25
+Reservoir Depth,3, 			--- [km]
+Number of Segments,1,			--- [-]
+Gradient 1,45, 				--- [deg.C/km]
+Number of Production Wells,2,		--- [-]
+Number of Injection Wells,2,		--- [-]
+Production Well Diameter,9.625,		--- [inch]
+Injection Well Diameter,9.625,		--- [inch]
+Ramey Production Wellbore Model,1,	--- Should be 0 (disable) or 1 (enable)
+Injection Wellbore Temperature Gain,0,	--- [deg.C]
+Production Flow Rate per Well,50, 	--- [kg/s]
+Maximum Temperature,375,		--- [deg.C]
+Reservoir Volume Option,4,		--- Should be 1 2 3 or 4. See manual for details.
+Reservoir Volume,1e9,			--- [m3] (required for reservoir volume option 3 and 4
+Water Loss Fraction,0.02,		--- [-] (total geofluid lost)/(total geofluid produced)
+Reservoir Impedance,0.05,		--- [GPa*s/m3]
+Injection Temperature,80,		--- [deg.C]
+Reservoir Heat Capacity,1050,		--- [J/kg/K]
+Reservoir Density,2700,			--- [kg/m3]
+Reservoir Thermal Conductivity,3,	--- [W/m/K]
+
+
+# *** Surface technical parameters ***
+# ************************************
+End-Use Option,2,			--- [-] Direct-Use
+Circulation Pump Efficiency,0.8,	--- [-]
+Utilization Factor,0.9,			--- [-]
+Surface Temperature,15,			--- [deg.C]
+Ambient Temperature,15,			--- [deg.C]
+End-Use Efficiency Factor,0.9,		--- [-]
+
+# *** Economic/Financial Parameters ***
+# *************************************
+Plant Lifetime,30,			--- [years]
+Economic Model,3,			--- Should be 1 (FCR model) 2 (Standard LCOE/LCOH model) or 3 (Bicycle model).
+Fraction of Investment in Bonds,0.65,	--- [-] Required if Bicycle model is selected. See manual for details.
+Inflated Bond Interest Rate,0.07,	--- [-] Required if Bicycle model is selected. See manual for details.
+Inflated Equity Interest Rate,0.12,	--- [-] Required if Bicycle model is selected. See manual for details.
+Inflation Rate,0.025,			--- [-] Required if Bicycle model is selected. See manual for details.
+Combined Income Tax Rate,0.392,		--- [-] Required if Bicycle model is selected. See manual for details.
+Gross Revenue Tax Rate,0,		--- [-] Required if Bicycle model is selected. See manual for details.
+Investment Tax Credit Rate,0,		--- [-] Required if Bicycle model is selected. See manual for details.
+Property Tax Rate,0,			--- [-] Required if Bicycle model is selected. See manual for details.
+Well Drilling and Completion Capital Cost Adjustment Factor,1,	--- [-] Use built-in well cost correlation as is
+Well Drilling Cost Correlation,1,				--- [-] Use built-in well drilling cost correlation #1
+Reservoir Stimulation Capital Cost Adjustment Factor,1,		--- [-] Use built-in reservoir stimulation cost correlation as is
+Surface Plant Capital Cost Adjustment Factor,1,			--- [-] Use built-in surface plant cost correlation as is
+Field Gathering System Capital Cost Adjustment Factor,1,		--- [-] Use built-in pipeline distribution cost correlation as is
+Exploration Capital Cost Adjustment Factor,1,			--- [-] Use built-in exploration cost correlation as is
+Wellfield O&M Cost Adjustment Factor,1,				--- [-] Use built-in wellfield O&M cost correlation as is
+Water Cost Adjustment Factor,1,					--- [-] Use built-in water cost correlation as is
+Surface Plant O&M Cost Adjustment Factor,1,			--- [-] Use built-in surface plant O&M cost correlation as is
+Inflation Rate During Construction,0,	--- [-]
+Electricity Rate,0.07,			--- [$/kWh] for pumping power
+
+
+# *** Simulation Parameters ***
+Print Output to Console,1,		--- [-] Should be 0 (don't print results to console) or 1 (print results to console)
+Time steps per year,4,			--- [1/year]

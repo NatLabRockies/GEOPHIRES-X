@@ -82,6 +82,50 @@ class WellBoresTestCase(BaseTestCase):
         self.assertEqual(prod_inj_lcoe_2[0], 199)
         self.assertEqual(prod_inj_lcoe_2[1], 199)
 
+    def test_number_of_injection_wells_per_production_well(self):
+        r_ratio: GeophiresXResult = self._get_result(
+            {
+                'Number of Production Wells': 63,
+                'Number of Injection Wells per Production Well': 0.666,  # 3:2 ratio
+            }
+        )
+
+        r_explicit_counts: GeophiresXResult = self._get_result(
+            {'Number of Production Wells': 63, 'Number of Injection Wells': 42}
+        )
+
+        self.assertEqual(self._prod_inj_lcoe_production(r_explicit_counts), self._prod_inj_lcoe_production(r_ratio))
+
+        self.assertEqual(
+            self._prod_inj_lcoe_production(
+                self._get_result(
+                    {
+                        'Number of Production Wells': 2,  # default value
+                        'Number of Injection Wells per Production Well': 3,
+                    }
+                )
+            ),
+            self._prod_inj_lcoe_production(self._get_result({'Number of Injection Wells per Production Well': 3})),
+        )
+
+        with self.assertRaises(RuntimeError):
+            self._get_result(
+                {
+                    'Number of Production Wells': 63,
+                    'Number of Injection Wells per Production Well': 0.6666,  # 3:2 ratio
+                    'Number of Injection Wells': 42,
+                }
+            )
+
+        with self.assertRaises(RuntimeError):
+            self._get_result(
+                {
+                    'Number of Production Wells': 63,
+                    'Number of Injection Wells per Production Well': 0.6666,  # 3:2 ratio
+                    'Number of Doublets': 52,
+                }
+            )
+
     # noinspection PyMethodMayBeStatic
     def _get_result(self, _params) -> GeophiresXResult:
         params = GeophiresInputParameters(

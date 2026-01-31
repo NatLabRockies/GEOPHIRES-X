@@ -305,7 +305,7 @@
       "maximum": 10000
     },
     "Fracture Width": {
-      "description": "Width of each fracture",
+      "description": "Total horizontal length of each fracture plane (from tip to tip). Note: In some contexts this is called 'Fracture Length'; it refers to the fracture's lateral extent, not its aperture or thickness.",
       "type": "number",
       "units": "meter",
       "category": "Reservoir",
@@ -429,6 +429,33 @@
       "default": 15,
       "minimum": 8,
       "maximum": 15
+    },
+    "Reservoir Output File Name": {
+      "description": "File name of reservoir output in case reservoir model 5 is selected",
+      "type": "string",
+      "units": null,
+      "category": "Reservoir",
+      "default": null,
+      "minimum": null,
+      "maximum": null
+    },
+    "Reservoir Output Profile": {
+      "description": "Temperature profile data as a comma-separated list of values in Celsius. Example: 200,195,190,185 for a 4-point temperature decline profile. Values are interpolated over the time range determined by the number of profile data points and Reservoir Output Profile Time Step. If the profile is shorter than the plant lifetime, the temperature trend is extrapolated based on the last ~20% of the data, with the injection temperature used as a minimum. ",
+      "type": "array",
+      "units": "degC",
+      "category": "Reservoir",
+      "default": [],
+      "minimum": 0,
+      "maximum": 600
+    },
+    "Reservoir Output Profile Time Step": {
+      "description": "Time interval between temperature values in the Reservoir Output Profile. For example, if set to 0.25, the profile values represent temperatures at 0, 0.25, 0.5, 0.75, 1.0 years, etc.",
+      "type": "number",
+      "units": "yr",
+      "category": "Reservoir",
+      "default": 1.0,
+      "minimum": 0.01,
+      "maximum": 100.0
     },
     "Cylindrical Reservoir Input Depth": {
       "description": "Depth of the inflow end of a cylindrical reservoir",
@@ -663,6 +690,15 @@
       "default": 2,
       "minimum": 0,
       "maximum": 200
+    },
+    "Number of Injection Wells per Production Well": {
+      "description": "Number of (identical) injection wells per production well. For example, provide 0.666 to specify a 3:2 production:injection well ratio. The number of injection wells will be rounded up to the nearest integer.",
+      "type": "number",
+      "units": null,
+      "category": "Well Bores",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 199
     },
     "Production Well Diameter": {
       "description": "Inner diameter of production wellbore (assumed constant along the wellbore) to calculate             frictional pressure drop and wellbore heat transmission with Rameys model",
@@ -1668,7 +1704,7 @@
     "Royalty Rate Escalation Start Year": {
       "description": "The first year that the Royalty Rate Escalation is applied. The value is specified as a project year index corresponding to the Year row in the cash flow profile.",
       "type": "integer",
-      "units": "",
+      "units": "yr",
       "category": "Economics",
       "default": 1,
       "minimum": 1,

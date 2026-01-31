@@ -71,7 +71,15 @@ def project_vir_parameter() -> OutputParameter:
         UnitType=Units.PERCENT,
         PreferredUnits=PercentUnit.TENTH,
         CurrentUnits=PercentUnit.TENTH,
-        ToolTipText='For SAM Economic Models, VIR = PV(Returns) / abs(PV(Investment)).',
+        ToolTipText="Value Investment Ratio (VIR). "
+        "VIR is frequently referred to interchangeably as Profitability Index (PI) or "
+        "Profit Investment Ratio (PIR) in financial literature. "
+        "All three terms describe the same fundamental ratio: the present value of future cash flows "
+        "divided by the initial investment. "
+        "For SAM Economic Models, this metric is calculated as the Levered Equity Profitability Index. "
+        "It is calculated as the Present Value of After-Tax Equity Cash Flows (Returns) divided by the "
+        "Present Value of Equity Invested. It measures the efficiency of the sponsor's specific capital "
+        "contribution, accounting for leverage.",
     )
 
 
@@ -83,7 +91,10 @@ def project_payback_period_parameter() -> OutputParameter:
         CurrentUnits=TimeUnit.YEAR,
         ToolTipText='The time at which cumulative cash flow reaches zero. '
         'For projects that never pay back, the calculated value will be "N/A". '
-        'For SAM Economic Models, after-tax net cash flow is used to calculate the cumulative cash flow.',
+        'For SAM Economic Models, this is Simple Payback Period (SPB): the time at which cumulative non-discounted '
+        'cash flow reaches zero, calculated using non-discounted after-tax net cash flow. '
+        'See https://samrepo.nrelcloud.org/help/mtf_payback.html for important considerations regarding the '
+        'limitations of this metric.',
     )
 
 
@@ -194,4 +205,17 @@ def royalty_cost_output_parameter() -> OutputParameter:
         CurrentUnits=CurrencyFrequencyUnit.DOLLARSPERYEAR,
         ToolTipText='The annual costs paid to a royalty holder, calculated as a percentage of the '
         'project\'s gross annual revenue. This is modeled as a variable operating expense.',
+    )
+
+
+def investment_tax_credit_output_parameter() -> OutputParameter:
+    return OutputParameter(
+        Name="Investment Tax Credit Value",
+        display_name='Investment Tax Credit',
+        UnitType=Units.CURRENCY,
+        PreferredUnits=CurrencyUnit.MDOLLARS,
+        CurrentUnits=CurrencyUnit.MDOLLARS,
+        ToolTipText='Represents the total undiscounted ITC sum. '
+        'For SAM Economic Models, this accounts for the standard Year 1 Federal ITC as well as any '
+        'applicable State ITCs or multi-year credit schedules.',
     )

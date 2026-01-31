@@ -109,6 +109,11 @@
           "description": "The calculated amount of cost escalation due to inflation over the construction period.",
           "units": "MUSD"
         },
+        "Investment Tax Credit": {
+          "type": "number",
+          "description": "Investment Tax Credit Value. Represents the total undiscounted ITC sum. For SAM Economic Models, this accounts for the standard Year 1 Federal ITC as well as any applicable State ITCs or multi-year credit schedules.",
+          "units": "MUSD"
+        },
         "Project lifetime": {},
         "Capacity factor": {},
         "Project NPV": {
@@ -128,7 +133,7 @@
         },
         "Project VIR=PI=PIR": {
           "type": "number",
-          "description": "Project Value Investment Ratio. For SAM Economic Models, VIR = PV(Returns) / abs(PV(Investment)).",
+          "description": "Project Value Investment Ratio. Value Investment Ratio (VIR). VIR is frequently referred to interchangeably as Profitability Index (PI) or Profit Investment Ratio (PIR) in financial literature. All three terms describe the same fundamental ratio: the present value of future cash flows divided by the initial investment. For SAM Economic Models, this metric is calculated as the Levered Equity Profitability Index. It is calculated as the Present Value of After-Tax Equity Cash Flows (Returns) divided by the Present Value of Equity Invested. It measures the efficiency of the sponsor's specific capital contribution, accounting for leverage.",
           "units": ""
         },
         "Project MOIC": {
@@ -139,7 +144,7 @@
         "Fixed Charge Rate (FCR)": {},
         "Project Payback Period": {
           "type": "number",
-          "description": "The time at which cumulative cash flow reaches zero. For projects that never pay back, the calculated value will be \"N/A\". For SAM Economic Models, after-tax net cash flow is used to calculate the cumulative cash flow.",
+          "description": "The time at which cumulative cash flow reaches zero. For projects that never pay back, the calculated value will be \"N/A\". For SAM Economic Models, this is Simple Payback Period (SPB): the time at which cumulative non-discounted cash flow reaches zero, calculated using non-discounted after-tax net cash flow. See https://samrepo.nrelcloud.org/help/mtf_payback.html for important considerations regarding the limitations of this metric.",
           "units": "yr"
         },
         "CHP: Percent cost allocation for electrical plant": {},
@@ -248,7 +253,7 @@
         },
         "Number of times redrilling": {
           "type": "number",
-          "description": "redrill",
+          "description": "redrill. The total number of redrilling events triggered when production temperature drops below the 'Maximum Drawdown' threshold. In the reservoir simulation, this resets the thermal decline curve by repeating the initial production temperature profile. Economically, each event incurs the full cost of drilling and stimulating the wellfield. The cost of all redrilling events is summed and amortized over the project lifetime as an operational expense. ",
           "units": null
         },
         "Power plant type": {},
@@ -439,7 +444,7 @@
         },
         "Investment Tax Credit": {
           "type": "number",
-          "description": "Investment Tax Credit Value",
+          "description": "Investment Tax Credit Value. Represents the total undiscounted ITC sum. For SAM Economic Models, this accounts for the standard Year 1 Federal ITC as well as any applicable State ITCs or multi-year credit schedules.",
           "units": "MUSD"
         },
         "Overnight Capital Cost": {

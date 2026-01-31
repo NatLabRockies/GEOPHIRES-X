@@ -54,7 +54,7 @@ default_context:
     sphinx_doctest: "no"
     sphinx_theme: "sphinx-py3doc-enhanced-theme"
     test_matrix_separate_coverage: "no"
-    version: 3.10.24
+    version: 3.11.12
     version_manager: "bump2version"
     website: "https://github.com/NREL"
     year_from: "2023"

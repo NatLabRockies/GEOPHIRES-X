@@ -37,7 +37,11 @@ requirements_2025-08-11.txt
 .build
 .cache
 .eggs
+
 .env
+*.env
+tests/regenerate-example-result.env
+
 .installed.cfg
 .ve
 bin
@@ -92,8 +96,11 @@ output/*/index.html
 
 # Sphinx/docs
 docs/_build
+docs/temp.txt
 docs/reference/geophires-request.json
 docs/reference/parameters.rst
+docs/Fervo_Project_Cape-5.md
+docs/_images/singh-et-al-2025_fig-7_well-and-bench-spacing.xcf
 docs/geophires-request.json
 docs/parameters.rst
 docs/hip-ra-x-request.json
@@ -105,6 +112,7 @@ _site/
 /modules.rst
 /Useful sites for Sphinx docstrings.txt
 /.github/workflows/workflows.7z
+tmp.patch
 
 # TODO unignore once favicon is correctly configured
 docs/_images/geophires-favicon.png

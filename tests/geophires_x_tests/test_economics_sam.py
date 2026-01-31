@@ -70,12 +70,20 @@ class EconomicsSamTestCase(BaseTestCase):
         base_lcoe = _lcoe(base_result)
         self.assertGreater(base_lcoe, 7)
 
-        ir = base_result.result['ECONOMIC PARAMETERS']['Interest Rate']
+        econ = base_result.result['ECONOMIC PARAMETERS']
+
+        ir = econ['Interest Rate']
         self.assertIsNone(ir)
 
-        rdr = base_result.result['ECONOMIC PARAMETERS']['Real Discount Rate']
+        rdr = econ['Real Discount Rate']
         self.assertEqual(rdr['value'], 7.0)
         self.assertEqual(rdr['unit'], '%')
+
+        itc_output = econ['Investment Tax Credit']
+        self.assertIsNotNone(itc_output)
+        self.assertAlmostEqualWithinPercentage(
+            base_result.result['CAPITAL COSTS (M$)']['Total CAPEX']['value'] * 0.3, itc_output['value'], percent=5
+        )
 
     def test_drawdown(self):
         r = self._get_result(
@@ -1108,6 +1116,23 @@ class EconomicsSamTestCase(BaseTestCase):
             sam_econ.sam_after_tax_net_cash_flow_all_years,
         )
 
+    def test_post_processed_levelized_metrics(self):
+        r: GeophiresXResult = GeophiresXResult(
+            self._get_test_file_path('../examples/example_SAM-single-owner-PPA-5.out')
+        )
+
+        def _row(row_name: str) -> list[float]:
+            return EconomicsSamTestCase._get_cash_flow_row(r.result['SAM CASH FLOW PROFILE'], row_name)
+
+        lcoe_row = _row('LCOE Levelized cost of energy nominal (cents/kWh)')
+        pv_annual_costs_row = _row('Present value of annual costs ($)')
+        pv_annual_energy_row = _row('Present value of annual energy nominal (kWh)')
+
+        for row in [lcoe_row, pv_annual_costs_row, pv_annual_energy_row]:
+            self.assertEqual(1, len(row))
+
+        self.assertEqual(lcoe_row[0], round(pv_annual_costs_row[0] * 100 / pv_annual_energy_row[0], 2))
+
     @staticmethod
     def _new_model(input_file: Path, additional_params: dict[str, Any] | None = None, read_and_calculate=True) -> Model:
         if additional_params is not None:
@@ -1129,14 +1154,3 @@ class EconomicsSamTestCase(BaseTestCase):
             m.Calculate()
 
         return m
-
-    def _handle_assert_logs_failure(self, ae: AssertionError):
-        if sys.version_info[:2] == (3, 8) and self._is_github_actions():
-            # FIXME - see
-            #  https://github.com/softwareengineerprogrammer/GEOPHIRES/actions/runs/19646240874/job/56262028512#step:5:344
-            _log.warning(
-                f'WARNING: Skipping logs assertion in GitHub Actions '
-                f'for Python {sys.version_info.major}.{sys.version_info.minor}'
-            )
-        else:
-            raise ae

@@ -1,0 +1,604 @@
+.. raw:: html
+
+    <style type="text/css">
+        #calibration-with-fervo-implemented-field-design table:nth-of-type(2) {
+            max-width: 75% !important;
+        }
+
+        #economic-results table td:first-child {
+            white-space: preserve nowrap;
+        }
+
+        #results section[id] table th:nth-child(2),
+        #results section[id] table th:nth-child(3) {
+            white-space: preserve nowrap;
+        }
+    </style>
+
+# \[Preview\] GEOPHIRES Case Study: 500 MW EGS modeled on Fervo Cape Station (2026 Update)
+
+.. raw:: html
+
+    <p style="font-weight: bold;">ℹ️ This is a preview version of the case study (<tt>Fervo_Project_Cape-5</tt>). <a href="Fervo_Project_Cape-4.html">Click here</a> to view the current version (<tt>Fervo_Project_Cape-4</tt>).</p>
+
+---
+
+## Introduction
+
+The GEOPHIRES example `Fervo_Project_Cape-5`[^author] is a case study of a 500 MWe EGS project modeled
+on Phases I and II of [Fervo Energy's Cape Station](https://capestation.com/).
+
+[^author]: Author: Jonathan Pezzino, Scientific Web Services LLC (GitHub: [softwareengineerprogrammer](https://github.com/softwareengineerprogrammer))
+
+Key results include LCOE = {{ '$' ~ lcoe_usd_per_mwh ~ '/MWh' }} and IRR = {{ irr_pct ~ '%' }}. ([Jump to the Results section](#results)).
+
+[Click here](https://gtp.scientificwebservices.com/geophires/?geophires-example-id=Fervo_Project_Cape-5) to
+interactively explore the case study example in the GEOPHIRES web interface.
+
+.. raw:: html
+
+    <style type="text/css">
+        #intro-result-images {
+            width: 85%;
+            margin:auto;
+        }
+        #intro-result-images img {
+            max-width: 49%;
+            display: inline;
+            vertical-align: top;
+        }
+    </style>
+    <div id="intro-result-images">
+        <a href="#production-temperature-profile-section"
+            title="Jump to the Production Temperature Profile section">
+            <img src="_images/fervo_project_cape-5-power-production.png"
+                class="no-active"
+                alt="Power Production Profile Graph" />
+        </a>
+
+        <a href="#sensitivity-analysis-section"
+            title="Jump to the Sensitivity Analysis section">
+            <img src="_images/fervo_project_cape-5-sensitivity-analysis-lcoe.png"
+                class="no-active"
+                alt="LCOE Sensitivity Analysis Results Chart" />
+        </a>
+    </div>
+
+### Modeling Overview: A Consensus-Based Second-of-a-Kind Analog
+
+This case study models a 500 MWe Enhanced Geothermal System (EGS) project designed to represent a "Second-of-a-Kind" (
+SOAK) deployment.
+Rather than serving as an exact facsimile of Cape Station as built, this study estimates what a non-Fervo developer
+could achieve on a geologically identical site, relying primarily on publicly available data and standardized
+engineering estimates.
+The model assumes the developer is a "fast follower": benefiting from the proof-of-concept established by Cape Station
+Phase I but operating without access to Fervo’s private supply chain or proprietary optimization data.
+
+**Public Data Reliance:** Inputs utilize exact values for publicly available parameters, such as geothermal
+gradient and reservoir density.
+Where data is proprietary, values are inferred from public announcements or extrapolated from standard industry
+correlations.
+
+**Conservative Constraints:** To ensure the model serves as a robust feasibility test, some inputs are intentionally
+conservative compared to Fervo’s stated targets, such as drilling costs and water loss.
+
+**Fast Follower Advantage:** By entering the market after Fervo’s initial de-risking campaigns, the modeled developer
+avoids the high "tuition costs" of early experimentation.
+For example, while Fervo’s initial drilling costs at Cape Station ranged
+from [$9.4M down to $4.8M per well](https://houston.innovationmap.com/fervo-energy-drilling-utah-project-2667300142.html)
+as they climbed the learning curve,
+this model assumes a developer can bypass those initial high-cost outliers,
+instead initiating their campaign at a stabilized commercial baseline (modeled here
+at {{ '$' ~ drilling_costs_per_well_musd ~ 'M/well' }}, aligned with the NREL ATB and 2025 cost curves).
+This reflects a developer who capitalizes on established industry knowledge to skip the "First-of-a-Kind" (FOAK)
+premiums but has not yet achieved the fully optimized learning rates of a mature "Nth-of-a-kind" operator.
+
+### Intended Use Cases
+
+This case study is designed to function as a public utility for the geothermal sector, serving two primary roles:
+
+**Industry Benchmark:** By relying primarily on verifiable public data and independent expert consensus, this model
+establishes a transparent baseline for EGS viability.
+It tests the premise that Fervo’s success at Cape Station is a replicable standard for the next-generation geothermal
+industry.
+The results serve as reference points for what is achievable using current technology in high-grade resources.
+
+**Template for Resource Assessment & Custom Modeling:** The example input file (`Fervo_Project_Cape-5.txt`) is intended
+as customizable template for modeling other resources.
+Users can input local geologic data (gradient, rock properties) into this template to evaluate how a Cape Station-style
+design would perform in different geographies (e.g., Nevada vs. Utah vs. International).
+Different plant sizes and performance targets can be modeled by adjusting the number of production wells, fractures per well,
+and other technical & engineering parameters.
+The model allows users to stress-test economic assumptions, such as the PPA price or Investment Tax Credit (ITC), to see
+how policy changes impact the feasibility of replicating this design elsewhere.
+
+## Methodology
+
+The Inputs and Results tables document key assumptions, inputs, and a comparison of results with reference
+values.
+Note that these are not the exhaustive sets of inputs and results, which are available in source code and
+the [web interface](https://gtp.scientificwebservices.com/geophires/?geophires-example-id=Fervo_Project_Cape-5).
+
+See the [Calibration with Fervo-implemented Field Design section](#res-eng-params-calibration-section)
+for a detailed explanation of how key case study reservoir engineering input parameters were derived.
+
+### Inputs
+
+See [Fervo_Project_Cape-5.txt](https://github.com/softwareengineerprogrammer/GEOPHIRES/blob/main/tests/examples/Fervo_Project_Cape-5.txt)
+in source code for the full set of inputs.
+
+<a id="reservoir-parameters-section"></a>
+
+#### Reservoir Parameters
+
+{{ reservoir_parameters_table_md }}
+
+<a id="well-bores-parameters-section"></a>
+
+#### Well Bores Parameters
+
+{{ well_bores_parameters_table_md }}
+
+#### Surface Plant Parameters
+
+{{ surface_plant_parameters_table_md }}
+
+#### Construction Parameters
+
+{{ construction_parameters_table_md }}
+
+
+#### Economic Parameters
+
+{{ economics_parameters_table_md }}
+
+<a id="res-eng-params-calibration-section"></a>
+
+### Calibration with Fervo-implemented Field Design
+
+[Designing the Record-Breaking Enhanced Geothermal System at Project Cape](https://www.resfrac.com/wp-content/uploads/2025/06/Singh-2025-Fervo-Project-Cape.pdf) (Singh et al., 2025)
+describes reservoir modeling (ResFrac) that informed the Cape Station field implementation[^field-implementation-configuration-note].
+
+[^field-implementation-configuration-note]: Note on Configuration: While the specific Bearskin and Gold pads (Phase II) utilize an inverted 2:3 ratio (3 injectors for 2 producers), this case study assumes the 3:2 ratio identified in the paper's optimization studies ("Study 1") represents the standard repeating module for the full-scale 400+ MWe system. The higher injector count in Phase II is interpreted as a transient requirement for field delineation and initial pressure support (boundary conditions) rather than the long-term commercial standard.
+
+#### Bench Design and Well Spacing
+
+Figure 7 in Singh et al., 2025 (below) shows the well and bench spacing for the Cape Station field design.[^fig-7-note]
+Each bench consists of 5 wells, with 2 injectors and 3 producers.
+This ratio is encoded by the case study's `Number of Injection Wells per Production Well` parameter (see [Well Bores Parameters](#well-bores-parameters-section)).
+
+The Singh et al. paper models separate upper and lower benches.
+GEOPHIRES v3.11 does not support wells with different depths, so the case study's `Reservoir Depth` parameter is
+set to a value nominally representing an approximate average depth between the upper and lower benches.
+See the [Technical & Engineering Results section](#technical-and-engineering-results-section) for relevant temperature results.
+
+![Singh et al. (2025), Figure 7](_images/singh-et-al-2025_fig-7_well-and-bench-spacing.png)
+
+[^fig-7-note]: The original figure has been cropped and modified to display: "500 ft horizontal" instead of "700 ft horizontal" and "Inter-bench spacing: Vertical spacing between injectors: 700 ft"; per the Conclusions section of the paper: "Based on the results from the study and additional risk analysis, the 500 ft x 200 ft well spacing with a bench spacing of 700 ft was implemented in the field development." (p. 19).
+
+#### Fracture Geometry
+
+Figure 2 in Singh et al., 2025 (below) shows the ResFrac simulated fracture geometry. This figure, along with the bench design in Figure 7,
+informed the case study's `Fracture Shape`, `Fracture Width`, `Fracture Height`, and `Number of Fractures per Stimulated Well` parameters (see [Reservoir Parameters](#reservoir-parameters-section)).
+
+Note that the case study does not attempt to strictly replicate the paper's fracture geometry;
+rather, the paper specifications were used to derive approximations and/or constraints on parameters whose final values
+were ultimately refined based on holistic techno-economic considerations. For example, the intra-bench horizontal well spacing
+of 500 ft dictates that fracture half-lengths must be at least 500 ft in order to achieve flow between injectors and producers.
+Thus, a minimum fracture length of 1000 ft (305 m) is required (assuming that fractures propagate approximately symmetrically in the horizontal axis),
+reflected in the case study's `Fracture Width` parameter value.
+
+Similarly, the intra-bench vertical spacing of 200 ft (61 m) dictates that the fracture height must be at least 200 ft[^intra-bench-vertical-spacing-note].
+The case study's `Fracture Height` value was formulated by starting with 61 m and then iteratively uprating until a total effective fracture surface area per well was achieved
+that produces results consistent with the paper simulation and other reference values.
+The uprated value is also supported by Figure 2's fracture geometry visualization indicating fracture height exceeding intra-bench vertical spacing.
+
+[^intra-bench-vertical-spacing-note]: Note: unlike horizontal propagation, vertical fracture propagation is assumed to be asymmetrical in the upwards direction per "fracture propagation model with uniform frac gradient and no layering will tend to predict fracture growth directly upwards." (p. 3) and fracture geometry shown in Figures 1 and 2.
+
+
+![Singh et al. (2025), Figure 2](_images/singh-et-al-2025_fig-2_fracture-geometry.png)
+
+
+#### Simulation Comparison
+
+An equivalent GEOPHIRES simulation was run using the case study's reservoir engineering parameters, with the following modifications to align with Singh et al.'s modeling scenario:
+
+{{ reservoir_engineering_reference_simulation_params_table_md }}
+
+The following table compares the average production temperature profile from the "700 ft bench spacing" scenario in Singh et al. with the GEOPHIRES simulation.
+Note that both figures show temperature in Fahrenheit rather than Celsius.
+
+{# @formatter:off #}
+| Reference Simulation: Fervo-implemented Design (Fig. 18.) | GEOPHIRES Simulation: Case Study Equivalent Scenario |
+|---|---|
+| <img src="_images/singh-et-al-2025_wht-700-ft-bench-spacing.png" class="no-active" /> | <img src="_images/singh_et_al_base_simulation-production-temperature.png" class="no-active" /> |
+{# @formatter:on #}
+
+While the initial and final (Year 15) temperatures are consistent, the production curves exhibit distinct profiles due to the different modeling approaches:
+
+1. **Reference Simulation (Left):** The Singh et al. (2025) curve reflects a fully coupled numerical simulation (ResFrac) that accounts for complex fracture heterogeneity, inter-well interference, and variable flow paths. The gradual decline starting around Year 3 indicates thermal dispersion, where cold injection fluid mixes with hot reservoir fluid along faster flow paths earlier in the project life.
+1. **GEOPHIRES Simulation (Right):** The GEOPHIRES result utilizes the Gringarten (1975) analytical solution for flow in fractured rock. This model assumes a uniform thermal sweep across an idealized fracture surface. Consequently, it maintains a flat, maximum production temperature for a longer duration until the cold front reaches the production well (thermal breakthrough), resulting in a sharper, later decline.
+
+Despite these structural differences, the comparison supports the physical plausibility of the case study's reservoir engineering parameters,
+as the Year 1 and Year 15 thermal endpoints align closely with the numerical simulation baseline.
+
+However, the analytical Gringarten model's thermal plateau yields a higher aggregate heat extraction than the numerical model's
+gradual decline, representing an optimistic upper bound on performance compared to the conservative heterogeneity
+modeled in ResFrac.
+To bound this risk, an alternative GEOPHIRES simulation was modeled using the ResFrac profile[^upp-resfrac-profile-note].
+Results indicated that to offset the dispersion penalty under heterogeneous flow conditions, the project would require
+a higher initial reservoir temperature (achieved via deeper drilling) to compensate for the loss of the thermal plateau.
+[Click here](https://gtp.scientificwebservices.com/geophires?shared-geophires-result-id=834b0096-15b1-4dd3-b262-612e9df1342f)
+to view a variant GEOPHIRES scenario (`Fervo_Project_Cape-6 Variant: ResFrac Profile + Hotter/Deeper Scenario`)
+for a 100 MWe average net production project with a 3 km well depth, yielding approximately 15°C higher production temperatures.
+
+[^upp-resfrac-profile-note]: The simulation utilized GEOPHIRES's [Generic User-Provided Temperature Profile reservoir model](https://softwareengineerprogrammer.github.io/GEOPHIRES/Theoretical-Basis-for-GEOPHIRES.html#reservoir-models) with temperature data derived from Figure 18 in Singh et al. (2025).
+
+The calibration simulation above represents a 15-year unmitigated thermal decline without redrilling.
+In the full case study results, the model includes redrilling events that restore production temperature when drawdown thresholds are reached,
+resulting in the cyclical profile shown in the [Production Temperature section](#production-temperature-profile-section) below.
+
+
+## Results
+
+See [Fervo_Project_Cape-5.out](https://github.com/softwareengineerprogrammer/GEOPHIRES/blob/main/tests/examples/Fervo_Project_Cape-5.out)
+in source code for the complete results.
+
+### Economic Results
+
+Note that economic results are derived from the [SAM Single Owner PPA Economic Model](SAM-Economic-Models.html#sam-single-owner-ppa) pro-forma cash flow analysis.
+The case study result's cash flow analysis can be viewed in the web interface and in the `Fervo_Project_Cape-5.out` result file in source code.
+
+{# @formatter:off #}
+| Metric        | Result Value   | Reference Value(s) | Reference Source |
+|---------------|----------------|--------------------|------------------|
+| <span title="Levelized Cost of Energy" class="metric-tooltip-text">LCOE</span> | {{ '$' ~ lcoe_usd_per_mwh ~ '/MWh' }} | \$80/MWh      | Horne et al, 2025. |
+| <span title="Internal Rate of Return" class="metric-tooltip-text">After-tax IRR</span> <br/> (at Year {{ operations_year_of_irr }} of Operations) | {{ irr_pct ~ '%' }} | 15–25% | Typical levered returns for energy projects |
+| <span title="Project Net Present Value" class="metric-tooltip-text">NPV</span>  | {{ '$' ~ npv_musd ~ 'M' }} | >$0 | Positive NPVs result in profit  |
+| <span title="aka PI aka Value Investment Ratio (VIR) and Profit Investment Ratio (PIR)" class="metric-tooltip-text">Levered Equity <br/> Profitability Index</span>  | {{ project_vir }} | >1.0 | Calculations greater than 1.0 indicate the future anticipated discounted cash inflows are greater than the anticipated discounted cash outflows.  |
+| <span title="Return on Investment; aka Multiple of Invested Capital (MOIC)" class="metric-tooltip-text">Project ROI</span>  | {{ project_moic }} | | .. N/A  |
+{# Note that the '.. N/A' entry in the last row is required for the table to render in HTML (presumable m2r2/sphinx build issue) #}
+{# @formatter:on #}
+
+Hover over the metric names to view the corresponding definitions.
+See [GEOPHIRES output parameters documentation](parameters.html#economic-parameters) for more information.
+
+### Capital Costs (CAPEX)
+
+{# @formatter:off #}
+| Metric                                                                                                                                                                                                    | Result Value                                | Reference Value(s)                               | Reference Source |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|--------------------------------------------------|------------------|
+| <span title="Weighted Average Cost of Capital" class="metric-tooltip-text">WACC</span> | {{ wacc_pct ~ '%' }} | 8.3% | Fervo's target goal is to eventually achieve a "Solar Standard" WACC of 8.3% (Matson, 2024). |
+| Exploration Costs | {{ '$' ~ exploration_cost_musd ~ 'M' }} | {{ '$' ~ drilling_costs_per_well_musd*5 ~ 'M'  }} | 2024b ATB NF-EGS conservative scenario exploration assumption of 5 full-size wells (NREL, 2025). Case study result conservatively includes additional costs for geophysical survey, indirect costs, and contingency. |
+| Well Drilling and Completion Costs | {{ '$' ~ drilling_costs_musd ~ 'M' }} total <br/> ({{ '$' ~ drilling_costs_per_well_musd ~ 'M/well' }}) | <$4M/well | Latimer, 2025.                                   |
+| Stimulation Costs | {{ '$' ~ stim_costs_musd ~ 'M' }} total <br/> ({{ '$' ~ stim_costs_per_well_musd ~ 'M/well' }}) | $4.65M/well | Based on 46%:54% drilling:stimulation cost ratio (Yusifov & Enriquez, 2025).                        |
+| Surface Power Plant Costs | {{ '$' ~ surface_power_plant_costs_gusd ~ 'B' }}  | | |
+| Field Gathering System Costs | {{ '$' ~ field_gathering_cost_musd ~ 'M' }} <br/> ({{ field_gathering_cost_pct_occ ~ '%' }} of OCC) | 2% of OCC | Matson, 2024. |
+| Overnight Capital Cost | {{ '$' ~ occ_gusd ~ 'B' }}  | | |
+| Total CAPEX | {{ '$' ~ total_capex_gusd ~ 'B' }} <br/> (OCC + interest and inflation during construction) | | |
+| Total CAPEX: $/kW | {{ '$' ~ capex_usd_per_kw ~ '/kW' }} <br/> (based on maximum net electricity generation) | $5000/kW; $4500/kW; $3000–$6000/kW | McClure, 2024; Horne et al, 2025; Latimer, 2025. |
+{# @formatter:on #}
+
+### Operating Costs (OPEX)
+
+{{ opex_result_outputs_table_md }}
+
+<a id="technical-and-engineering-results-section"></a>
+
+### Technical & Engineering Results
+
+{# @formatter:off #}
+| Metric                               | Result Value                                              | Reference Value(s) | Reference Source |
+|--------------------------------------|-----------------------------------------------------------|--------------------|------------------|
+| Minimum Net Electricity Generation   | {{ min_net_generation_mwe }} MW | 500 MW | The announced 500 MWe capacity (Fervo Energy, 2025) is interpreted to mean that the PPA penalizes Cape Station if net electricity generation falls below 500 MWe. |
+| Average Net Electricity Generation   | {{ avg_net_generation_mwe }} MW | | |
+| Maximum Net Electricity Generation   | {{ max_net_generation_mwe}} MW | | |
+| Maximum Total Electricity Generation | {{ max_total_generation_mwe }} MW | Upper bound: 600 MW  | Combined nameplate capacity of 10×60 MWe Gen 2 ORCs. A total of 8×60 MWe Gen 2 ORCs have been announced for Phase II; 3 from Turboden and 5 from Baker Hughes (Turboden, 2025; Jacobs, 2025). This equates to 480 MW gross capacity for Phase II's 400 MW net capacity. An equivalent SOAK 500 MW project would therefore require 10 Gen 2 ORC units. (Note that the modular Gen 2 ORCs are not individually modeled in this case study, and are assumed to be combined into a single power plant). |
+| 2-year Average Net Power Production per Production Well | {{ two_year_avg_net_power_mwe_per_production_well }} MW | 7.6–11.5 MW | Figures 4 and 12 (Singh et al., 2025). |
+| Injection Pumping Parasitic Load <br/> (Average Pumping Power/Average Total Electricity Generation) | {{ parasitic_loss_pct ~ '%' }}  | Upper bound: 16.7% | Procurement of 480 MW of Gen 2 ORC units for 400 MW net capacity in Phase II allows for up to 16.7% total on-site consumption (80 MW; including injection pumping power).  |
+| Total fracture surface area per well | {{ total_fracture_surface_area_per_well_mm2 }}×10⁶ m² <br/> ({{ total_fracture_surface_area_per_well_mft2 }} million ft²) | Project Red: 2.787×10⁶ m² <br/> (30 million ft²) | Greater fracture surface area expected than Project Red (Fercho et al, 2025). |
+| Reservoir Volume | {{ reservoir_volume_m3 }} m³ | | Calculated from fracture area × fracture separation × number of fractures per well × number of wells |
+| Bottom-hole Temperature <br/> (BHT) | {{ bht_temp_degc ~ '℃' }} | 200–241℃ | Fercho et al., 2024; Singh et al., 2025. |
+| Initial Production Temperature       | {{ initial_production_temperature_degc ~ '℃' }} | 196–208℃ | Approximate range of initial production temperatures between shallower and deeper producers (Singh et al., 2025). |
+| Average Production Temperature       | {{ average_production_temperature_degc ~ '℃' }} | 199–209℃ | Approximate range of thermally conditioned production temperatures between shallower and deeper producers (Singh et al., 2025). |
+| Number of times redrilling           | {{ number_of_times_redrilling }} | 2–5  | Redrilling expected to be required within 5–10 years of project start  |
+| Total wells drilled over project lifetime | {{ total_wells_including_redrilling }} | Permitted Limit: 320 | The BLM Environmental Assessment (DOI-BLM-UT-C010-2024-0018-EA) authorizes an estimated development of 320 production and injection wells (BLM, 2024). As modeled, the project remains within this regulatory envelope for the first three drilling campaigns (Initial, Year 8, and Year 16), reaching a cumulative total of approximately 282 wells. <br/><br/> The model exceeds the current authorization only during the final redrilling event in Year 24. It is a standard industry assumption that brownfield capacity maintenance activities (e.g. sidetracking existing wells on existing pads) occurring two decades into operations would be authorized through subsequent regulatory actions, such as a Determination of NEPA Adequacy (DNA) or a Categorical Exclusion, given the established baseline of environmental impact. |
+{# @formatter:on #}
+
+<a id="production-temperature-profile-section"></a>
+
+#### Production Temperature Profile
+
+<img src="_images/fervo_project_cape-5-production-temperature.png" class="no-active" style="max-width: 66%" />
+
+The production temperature profile exhibits distinctive cyclical behavior driven by the interaction between wellbore physics and reservoir thermal evolution:
+
+1. **Thermal Conditioning (Years 1–6)**: The initial rise in production temperature, peaking at approximately 203°C, is driven by the thermal conditioning of the production wellbores. As hot geofluid continuously flows through the wells, the wellbore casing and surrounding rock heat up, reducing conductive heat loss as predicted by the Ramey wellbore model.
+2. **Reservoir Drawdown (Years 6–8)**: Following the conditioning peak, temperature declines as the cold front from injection wells reaches the production zone (thermal breakthrough), reducing the produced fluid enthalpy.
+3. **Redrilling (End of Years 8, 16, 24)**: The model triggers a redrilling event when the next time step's temperature would fall below the threshold defined by the `Maximum Drawdown` parameter (shown as the dashed orange line). The production temperature does not necessarily actually reach the threshold; redrilling typically preemptively restores the wellfield before that occurs. The cost of these events is amortized as an operational expense over the project lifetime.
+
+#### Power Generation Profile
+
+<img src="_images/fervo_project_cape-5-power-production.png" class="no-active" style="max-width: 66%" />
+
+Power generation is a direct function of production temperature, so the power production profile mirrors the thermal behavior described above. The graph shows both total (gross) electricity generation and net electricity generation after parasitic losses. The gap between the two curves represents the energy consumed by the circulation pumps.
+
+The horizontal reference lines indicate the 500 MW net PPA minimum production requirement and the 600 MW nameplate capacity (combined capacity of the individual ORC units).
+
+<a id="sensitivity-analysis-section"></a>
+
+## Sensitivity Analysis
+
+The following charts show the sensitivity of key metrics to various inputs.
+Each chart shows the sensitivity of a single metric, such as LCOE, to the set of tested input values.
+The leftmost chart column shows the parameter being tested and its baseline case study input value in parentheses.
+The bars for each row show the deltas of the metric value from the baseline case study value for the values tested for
+that parameter.
+Green bars indicate favorable outcomes, such as lower LCOE or higher IRR, while gray bars indicate unfavorable outcomes,
+such as higher LCOE or lower IRR.
+
+Click the bars to view the sensitivity analysis result for the input value in the web interface.
+
+Note that the sensitivity analysis scenarios do not necessarily conform to all constraints and assumptions documented in the case study methodology.
+For example, scenarios for Bond Interest Rate have different weighted average cost of capital (WACC) values due to the effect of interest rate on WACC.
+This is particularly relevant for technical parameters pertaining to reservoir engineering.
+In a real-world design, these variables are physically coupled; for instance, targeting a higher production flow rate
+would typically necessitate a larger fracture surface area to mitigate the resulting acceleration in thermal drawdown.
+See the [discussion of flow rate below](#impact-of-flow-rate-on-project-economics-section).
+
+### LCOE
+
+.. raw:: html
+
+    <!-- For screen: interactive SVG -->
+    <object data="_images/fervo_project_cape-5-sensitivity-analysis-lcoe.svg"
+            type="image/svg+xml"
+            class="sensitivity-chart-interactive"></object>
+
+    <!-- For print: static PNG -->
+    <img src="_images/fervo_project_cape-5-sensitivity-analysis-lcoe.png"
+         alt="LCOE Sensitivity Analysis Chart"
+         class="sensitivity-chart-print">
+
+#### Impact of PPA Price on LCOE
+
+The sensitivity analysis reveals a positive correlation between the Power Purchase
+Agreement (PPA) price and the Levelized Cost of Electricity (LCOE). While counterintuitive, this is a function of SAM
+Economic Models treating federal and state income taxes as operating cash outflows.
+
+In SAM Economic Models, the PPA price is a fixed input that determines project revenue. A higher PPA price generates
+higher taxable income, which in turn increases the project's annual income tax liability (a negative cash flow). Because
+the LCOE calculation aggregates all lifetime project costs, including the tax burden, the additional tax costs incurred
+from higher revenues result in a higher calculated LCOE. Conversely, a lower PPA price reduces taxable income, lowers
+tax liability, and decreases the resulting LCOE.
+
+### IRR
+
+.. raw:: html
+
+    <object data="_images/fervo_project_cape-5-sensitivity-analysis-irr.svg"
+            type="image/svg+xml"
+            class="sensitivity-chart-interactive"></object>
+
+    <img src="_images/fervo_project_cape-5-sensitivity-analysis-irr.png"
+         alt="IRR Sensitivity Analysis Chart"
+         class="sensitivity-chart-print">
+
+### NPV
+
+.. raw:: html
+
+    <object data="_images/fervo_project_cape-5-sensitivity-analysis-project_npv.svg"
+            type="image/svg+xml"
+            class="sensitivity-chart-interactive"></object>
+
+    <img src="_images/fervo_project_cape-5-sensitivity-analysis-project_npv.png"
+         alt="NPV Sensitivity Analysis Chart"
+         class="sensitivity-chart-print">
+
+Users may wish to perform their own sensitivity analysis
+using [GEOPHIRES's Monte Carlo simulation module](Monte-Carlo-User-Guide.html) or other data analysis tools.
+
+<a id="impact-of-flow-rate-on-project-economics-section"></a>
+
+### Impact of Flow Rate on Project Economics
+
+Higher flow rate per production well does not necessarily result in improved project economics (e.g. lower LCOE or higher IRR).
+Higher flow rates result in increased generation in the short term, but also cause faster thermal decline.
+Additional make-up wells may need to be drilled to compensate for increased thermal decline and maintain a minimum net generation (redrilling),
+the cost of which may offset incremental revenue from increased generation.
+This tradeoff was considered in reservoir modeling that guided Fervo's field implementation (Singh et al., 2025).
+
+## Variants
+
+<a id="Fervo_Project_Cape-6-section"></a>
+
+### 100 MWe Model (Phase I)
+
+The case study also includes a 100 MWe model, `Fervo_Project_Cape-6`, with equivalent capacity to Phase I.
+Note that like the 500 MWe model, `Fervo_Project_Cape-6` represents a SOAK project and not the real-world Phase I implementation as built by Fervo.
+[Click here](https://gtp.scientificwebservices.com/geophires/?geophires-example-id=Fervo_Project_Cape-6) to view the
+100 MWe model in the GEOPHIRES web interface.
+
+Source code: [Fervo_Project_Cape-6.txt](https://github.com/softwareengineerprogrammer/GEOPHIRES/blob/main/tests/examples/Fervo_Project_Cape-6.txt)
+and [Fervo_Project_Cape-6.out](https://github.com/softwareengineerprogrammer/GEOPHIRES/blob/main/tests/examples/Fervo_Project_Cape-6.out).
+
+### Reduced Redrilling Scenario
+
+[Click here](https://gtp.scientificwebservices.com/geophires?shared-geophires-result-id=4eb5e843-be61-4518-8fda-7d0b41348e53)
+to view a scenario with reduced redrilling in the web interface, representing an effective longer well life compared to the base case.
+Redrilling is reduced via greater effective fracture surface area per stimulated well, achieved by an increased number of fractures per well and greater fracture height.
+Stimulation cost is increased to nominally reflect the larger required job size.
+
+{# TODO port scenario to source code instead of out-of-band shared result
+    (probably would want to generate similar to Fervo_Project_Cape-6 #}
+
+### ResFrac Profile + Hotter/Deeper Scenario
+
+[Click here](https://gtp.scientificwebservices.com/geophires?shared-geophires-result-id=834b0096-15b1-4dd3-b262-612e9df1342f)
+to view the `Fervo_Project_Cape-6 Variant: ResFrac Profile + Hotter/Deeper Scenario` in the web interface.
+Note that this scenario models two redrilling events (rather than three) and yields 100 MWe average net generation
+(rather than 100 MWe minimum net generation), reflected in the power generation profile below.
+
+{# TODO port scenario to source code instead of out-of-band shared result #}
+
+![](_images/fervo_project_cape-6_variant-resfrac-deeper-hotter_power-generation-profile.png)
+
+See the [Simulation Comparison section](#simulation-comparison) for details.
+
+### Previous Versions
+
+Documentation is available for the following previous case study versions, which are deprecated in favor of this version.
+
+{# @formatter:off #}
+#### `Fervo_Project_Cape-4`
+
+[Version documentation](Fervo_Project_Cape-4.html)
+
+Last Updated: 2025-08-11
+
+Key differences:
+
+1. Fervo_Project_Cape-5 models multiple construction years instead of a single construction year
+1. Fervo_Project_Cape-5 incorporates various reservoir characteristic and engineering updates including:
+    1. Segmented geology (gradients)
+    1. Ambient and surface temperature refinement
+    1. 5-well bench design instead of well pairs (doublets)
+    1. 8.5-inch inner well diameter
+    1. Productivity/Injectivity indexes instead of impedance model
+    1. Stimulation parameters and outcome
+1. Fervo_Project_Cape-5 incorporates various reservoir and economic parameter updates including:
+    1. BLM royalties
+    1. Refined discount and interest rates
+    1. Refined tax rates including addition of property tax
+1. Fervo_Project_Cape-5 includes substantially expanded sensitivity analysis
+{# @formatter:off #}
+
+{# TODO others e.g. Fervo_Project_Cape-3... #}
+
+---
+
+## References
+
+Akindipe, D. and Witter. E. (2025). "2025 Geothermal Drilling Cost Curves
+Update". https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2025/Akindipe.pdf?t=1740084555
+
+Baytex Energy. (2024). Eagle Ford Presentation.
+https://www.baytexenergy.com/content/uploads/2024/04/24-04-Baytex-Eagle-Ford-Presentation.pdf
+
+Beckers, K., McCabe, K. (2019) GEOPHIRES v2.0: updated geothermal techno-economic simulation tool. Geotherm Energy
+7,5. https://doi.org/10.1186/s40517-019-0119-6
+
+Fercho, S., Matson, G., McConville, E., Rhodes, G., Jordan, R., Norbeck, J.. (2024, February 12).
+Geology, Temperature, Geophysics, Stress Orientations, and Natural Fracturing in the Milford
+Valley, UT Informed by the Drilling Results of the First Horizontal Wells at the Cape Modern
+Geothermal Project. https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2024/Fercho.pdf
+
+Fercho, S., Norbeck, J., Dadi, S., Matson, G., Borell, J., McConville, E., Webb, S., Bowie, C., & Rhodes, G. (2025).
+Update on the geology, temperature, fracturing, and resource potential at the Cape Geothermal Project informed by data
+acquired from the drilling of additional horizontal EGS wells. Proceedings of the 50th Workshop on Geothermal Reservoir
+Engineering, Stanford University, Stanford, CA. https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Fercho.pdf
+
+Fervo Energy. (2023, September 19). Fervo’s Commercialization Plans for Enhanced Geothermal Systems (
+EGS). https://egi.utah.edu/wp-content/uploads/2023/09/09.45-Emma-McConville-Fervo_EGI_Sept-19-2023.pdf
+
+Fervo Energy. (2023, September 25). Fervo Energy Breaks Ground on the World’s Largest Next-gen Geothermal Project.
+https://fervoenergy.com/fervo-energy-breaks-ground-on-the-worlds-largest-next-gen-geothermal-project/
+
+Fervo Energy. (2024, September 10). Fervo Energy’s Record-Breaking Production Results Showcase Rapid Scale Up of
+Enhanced
+Geothermal. https://www.businesswire.com/news/home/20240910997008/en/Fervo-Energys-Record-Breaking-Production-Results-Showcase-Rapid-Scale-Up-of-Enhanced-Geothermal
+
+Fervo Energy. (2025, March 31). Geothermal Mythbusting: Water Use and
+Impacts. https://fervoenergy.com/geothermal-mythbusting-water-use-and-impacts/
+
+Fervo Energy. (2025, April 15). Fervo Energy Announces 31 MW Power Purchase Agreement with Shell
+Energy. https://fervoenergy.com/fervo-energy-announces-31-mw-power-purchase-agreement-with-shell-energy/
+
+Fervo Energy (2025, June 11). Fervo Energy Secures $206 Million In New Financing To Accelerate Cape Station Development.
+https://fervoenergy.com/fervo-secures-new-financing-to-accelerate-development/
+
+Gradl, C. (2018). Review of Recent Unconventional Completion Innovations and their Applicability to EGS Wells. Stanford
+Geothermal Workshop.
+https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2018/Gradl.pdf
+
+Horne, R., Genter, A., McClure, M. et al. (2025) Enhanced geothermal systems for clean firm energy generation. Nat. Rev.
+Clean Technol. 1, 148–160. https://doi.org/10.1038/s44359-024-00019-9
+
+Jacobs, Trent. (2024, September 16). Fervo and FORGE Report Breakthrough Test Results, Signaling More Progress for
+Enhanced
+Geothermal. https://jpt.spe.org/fervo-and-forge-report-breakthrough-test-results-signaling-more-progress-for-enhanced-geothermal
+
+Jacobs, Trent. (2025, September 5). Baker Hughes Nabs Award for Next Phase of Fervo Energy's Geothermal Power Plant in
+Utah.
+https://jpt.spe.org/baker-hughes-nabs-award-for-next-phase-of-fervo-energygeothermal-power-plant-in-utah
+
+Ko, S., Ghassemi, A., & Uddenberg, M. (2023). Selection and Testing of Proppants for EGS.
+Proceedings, 48th Workshop on Geothermal Reservoir Engineering, Stanford University, Stanford, California.
+https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2023/Ko.pdf
+
+Latimer, T. (2025, February 12). Catching up with enhanced geothermal (D. Roberts,
+Interviewer). https://www.volts.wtf/p/catching-up-with-enhanced-geothermal
+
+Matson, M. (2024, September 11). Fervo Energy Technology Day 2024: Entering "the Geothermal Decade" with Next-Generation
+Geothermal
+Energy. https://www.linkedin.com/pulse/fervo-energy-technology-day-2024-entering-geothermal-decade-matson-n4stc/
+
+McClure, M. (2024, September 12). Digesting the Bonkers, Incredible, Off-the-Charts, Spectacular Results from the Fervo
+and FORGE Enhanced Geothermal Projects. ResFrac Corporation Blog.
+https://www.resfrac.com/blog/digesting-the-bonkers-incredible-off-the-charts-spectacular-results-from-the-fervo-and-forge-enhanced-geothermal-projects
+
+NCEI. US Climate
+Normals. https://www.ncei.noaa.gov/access/us-climate-normals/#dataset=normals-annualseasonal&timeframe=30&station=USC00425654
+
+NREL. (2024). Annual Technology Baseline: Geothermal (2024).
+https://atb.nrel.gov/electricity/2024/geothermal
+
+NREL. (2025, February 26). Annual Technology Baseline: Geothermal (2024b).
+https://atb.nrel.gov/electricity/2024b/geothermal
+
+Norbeck, J., Gradl, C., Latimer, T. (2024, September 10). Deployment of Enhanced Geothermal System Technology Leads to
+Rapid Cost Reductions and Performance Improvements. https://doi.org/10.31223/X5VH8C
+
+Norbeck J., Latimer T. (2023). Commercial-Scale Demonstration of a First-of-a-Kind Enhanced Geothermal
+System. https://doi.org/10.31223/X52X0B
+
+Quantum Proppant Technologies. (2020). Well Completion Technology. World
+Oil. https://quantumprot.com/uploads/images/2b8583e8ce8038681a19d5ad1314e204.pdf
+
+Shiozawa, S., & McClure, M. (2014). EGS Designs with Horizontal Wells, Multiple Stages, and Proppant. ResFrac.
+https://www.resfrac.com/wp-content/uploads/2024/07/Shiozawa.pdf
+
+Singh, A., Galban, G., McClure, M. (2025, June 9).
+Proceedings of the 2025 Unconventional Resources Technology Conference.
+https://www.resfrac.com/wp-content/uploads/2025/06/Singh-2025-Fervo-Project-Cape.pdf
+
+Southern Utah University. (2024, October 23). Fervo Energy, Southern Utah University, and Elemental Impact Launch
+Geothermal Drilling & Completions Apprenticeship Program.
+https://www.suu.edu/news/2024/10/geothermal-energy-joint-campaign.html
+
+Turboden. (2025, October 2). Turboden selected to deliver 180 MW of Fervo’s Gen 2 ORC Power Plants at Cape Station in
+Utah. https://www.turboden.com/company/media/press/press-releases/4881/turboden-selected-to-deliver-180-mw-of-fervos-gen-2-orc-power-plants-at-cape-station-in-utah
+
+U.S. Department of the Interior Bureau of Land Management. (2024, October).
+Finding of No Significant Impact and Decision Record DOI-BLM-UT-C010-2024-0018-EA.
+https://eplanning.blm.gov/public_projects/2033002/200625761/20120795/251020775/DOI-BLM-UT-C010-2024-0018-EA_FONSI_DR_%20Fervo%20EA_signed.pdf
+
+US DOE. (2021). Combined Heat and Power Technology Fact Sheet Series: Waste Heat to
+Power. https://betterbuildingssolutioncenter.energy.gov/sites/default/files/attachments/Waste_Heat_to_Power_Fact_Sheet.pdf
+
+Xing, P., England, K., Moore, J., McLennan, J. (2025, February 10).
+Analysis of the 2024 Circulation Tests at Utah FORGE and the Response of Fiber Optic Sensing
+Data.
+https://pangea.stanford.edu/ERE/pdf/IGAstandard/SGW/2025/Xing2.pdf
+
+Yearsley, E., Kombrink, H. (2024, November 6).
+A critical look at Fervo dataset suggests lower output.
+https://geoexpro.com/a-critical-look-at-fervo-dataset-suggests-lower-output/
+
+Yusifov, M., & Enriquez, N. (2025, July). From Core to Code: Powering the Al Revolution with Geothermal Energy.
+Project InnerSpace. https://projectinnerspace.org/resources/Powering-the-AI-Revolution.pdf
+
+---
+
+## Footnotes

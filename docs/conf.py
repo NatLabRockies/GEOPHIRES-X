@@ -18,7 +18,7 @@ project = 'geophires-x'
 year = '2025'
 author = 'NREL'
 copyright = f'{year}, {author}'
-version = release = '3.10.24'
+version = release = '3.11.12'
 
 pygments_style = 'trac'
 templates_path = ['./templates']
@@ -38,6 +38,13 @@ html_theme_options = {
 html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'
 html_split_index = False
+# Add jQuery as the first script - ensures it's available for sidebar.js
+html_js_files = [
+    (
+        'https://code.jquery.com/jquery-3.7.1.min.js',
+        {'integrity': 'sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=', 'crossorigin': 'anonymous'},
+    ),
+]
 html_sidebars = {
     '**': ['searchbox.html', 'globaltoc.html', 'sourcelink.html'],
 }

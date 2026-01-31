@@ -27,6 +27,7 @@ from geophires_x.SUTRAReservoir import SUTRAReservoir
 from geophires_x.SUTRAWellBores import SUTRAWellBores
 from geophires_x.TDPReservoir import TDPReservoir
 from geophires_x.TOUGH2Reservoir import TOUGH2Reservoir
+from geophires_x.UPPReservoir import UPPReservoir
 
 # noinspection PyProtectedMember
 from geophires_x_client import GeophiresXResult, _get_logger
@@ -62,6 +63,7 @@ class GeophiresXSchemaGenerator:
             (LHSReservoir(dummy_model), 'Reservoir'),
             (MPFReservoir(dummy_model), 'Reservoir'),
             (SFReservoir(dummy_model), 'Reservoir'),
+            (UPPReservoir(dummy_model), 'Reservoir'),
             (CylindricalReservoir(dummy_model), 'Reservoir'),
             (SBTReservoir(dummy_model), 'Reservoir'),
             (SUTRAReservoir(dummy_model), 'Reservoir'),

@@ -538,10 +538,11 @@ class SurfacePlant:
             CurrentUnits=EnergyFrequencyUnit.KWPERYEAR
         )
         self.ElectricityProduced = self.OutputParameterDict[self.ElectricityProduced.Name] = OutputParameter(
-            Name="Total Electricity Generation",
+            Name="Total Electricity Production",
             UnitType=Units.POWER,
             PreferredUnits=PowerUnit.MW,
             CurrentUnits=PowerUnit.MW
+            # TODO tooltip text - should reference that this is gross production
         )
         self.NetElectricityProduced = self.OutputParameterDict[self.NetElectricityProduced.Name] = OutputParameter(
             Name="Net Electricity Production",

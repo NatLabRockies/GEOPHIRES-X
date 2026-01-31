@@ -29,6 +29,7 @@ validFilenameChars = "-_.() %s%s" % (string.ascii_letters, string.digits)
 # Duplicative of Outputs.VERTICAL_WELL_DEPTH_OUTPUT_NAME to avoid circular import
 VERTICAL_WELL_DEPTH_OUTPUT_NAME = 'Well depth'
 
+_GRAPH_FIGSIZE = (12, 6)
 
 def print_outputs_rich(
         text_output_file: strParameter,
@@ -1216,6 +1217,10 @@ def Write_HTML_Output(html_path: str, simulation_metadata: list, summary: list, 
     console.save_html(html_path)
 
 
+def profile_title_adjusted_for_figure(title:str) -> str:
+    return title.replace('PROFILE: ', 'PROFILE:\n').replace('PROFILES: ', 'PROFILES:\n')
+
+
 def Plot_Twin_Graph(title: str, html_path: str, x: pd.array, y1: pd.array, y2: pd.array,
                     x_label: str, y1_label: str, y2_label:str) -> None:
     """
@@ -1240,7 +1245,7 @@ def Plot_Twin_Graph(title: str, html_path: str, x: pd.array, y1: pd.array, y2: p
     COLOR_TEMPERATURE = "#69b3a2"
     COLOR_PRICE = "#3399e6"
 
-    fig, ax1 = plt_subplots(figsize=(40, 4))
+    fig, ax1 = plt_subplots(figsize=_GRAPH_FIGSIZE)
 
     ax1.plot(x, y1, label=UpgradeSymbologyOfUnits(y1_label), color=COLOR_PRICE, lw=3)
     ax1.set_xlabel(UpgradeSymbologyOfUnits(x_label), color = COLOR_PRICE, fontsize=14)
@@ -1255,7 +1260,7 @@ def Plot_Twin_Graph(title: str, html_path: str, x: pd.array, y1: pd.array, y2: p
     ax2.tick_params(axis="y", labelcolor=COLOR_TEMPERATURE)
     ax2.legend(loc='best')
 
-    fig.suptitle(title, fontsize=20)
+    fig.suptitle(profile_title_adjusted_for_figure(title), fontsize=20)
 
     full_names: set = set()
     short_names: set = set()
@@ -1287,7 +1292,7 @@ def Plot_Single_Graph(title: str, html_path: str, x: pd.array, y: pd.array, x_la
     COLOR_PRICE = "#3399e6"
 
 #    plt.plot(x, y, color=COLOR_PRICE)
-    fig, ax = plt_subplots(figsize=(40, 4))
+    fig, ax = plt_subplots(figsize=_GRAPH_FIGSIZE)
     ax.plot(x, y, label=UpgradeSymbologyOfUnits(y_label), color=COLOR_PRICE)
     ax.set_xlabel(UpgradeSymbologyOfUnits(x_label), color = COLOR_PRICE, fontsize=14)
     ax.set_ylabel(UpgradeSymbologyOfUnits(y_label), color=COLOR_PRICE, fontsize=14)
@@ -1296,7 +1301,7 @@ def Plot_Single_Graph(title: str, html_path: str, x: pd.array, y: pd.array, x_la
     ax.legend(loc='best')
     #plt.ylim(y.min(), y.max())
     #plt.gca().legend((UpgradeSymbologyOfUnits(x_label), UpgradeSymbologyOfUnits(y_label)), loc='best')
-    fig.suptitle(title, fontsize=20)
+    fig.suptitle(profile_title_adjusted_for_figure(title), fontsize=20)
 
     full_names: set = set()
     short_names: set = set()
@@ -1337,141 +1342,141 @@ def Plot_Tables_Into_HTML(enduse_option: intParameter, plant_type: intParameter,
     # HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES
     # Plot the three that appear for all end uses
     Plot_Single_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: Thermal Drawdown',
-                      html_path, hce.values[0:, 1], hce.values[0:, 2], hce.columns[1].split('|')[0], hce.columns[2].split('|')[0])
+                      html_path, hce.values[0:, 0], hce.values[0:, 1], hce.columns[0].split('|')[0], hce.columns[1].split('|')[0])
     Plot_Single_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: Geofluid Temperature',
-                      html_path, hce.values[0:, 1], hce.values[0:, 3], hce.columns[1].split('|')[0], hce.columns[3].split('|')[0])
+                      html_path, hce.values[0:, 0], hce.values[0:, 2], hce.columns[0].split('|')[0], hce.columns[2].split('|')[0])
     Plot_Single_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: Pump Power',
-                      html_path, hce.values[0:, 1], hce.values[0:, 4], hce.columns[1].split('|')[0], hce.columns[4].split('|')[0])
+                      html_path, hce.values[0:, 0], hce.values[0:, 3], hce.columns[0].split('|')[0], hce.columns[3].split('|')[0])
     if enduse_option.value == EndUseOptions.ELECTRICITY:
         # only electricity
         Plot_Single_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: First Law Efficiency',
-                        html_path, hce.values[0:, 1], hce.values[0:, 6], hce.columns[1].split('|')[0], hce.columns[6].split('|')[0])
+                        html_path, hce.values[0:, 0], hce.values[0:, 5], hce.columns[0].split('|')[0], hce.columns[5].split('|')[0])
         Plot_Single_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: Net Power',
-                        html_path, hce.values[0:, 1], hce.values[0:, 5], hce.columns[1].split('|')[0], hce.columns[5].split('|')[0])
+                        html_path, hce.values[0:, 0], hce.values[0:, 4], hce.columns[0].split('|')[0], hce.columns[4].split('|')[0])
     elif enduse_option.value == EndUseOptions.HEAT and plant_type.value not in [PlantType.HEAT_PUMP, PlantType.DISTRICT_HEATING, PlantType.ABSORPTION_CHILLER]:
         # only direct-use
         Plot_Single_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: Net Heat',
-                        html_path, hce.values[0:, 1], hce.values[0:, 5], hce.columns[1].split('|')[0], hce.columns[5].split('|')[0])
+                        html_path, hce.values[0:, 0], hce.values[0:, 4], hce.columns[0].split('|')[0], hce.columns[4].split('|')[0])
     elif enduse_option.value == EndUseOptions.HEAT and plant_type.value == PlantType.HEAT_PUMP:
         # heat pump
         Plot_Twin_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: Net Heat & Heat Pump Electricity Use',
-                        html_path, hce.values[0:, 1], hce.values[0:, 5], hce.values[0:, 6],
-                        hce.columns[1].split('|')[0], hce.columns[5].split('|')[0], hce.columns[6].split('|')[0])
+                        html_path, hce.values[0:, 0], hce.values[0:, 4], hce.values[0:, 5],
+                        hce.columns[0].split('|')[0], hce.columns[4].split('|')[0], hce.columns[5].split('|')[0])
     elif enduse_option.value == EndUseOptions.HEAT and plant_type.value == PlantType.DISTRICT_HEATING:
         # district heating
         Plot_Single_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: Geothermal Heat Output',
-                        html_path, hce.values[0:, 1], hce.values[0:, 5], hce.columns[1].split('|')[0], hce.columns[5].split('|')[0])
+                        html_path, hce.values[0:, 0], hce.values[0:, 4], hce.columns[0].split('|')[0], hce.columns[4].split('|')[0])
     elif enduse_option.value == EndUseOptions.HEAT and plant_type.value == PlantType.ABSORPTION_CHILLER:
         # absorption chiller
         Plot_Twin_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: Net Heat & Net Cooling',
-                        html_path, hce.values[0:, 1], hce.values[0:, 5], hce.values[0:, 6],
-                        hce.columns[1].split('|')[0], hce.columns[5].split('|')[0], hce.columns[6].split('|')[0])
+                        html_path, hce.values[0:, 0], hce.values[0:, 4], hce.values[0:, 5],
+                        hce.columns[0].split('|')[0], hce.columns[4].split('|')[0], hce.columns[5].split('|')[0])
     elif enduse_option.value in [EndUseOptions.COGENERATION_TOPPING_EXTRA_HEAT, EndUseOptions.COGENERATION_TOPPING_EXTRA_ELECTRICITY,
                                 EndUseOptions.COGENERATION_BOTTOMING_EXTRA_ELECTRICITY, EndUseOptions.COGENERATION_BOTTOMING_EXTRA_HEAT,
                                 EndUseOptions.COGENERATION_PARALLEL_EXTRA_HEAT, EndUseOptions.COGENERATION_PARALLEL_EXTRA_ELECTRICITY]:
         # co-gen
         Plot_Twin_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: Net Power & Net Heat',
-                        html_path, hce.values[0:, 1], hce.values[0:, 5], hce.values[0:, 6],
-                        hce.columns[1].split('|')[0], hce.columns[5].split('|')[0], hce.columns[6].split('|')[0])
+                        html_path, hce.values[0:, 0], hce.values[0:, 4], hce.values[0:, 5],
+                        hce.columns[0].split('|')[0], hce.columns[4].split('|')[0], hce.columns[5].split('|')[0])
         Plot_Single_Graph('HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILES: First Law Efficiency',
-                        html_path, hce.values[0:, 1], hce.values[0:, 7], hce.columns[1].split('|')[0], hce.columns[7].split('|')[0])
+                        html_path, hce.values[0:, 0], hce.values[0:, 6], hce.columns[0].split('|')[0], hce.columns[6].split('|')[0])
 
     # ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE
     # plot the common graphs
     Plot_Twin_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Heat Extracted & Reservoir Heat Content',
-                    html_path, ahce.values[0:, 1], ahce.values[0:, 3], ahce.values[0:, 4],
-                    ahce.columns[1].split('|')[0], ahce.columns[3].split('|')[0], ahce.columns[4].split('|')[0])
+                    html_path, ahce.values[0:, 0], ahce.values[0:, 2], ahce.values[0:, 3],
+                    ahce.columns[0].split('|')[0], ahce.columns[2].split('|')[0], ahce.columns[3].split('|')[0])
     if plant_type.value in [PlantType.DISTRICT_HEATING]:
         # columns are in a different place for district heating
         Plot_Single_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Percentage of Total Heat Mined',
-                          html_path, ahce.values[0:, 1], ahce.values[0:, 6], ahce.columns[1].split('|')[0], ahce.columns[6].split('|')[0])
+                          html_path, ahce.values[0:, 0], ahce.values[0:, 5], ahce.columns[0].split('|')[0], ahce.columns[5].split('|')[0])
     else:
         Plot_Single_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Percentage of Total Heat Mined',
-                          html_path, ahce.values[0:, 1], ahce.values[0:, 5], ahce.columns[1].split('|')[0], ahce.columns[5].split('|')[0])
+                          html_path, ahce.values[0:, 0], ahce.values[0:, 4], ahce.columns[0].split('|')[0], ahce.columns[4].split('|')[0])
 
     if enduse_option.value == EndUseOptions.ELECTRICITY:
         # only electricity
         Plot_Single_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Electricity Provided',
-                          html_path, ahce.values[0:, 1], ahce.values[0:, 2], ahce.columns[1].split('|')[0], ahce.columns[2].split('|')[0])
+                          html_path, ahce.values[0:, 0], ahce.values[0:, 1], ahce.columns[0].split('|')[0], ahce.columns[1].split('|')[0])
     elif plant_type.value == PlantType.ABSORPTION_CHILLER:
         # absorption chiller
         Plot_Single_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Cooling Provided',
-                          html_path, ahce.values[0:, 1], ahce.values[0:, 2], ahce.columns[1].split('|')[0], ahce.columns[2].split('|')[0])
+                          html_path, ahce.values[0:, 0], ahce.values[0:, 1], ahce.columns[0].split('|')[0], ahce.columns[1].split('|')[0])
     elif plant_type.value in [PlantType.DISTRICT_HEATING]:
         # district-heating
         Plot_Twin_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Geothermal Heating Provided & Peaking Boiler Heating Provided',
-                        html_path, ahce.values[0:, 1], ahce.values[0:, 2], ahce.values[0:, 3],
-                        ahce.columns[1].split('|')[0], ahce.columns[2].split('|')[0], ahce.columns[3].split('|')[0])
+                        html_path, ahce.values[0:, 0], ahce.values[0:, 1], ahce.values[0:, 2],
+                        ahce.columns[0].split('|')[0], ahce.columns[1].split('|')[0], ahce.columns[2].split('|')[0])
     elif plant_type.value == PlantType.HEAT_PUMP:
         # heat pump
         Plot_Single_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Heating Provided',
-                          html_path, ahce.values[0:, 1], ahce.values[0:, 2], ahce.columns[1].split('|')[0], ahce.columns[2].split('|')[0])
+                          html_path, ahce.values[0:, 0], ahce.values[0:, 1], ahce.columns[0].split('|')[0], ahce.columns[1].split('|')[0])
         Plot_Single_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Heat Pump Electricity Use',
-                          html_path, ahce.values[0:, 1], ahce.values[0:, 4], ahce.columns[1].split('|')[0], ahce.columns[4].split('|')[0])
+                          html_path, ahce.values[0:, 0], ahce.values[0:, 3], ahce.columns[0].split('|')[0], ahce.columns[3].split('|')[0])
     elif enduse_option.value in [EndUseOptions.COGENERATION_TOPPING_EXTRA_HEAT, EndUseOptions.COGENERATION_TOPPING_EXTRA_ELECTRICITY,
                                                     EndUseOptions.COGENERATION_BOTTOMING_EXTRA_ELECTRICITY, EndUseOptions.COGENERATION_BOTTOMING_EXTRA_HEAT,
                                                     EndUseOptions.COGENERATION_PARALLEL_EXTRA_HEAT, EndUseOptions.COGENERATION_PARALLEL_EXTRA_ELECTRICITY]:
         # co-gen
         Plot_Twin_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Heat Provided & Electricity Provided',
-                        html_path, ahce.values[0:, 1], ahce.values[0:, 2], ahce.values[0:, 3],
-                        ahce.columns[1].split('|')[0], ahce.columns[2].split('|')[0], ahce.columns[3].split('|')[0])
+                        html_path, ahce.values[0:, 0], ahce.values[0:, 1], ahce.values[0:, 2],
+                        ahce.columns[0].split('|')[0], ahce.columns[1].split('|')[0], ahce.columns[2].split('|')[0])
     elif enduse_option.value == EndUseOptions.HEAT:
         # only direct-use
         Plot_Single_Graph('ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE: Heat Provided',
-                          html_path, ahce.values[0:, 1], ahce.values[0:, 2], ahce.columns[1].split('|')[0], ahce.columns[2].split('|')[0])
+                          html_path, ahce.values[0:, 0], ahce.values[0:, 1], ahce.columns[0].split('|')[0], ahce.columns[1].split('|')[0])
 
     # Cashflow Graphs
     Plot_Twin_Graph('REVENUE & CASHFLOW PROFILE: Electricity: Price & Cumulative Revenue',
-                    html_path, cashflow.values[0:, 1], cashflow.values[0:, 2], cashflow.values[0:, 4],
-                    cashflow.columns[1].split('|')[0], cashflow.columns[2].split('|')[0], cashflow.columns[4].split('|')[0])
+                    html_path, cashflow.values[0:, 0], cashflow.values[0:, 1], cashflow.values[0:, 3],
+                    cashflow.columns[0].split('|')[0], cashflow.columns[1].split('|')[0], cashflow.columns[3].split('|')[0])
     Plot_Twin_Graph('REVENUE & CASHFLOW PROFILE: Heat: Price & Cumulative Revenue',
-                    html_path, cashflow.values[0:, 1], cashflow.values[0:, 5], cashflow.values[0:, 7],
-                    cashflow.columns[1].split('|')[0], cashflow.columns[5].split('|')[0], cashflow.columns[7].split('|')[0])
+                    html_path, cashflow.values[0:, 0], cashflow.values[0:, 4], cashflow.values[0:, 6],
+                    cashflow.columns[0].split('|')[0], cashflow.columns[4].split('|')[0], cashflow.columns[6].split('|')[0])
     Plot_Twin_Graph('REVENUE & CASHFLOW PROFILE: Cooling: Price & Cumulative Revenue',
-                    html_path, cashflow.values[0:, 1], cashflow.values[0:, 8], cashflow.values[0:, 10],
-                    cashflow.columns[1].split('|')[0], cashflow.columns[8].split('|')[0], cashflow.columns[10].split('|')[0])
+                    html_path, cashflow.values[0:, 0], cashflow.values[0:, 7], cashflow.values[0:, 9],
+                    cashflow.columns[0].split('|')[0], cashflow.columns[7].split('|')[0], cashflow.columns[9].split('|')[0])
     Plot_Twin_Graph('REVENUE & CASHFLOW PROFILE: Carbon: Price & Cumulative Revenue',
-                    html_path, cashflow.values[0:, 1], cashflow.values[0:, 11], cashflow.values[0:, 13],
-                    cashflow.columns[1].split('|')[0], cashflow.columns[11].split('|')[0], cashflow.columns[13].split('|')[0])
+                    html_path, cashflow.values[0:, 0], cashflow.values[0:, 10], cashflow.values[0:, 12],
+                    cashflow.columns[0].split('|')[0], cashflow.columns[10].split('|')[0], cashflow.columns[12].split('|')[0])
     Plot_Twin_Graph('REVENUE & CASHFLOW PROFILE: Project: Net Revenue and cashflow',
-                    html_path, cashflow.values[0:, 1], cashflow.values[0:, 15], cashflow.values[0:, 16],
-                    cashflow.columns[1].split('|')[0], cashflow.columns[15].split('|')[0], cashflow.columns[16].split('|')[0])
+                    html_path, cashflow.values[0:, 0], cashflow.values[0:, 14], cashflow.values[0:, 15],
+                    cashflow.columns[0].split('|')[0], cashflow.columns[14].split('|')[0], cashflow.columns[15].split('|')[0])
 
     # Pumping Power Profiles Graphs
     if len(pumping_power_profiles) > 0:
         Plot_Twin_Graph('PUMPING POWER PROFILES: Production Pumping Power & Injection Pumping Power', html_path,
-                        pumping_power_profiles.values[0:, 1], pumping_power_profiles.values[0:, 2], pumping_power_profiles.values[0:, 3],
-                        pumping_power_profiles.columns[1].split('|')[0], pumping_power_profiles.columns[2].split('|')[0], pumping_power_profiles.columns[3].split('|')[0])
+                        pumping_power_profiles.values[0:, 0], pumping_power_profiles.values[0:, 1], pumping_power_profiles.values[0:, 2],
+                        pumping_power_profiles.columns[0].split('|')[0], pumping_power_profiles.columns[1].split('|')[0], pumping_power_profiles.columns[2].split('|')[0])
         Plot_Single_Graph('PUMPING POWER PROFILES: Pumping Power', html_path,
-                            pumping_power_profiles.values[0:, 1], pumping_power_profiles.values[0:, 4], pumping_power_profiles.columns[1].split('|')[0],
-                            pumping_power_profiles.columns[4].split('|')[0])
+                            pumping_power_profiles.values[0:, 0], pumping_power_profiles.values[0:, 3], pumping_power_profiles.columns[0].split('|')[0],
+                            pumping_power_profiles.columns[3].split('|')[0])
 
     if len (addon_df) > 0:
         Plot_Twin_Graph('ADD-ON PROFILE: Electricity Annual Price vs. Revenue',
-                        html_path, addon_df.values[0:, 1], addon_df.values[0:, 2], addon_df.values[0:, 3],
-                        addon_df.columns[1].split('|')[0], addon_df.columns[2].split('|')[0], addon_df.columns[3].split('|')[0])
+                        html_path, addon_df.values[0:, 0], addon_df.values[0:, 1], addon_df.values[0:, 2],
+                        addon_df.columns[0].split('|')[0], addon_df.columns[1].split('|')[0], addon_df.columns[2].split('|')[0])
         Plot_Twin_Graph('ADD-ON PROFILE: Heat Annual Price vs. Revenue',
-                        html_path, addon_df.values[0:, 1], addon_df.values[0:, 4], addon_df.values[0:, 5],
-                        addon_df.columns[1].split('|')[0], addon_df.columns[4].split('|')[0], addon_df.columns[5].split('|')[0])
+                        html_path, addon_df.values[0:, 0], addon_df.values[0:, 3], addon_df.values[0:, 4],
+                        addon_df.columns[0].split('|')[0], addon_df.columns[3].split('|')[0], addon_df.columns[4].split('|')[0])
         Plot_Twin_Graph('ADD-ON PROFILE: Add-On Net Revenue & Annual Cashflow',
-                        html_path, addon_df.values[0:, 1], addon_df.values[0:, 6], addon_df.values[0:, 7],
-                        addon_df.columns[1].split('|')[0], addon_df.columns[6].split('|')[0], addon_df.columns[7].split('|')[0])
+                        html_path, addon_df.values[0:, 0], addon_df.values[0:, 5], addon_df.values[0:, 6],
+                        addon_df.columns[0].split('|')[0], addon_df.columns[5].split('|')[0], addon_df.columns[6].split('|')[0])
         Plot_Single_Graph('ADD-ON PROFILE: Add-On Cumulative Cashflow',
-                        html_path, addon_df.values[0:, 1], addon_df.values[0:, 8],  addon_df.columns[1].split('|')[0],
-                          addon_df.columns[8].split('|')[0])
+                        html_path, addon_df.values[0:, 0], addon_df.values[0:, 7],  addon_df.columns[0].split('|')[0],
+                          addon_df.columns[7].split('|')[0])
         Plot_Twin_Graph('ADD-ON PROFILE: Project Cashflow vs. Cumulative Cashflow',
-                        html_path, addon_df.values[0:, 1], addon_df.values[0:, 9], addon_df.values[0:, 10],
-                        addon_df.columns[1].split('|')[0], addon_df.columns[9].split('|')[0], addon_df.columns[10].split('|')[0])
+                        html_path, addon_df.values[0:, 0], addon_df.values[0:, 8], addon_df.values[0:, 9],
+                        addon_df.columns[0].split('|')[0], addon_df.columns[8].split('|')[0], addon_df.columns[9].split('|')[0])
     if len(sdac_df) > 0:
         Plot_Twin_Graph('S_DAC_GT PROFILE: Annual vs Cumulative Carbon Captured',
-                        html_path, sdac_df.values[0:, 1], sdac_df.values[0:, 2], sdac_df.values[0:, 3],
-                        sdac_df.columns[1].split('|')[0], sdac_df.columns[2].split('|')[0], sdac_df.columns[3].split('|')[0])
+                        html_path, sdac_df.values[0:, 0], sdac_df.values[0:, 1], sdac_df.values[0:, 2],
+                        sdac_df.columns[0].split('|')[0], sdac_df.columns[1].split('|')[0], sdac_df.columns[2].split('|')[0])
         Plot_Twin_Graph('S_DAC_GT PROFILE: Annual Cost vs Cumulative Cost',
-                        html_path, sdac_df.values[0:, 1], sdac_df.values[0:, 4], sdac_df.values[0:, 5],
-                        sdac_df.columns[1].split('|')[0], sdac_df.columns[4].split('|')[0], sdac_df.columns[5].split('|')[0])
+                        html_path, sdac_df.values[0:, 0], sdac_df.values[0:, 3], sdac_df.values[0:, 4],
+                        sdac_df.columns[0].split('|')[0], sdac_df.columns[3].split('|')[0], sdac_df.columns[4].split('|')[0])
         Plot_Single_Graph('S_DAC_GT PROFILE: Cumulative Capture Cost per Tonne',
-                        html_path, sdac_df.values[0:, 1], sdac_df.values[0:, 6], sdac_df.columns[1].split('|')[0],
-                          sdac_df.columns[6].split('|')[0])
+                        html_path, sdac_df.values[0:, 0], sdac_df.values[0:, 5], sdac_df.columns[0].split('|')[0],
+                          sdac_df.columns[5].split('|')[0])
 
 
 def MakeDistrictHeatingPlot(html_path: str, dh_geothermal_heating: pd.array, daily_heating_demand: pd.array) -> None:
