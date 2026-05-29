@@ -113,16 +113,16 @@ levers = [
         'Production Well Diameter': 8.5,
         'Injection Well Diameter': 8.5,
         'Production Flow Rate per Well': 80,
-        'Productivity Index': 15,
-        'Injectivity Index': 15,
+        'Productivity Index': 10,
+        'Injectivity Index': 10,
         # the bigger plant unlocks a larger turbine at a modest economy of scale.
         # 2300 $/kW is below GEOPHIRES's own size correlation (~2480 $/kW here),
         # i.e. a realistic, NOT aggressive, plant cost. (Input assumption.)
         'Capital Cost for Power Plant for Electricity Generation': 2300,  # $/kW
     }),
     ('Subsurface\n(lower drawdown)', {
-        'Number of Fractures': 40,
-        'Fracture Height': 1500,           # larger heat-exchange area resists drawdown
+        'Number of Fractures': 60,         # more frac stages (multilateral laterals)
+        'Fracture Height': 1000,           # larger heat-exchange area resists drawdown
     }),
     ('Drilling cost\n(ROP + NOAK)', {
         # faster/simpler drilling + drilling share of FOAK->NOAK learning.
