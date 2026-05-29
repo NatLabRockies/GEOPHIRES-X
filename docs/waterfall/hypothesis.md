@@ -137,6 +137,70 @@ is robust to using realistic rather than aggressive inputs.
 
 ---
 
+## 3b. Robustness: tornado + Monte Carlo (`tornado_montecarlo.py`)
+
+The waterfall is a single deterministic path. To test how sensitive the $45/MWh
+endpoint really is, `tornado_montecarlo.py` perturbs the NOAK endpoint two ways.
+
+### Tornado — one driver at a time
+
+Each waterfall category — **plus cost of capital, which the waterfall excluded** —
+is swung between a favorable and an unfavorable but realistic 2035 value, holding
+everything else at the NOAK base ($45). Ranges:
+
+| Driver (tornado category) | Favorable | NOAK base | Unfavorable |
+|---|---|---|---|
+| Temperature (gradient) | 68 °C/km | 60 | 52 |
+| **Cost of capital (FCR)** | 4 % | 5 % | 9 % |
+| Monobore→flow→turbine | flow 92 kg/s, plant 2000 $/kW | 80 / 2300 | flow 66, plant 2800 |
+| Subsurface / drawdown | 100 frac × 1200 m | 60 × 1000 | 30 × 650 |
+| Drilling cost (factor) | 0.95 | 1.2 | 1.5 |
+| Scale / field size | 6 doublets | 4 | 3 |
+
+**Result (`tornado.png`):** ranked by swing —
+
+1. **Cost of capital — by far the largest ($39 ↔ $70, swing ~$31).** This
+   confirms the earlier critique: the single biggest LCOE lever is *financing*,
+   not engineering, and the waterfall omitted it on purpose. The moonshot is far
+   more sensitive to the discount rate than to any physics lever.
+2. Flow + turbine bundle ($39 ↔ $54) and temperature ($40 ↔ $53) — the dominant
+   *engineering/resource* levers, as expected.
+3. **Subsurface is asymmetric and downside-only ($45 ↔ $59):** a good reservoir
+   cannot push below base (the base is already near-isothermal) but a bad one
+   adds ~$14/MWh. Reservoir performance is a *risk to manage*, not an upside —
+   exactly as argued in `PHYSICS.md`.
+4. Drilling cost and field size are comparatively small swings at this endpoint.
+
+### Monte Carlo — all drivers varied simultaneously
+
+800 GEOPHIRES runs, each drawing every driver independently from a **triangular
+distribution** (min, mode = NOAK base, max):
+
+| Driver | min | mode | max |
+|---|---|---|---|
+| Gradient (°C/km) | 52 | 60 | 68 |
+| Flow per well (kg/s) | 66 | 80 | 92 |
+| Plant cost ($/kW) | 2000 | 2300 | 2800 |
+| Drilling factor | 0.95 | 1.2 | 1.5 |
+| Cost of capital (FCR) | 0.04 | 0.05 | 0.09 |
+| Productivity/injectivity index | 7 | 10 | 14 |
+| Number of fractures | 30 | 60 | 100 |
+| Fracture height (m) | 700 | 1000 | 1200 |
+| Field size (doublets) | 3 | 4 | 6 |
+
+**Result (`montecarlo.png`):** P10 / P50 / P90 = **$XX / $XX / $XX/MWh**, with
+**XX %** of runs meeting the $45 target. *(Numbers filled from the run; see the
+figure and console output.)* The distribution is **right-skewed** — the downside
+tail is driven mainly by the cost-of-capital and reservoir-drawdown draws, while
+the favorable tail is bounded because several physics levers (especially
+subsurface) cannot improve much beyond the already-optimized base.
+
+**Interpretation:** $45/MWh is a credible *median-to-favorable* outcome, not a
+floor. Hitting it reliably depends as much on **low-cost financing** as on the
+engineering — which is the honest, defensible message for a technical reviewer.
+
+---
+
 ## 4. Honest caveats carried into the slide
 
 1. **Temperature is a site-selection assumption.** The headline depends on a

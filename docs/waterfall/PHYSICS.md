@@ -288,16 +288,37 @@ The cost-of-capital lever is intentionally excluded so this chart isolates
 **engineering and resource physics**. In reality, moving from a FOAK risk
 premium to a NOAK discount rate is often the single largest LCOE lever of all —
 but it is a financing story, not a physics one, and belongs on a separate slide.
+**The tornado analysis (below) confirms this empirically: cost of capital is the
+single largest swing on the $45 endpoint, bigger than any physics lever.**
+
+---
+
+## How robust is the $45 endpoint? (tornado + Monte Carlo)
+
+The waterfall is one deterministic path. `tornado_montecarlo.py` stress-tests the
+endpoint by perturbing each driver over realistic 2035 ranges:
+
+- **`tornado.png`** — each waterfall category, *plus cost of capital*, swung from
+  a favorable to an unfavorable value with all else held at the NOAK base. Cost
+  of capital dominates (≈$39 ↔ $70); the flow/turbine bundle and temperature are
+  the largest physics levers; and **subsurface drawdown is downside-only** (a
+  good reservoir can't beat the base, a bad one adds ~$14/MWh).
+- **`montecarlo.png`** — all drivers varied simultaneously (triangular
+  distributions), giving a P10–P90 band on LCOE and the probability of meeting
+  the $45 target.
+
+See `hypothesis.md` §3b for the full ranges, distributions, and results.
 
 ---
 
 ## Reproducing the numbers
 
 ```bash
-python docs/waterfall/lcoe_waterfall.py
+python docs/waterfall/lcoe_waterfall.py        # the waterfall chart + csv
+python docs/waterfall/tornado_montecarlo.py    # tornado.png + montecarlo.png
 ```
 
-Outputs `lcoe_waterfall.png` (the chart) and `lcoe_waterfall.csv` (every step's
-LCOE, net MW, well count, flow, pumping, and total CAPEX). All values come from
-GEOPHIRES-X driven on top of `tests/examples/example1.txt`; the levers and their
-magnitudes are defined at the top of the script.
+The waterfall outputs `lcoe_waterfall.png` (the chart) and `lcoe_waterfall.csv`
+(every step's LCOE, net MW, well count, flow, pumping, and total CAPEX). All
+values come from GEOPHIRES-X driven on top of `tests/examples/example1.txt`; the
+levers and their magnitudes are defined at the top of the script.
