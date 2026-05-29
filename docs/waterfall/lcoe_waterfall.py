@@ -12,16 +12,16 @@ Five levers, in order (order matters in a cumulative waterfall):
     2. Temperature    -- deeper/hotter resource. Conversion efficiency is
                          coupled to temperature, so this carries the efficiency
                          gain (plant held at subcritical ORC throughout).
-    3. Subsurface     -- reservoir engineering: a larger heat-exchange network
-                         lowers thermal drawdown over the project life, so the
-                         field sustains output. Pulled BEFORE the flow lever
-                         because high flow only pays off on a low-drawdown
-                         reservoir (the two are physically coupled).
-    4. Monobore + laterals -> flow -> turbine -- one causal chain: a wider
+    3. Monobore + laterals -> flow -> turbine -- one causal chain: a wider
                          monobore plus horizontal/multilateral laterals push
                          far more flow per well (low parasitic pumping), which
                          lifts power per well and unlocks a larger, cheaper
                          turbine (lower plant $/kW).
+    4. Subsurface     -- reservoir engineering: a larger heat-exchange network
+                         lowers thermal drawdown over the project life. Applied
+                         AFTER the flow lever because higher flow draws the
+                         reservoir down faster; this lever recovers the
+                         sustained output (the two are physically coupled).
     5. Drilling cost  -- faster/simpler drilling (higher ROP, monobore) plus the
                          drilling-cost share of FOAK->NOAK learning-by-doing.
 
@@ -77,8 +77,8 @@ today = {
     'Reservoir Model': 1,                  # multiple parallel fractures (EGS)
     'Reservoir Depth': 3,                  # km
     'Gradient 1': 50,                      # degC/km
-    'Number of Production Wells': 2,
-    'Number of Injection Wells': 2,
+    'Number of Production Wells': 1,
+    'Number of Injection Wells': 1,
     'Production Well Diameter': 6.625,     # inch (narrow / telescoped)
     'Injection Well Diameter': 6.625,      # inch
     'Production Flow Rate per Well': 40,   # kg/s (low)
@@ -96,17 +96,13 @@ today = {
 # Cumulative lever deltas applied on top of the running case.
 levers = [
     ('Scale\n(more wells)', {
-        'Number of Production Wells': 8,
-        'Number of Injection Wells': 8,
+        'Number of Production Wells': 4,
+        'Number of Injection Wells': 4,
         'Well Drilling and Completion Capital Cost Adjustment Factor': 1.35,  # cross-well learning
     }),
     ('Temperature', {
         'Reservoir Depth': 4,
         'Gradient 1': 60,                  # ~260 C bottom-hole
-    }),
-    ('Subsurface\n(lower drawdown)', {
-        'Number of Fractures': 40,
-        'Fracture Height': 1500,           # larger heat-exchange area resists drawdown
     }),
     ('Monobore + laterals\n→ flow → turbine', {
         # wider monobore + laterals: far more flow per well at low pumping
@@ -118,6 +114,10 @@ levers = [
         # the bigger plant unlocks a larger, cheaper turbine (economy of scale).
         # NB: plant $/kW is an input assumption, not a GEOPHIRES output.
         'Capital Cost for Power Plant for Electricity Generation': 1200,  # $/kW
+    }),
+    ('Subsurface\n(lower drawdown)', {
+        'Number of Fractures': 40,
+        'Fracture Height': 1500,           # larger heat-exchange area resists drawdown
     }),
     ('Drilling cost\n(ROP + NOAK)', {
         # faster/simpler drilling + drilling share of FOAK->NOAK learning
@@ -223,8 +223,8 @@ def plot_waterfall(labels, lcoes, metrics):
         [f"{m['flow_per_well']:.0f}" for m in metrics],
     ]
     # short headers so the 7 columns don't overlap
-    col_labels = ['Today', 'Scale', 'Temp', 'Subsurface',
-                  'Monobore+\nlaterals', 'Drilling', 'Target']
+    col_labels = ['Today', 'Scale', 'Temp', 'Monobore+\nlaterals',
+                  'Subsurface', 'Drilling', 'Target']
     tbl = tax.table(cellText=cell_text, rowLabels=row_labels, colLabels=col_labels,
                     cellLoc='center', rowLoc='right', loc='center')
     tbl.auto_set_font_size(False)
@@ -238,7 +238,7 @@ def plot_waterfall(labels, lcoes, metrics):
         cell.set_edgecolor('#dddddd')
 
     fig.text(0.01, 0.005,
-             'Notes: Subsurface & flow are coupled — high flow only pays off on a low-drawdown reservoir, so subsurface is applied first. '
+             'Notes: Flow & subsurface are coupled — higher flow draws the reservoir down faster, and the subsurface lever recovers the sustained output. '
              'Laterals shown via per-well flow + connectivity. Turbine $/kW and drilling-cost factors are input assumptions, not GEOPHIRES outputs.',
              fontsize=7, color='#666', style='italic')
 
