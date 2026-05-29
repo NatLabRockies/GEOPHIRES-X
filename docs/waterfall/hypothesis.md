@@ -188,16 +188,30 @@ distribution** (min, mode = NOAK base, max):
 | Fracture height (m) | 700 | 1000 | 1200 |
 | Field size (doublets) | 3 | 4 | 6 |
 
-**Result (`montecarlo.png`):** P10 / P50 / P90 = **$XX / $XX / $XX/MWh**, with
-**XX %** of runs meeting the $45 target. *(Numbers filled from the run; see the
-figure and console output.)* The distribution is **right-skewed** — the downside
-tail is driven mainly by the cost-of-capital and reservoir-drawdown draws, while
-the favorable tail is bounded because several physics levers (especially
-subsurface) cannot improve much beyond the already-optimized base.
+**Result (`montecarlo.png`, 400 runs):**
 
-**Interpretation:** $45/MWh is a credible *median-to-favorable* outcome, not a
-floor. Hitting it reliably depends as much on **low-cost financing** as on the
-engineering — which is the honest, defensible message for a technical reviewer.
+| Statistic | LCOE ($/MWh) |
+|---|---|
+| P10 (favorable) | **42.9** |
+| P50 (median) | **52.4** |
+| P90 (unfavorable) | **64.9** |
+| Mean | 52.9 |
+| Share of runs meeting the $45 target | **19 %** |
+
+The distribution is **right-skewed**: the median is ~$52, *well above* the
+deterministic $45 endpoint, and only ~1 run in 5 actually beats $45. The long
+upside tail is driven mainly by the **cost-of-capital and reservoir-drawdown**
+draws, while the favorable tail is bounded because several physics levers
+(especially subsurface) cannot improve much beyond the already-optimized base.
+
+**Interpretation — this is the most important honest finding of the whole
+analysis.** The deterministic waterfall's $45/MWh is **not the expected outcome;
+it is a favorable (~P15–P20) case.** The *expected* LCOE under realistic 2035
+uncertainty is ~$52/MWh, and hitting the $45 moonshot reliably depends as much on
+**low-cost financing** (the cost-of-capital draw) and a **well-behaved reservoir**
+as on the engineering levers. The honest way to present the waterfall is
+therefore: "$45 is achievable and credible, but it requires several things to go
+right at once — the central expectation is closer to $50."
 
 ---
 

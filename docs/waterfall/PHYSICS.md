@@ -304,8 +304,10 @@ endpoint by perturbing each driver over realistic 2035 ranges:
   the largest physics levers; and **subsurface drawdown is downside-only** (a
   good reservoir can't beat the base, a bad one adds ~$14/MWh).
 - **`montecarlo.png`** — all drivers varied simultaneously (triangular
-  distributions), giving a P10–P90 band on LCOE and the probability of meeting
-  the $45 target.
+  distributions): P10/P50/P90 = **$43 / $52 / $65/MWh**, with only **~19 % of
+  runs beating $45**. The key honest takeaway: the deterministic $45 endpoint is
+  a *favorable* (~P15–20) case, not the expected one — the median is ~$52, and
+  the upside tail is dominated by cost of capital and reservoir drawdown.
 
 See `hypothesis.md` §3b for the full ranges, distributions, and results.
 
