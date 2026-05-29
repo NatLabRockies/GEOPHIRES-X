@@ -21,7 +21,6 @@ Everything is anchored on the same NOAK configuration as the waterfall endpoint.
 
 from __future__ import annotations
 
-import multiprocessing as mp
 from pathlib import Path
 
 import numpy as np
@@ -184,10 +183,23 @@ def run_montecarlo(n: int, base_lcoe: float):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
 
+    # NOTE: GEOPHIRES serializes across processes (JIT/file-lock contention), so
+    # multiprocessing is pathologically slow here -- run serially with progress.
+    import sys
+    import time
+
     rng = np.random.default_rng(42)
     samples = [_sample(rng) for _ in range(n)]
-    with mp.Pool(processes=4, initializer=_init) as pool:
-        lcoes = np.array(pool.map(_lcoe, samples))
+    _init()
+    t0 = time.time()
+    vals = []
+    for i, s in enumerate(samples, 1):
+        vals.append(_lcoe(s))
+        if i % 25 == 0 or i == n:
+            rate = i / (time.time() - t0)
+            print(f'  MC run {i}/{n}  ({rate:.1f}/s, eta {((n - i) / rate):.0f}s)', flush=True)
+            sys.stdout.flush()
+    lcoes = np.array(vals)
     lcoes = lcoes[np.isfinite(lcoes)]
 
     p10, p50, p90 = np.percentile(lcoes, [10, 50, 90])
@@ -231,7 +243,7 @@ def main():
     print(f'NOAK base LCOE = ${base:.1f}/MWh\n')
     run_tornado(base)
     print()
-    run_montecarlo(800, base)
+    run_montecarlo(400, base)
 
 
 if __name__ == '__main__':
