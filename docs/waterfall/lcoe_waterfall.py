@@ -39,16 +39,22 @@ BASE_FILE = REPO / 'tests' / 'examples' / 'example1.txt'
 client = GeophiresXClient()
 
 
-def lcoe_usd_per_mwh(params: dict) -> tuple:
-    """Run GEOPHIRES and return (LCOE $/MWh, net MW, total CAPEX MUSD)."""
+def run_case(params: dict) -> dict:
+    """Run GEOPHIRES and return key techno-economic metrics for one case."""
     result = client.get_geophires_result(
         GeophiresInputParameters(params=params, from_file_path=BASE_FILE)
     ).result
     summary = result['SUMMARY OF RESULTS']
-    lcoe_cents_kwh = summary['Electricity breakeven price']['value']
     mw = summary['Average Net Electricity Production']['value']
-    capex = result['CAPITAL COSTS (M$)']['Total capital costs']['value']
-    return lcoe_cents_kwh * 10.0, mw, capex  # 1 cent/kWh = 10 $/MWh
+    nprod = summary['Number of production wells']['value']
+    return {
+        'lcoe': summary['Electricity breakeven price']['value'] * 10.0,  # 1 cent/kWh = 10 $/MWh
+        'mw': mw,
+        'nprod': nprod,
+        'mw_per_well': mw / nprod,
+        'flow_per_well': summary['Flowrate per production well']['value'],
+        'capex': result['CAPITAL COSTS (M$)']['Total capital costs']['value'],
+    }
 
 
 # ----------------------------------------------------------------------------
@@ -111,43 +117,53 @@ levers = [
 
 def main():
     running = dict(today)
-    lcoe0, mw0, cap0 = lcoe_usd_per_mwh(running)
-    print(f"{'Today (FOAK sub-scale)':32s} LCOE={lcoe0:7.1f} $/MWh  ({mw0:5.1f} MW, CAPEX {cap0:6.1f} M$)")
+    hdr = f"{'step':24s} {'LCOE':>8s} {'net MW':>8s} {'wells':>6s} {'MW/well':>8s} {'flow/well':>10s}"
+    print(hdr); print('-' * len(hdr))
 
+    def show(tag, m, prev_lcoe=None):
+        d = '' if prev_lcoe is None else f'  Δ={m["lcoe"]-prev_lcoe:+6.1f}'
+        print(f"{tag:24s} {m['lcoe']:7.1f}$ {m['mw']:7.1f} {m['nprod']:6.0f} "
+              f"{m['mw_per_well']:7.2f} {m['flow_per_well']:8.0f} kg/s{d}")
+
+    metrics = [run_case(running)]
     labels = ['Today']
-    lcoes = [lcoe0]
-    rows = [('Today', lcoe0, mw0, cap0)]
+    show('Today (FOAK)', metrics[0])
 
     for name, delta in levers:
         running.update(delta)
-        lcoe, mw, cap = lcoe_usd_per_mwh(running)
-        flat = name.replace('\n', ' ')
-        print(f"+ {flat:30s} LCOE={lcoe:7.1f} $/MWh  ({mw:5.1f} MW, CAPEX {cap:6.1f} M$)  Δ={lcoe-lcoes[-1]:+6.1f}")
+        m = run_case(running)
+        show('+ ' + name.replace('\n', ' '), m, metrics[-1]['lcoe'])
+        metrics.append(m)
         labels.append(name)
-        lcoes.append(lcoe)
-        rows.append((flat, lcoe, mw, cap))
 
+    lcoes = [m['lcoe'] for m in metrics]
     labels.append('Stacked\ntarget')
     lcoes.append(lcoes[-1])
+    metrics.append(metrics[-1])  # target column repeats final config
 
     # ---- write csv ----
     import csv
     with open(HERE / 'lcoe_waterfall.csv', 'w', newline='') as f:
         w = csv.writer(f)
-        w.writerow(['step', 'LCOE_USD_per_MWh', 'net_MW', 'total_CAPEX_MUSD'])
-        for r in rows:
-            w.writerow([r[0], round(r[1], 1), round(r[2], 1), round(r[3], 1)])
+        w.writerow(['step', 'LCOE_USD_per_MWh', 'net_MW', 'production_wells',
+                    'net_MW_per_well', 'flow_per_well_kg_s', 'total_CAPEX_MUSD'])
+        cols = ['Today'] + [n.replace('\n', ' ') for n, _ in levers]
+        for name, m in zip(cols, metrics):
+            w.writerow([name, round(m['lcoe'], 1), round(m['mw'], 1), int(m['nprod']),
+                        round(m['mw_per_well'], 2), round(m['flow_per_well'], 0),
+                        round(m['capex'], 1)])
 
-    plot_waterfall(labels, lcoes)
+    plot_waterfall(labels, lcoes, metrics)
 
 
-def plot_waterfall(labels, lcoes):
+def plot_waterfall(labels, lcoes, metrics):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
 
     n = len(labels)
-    fig, ax = plt.subplots(figsize=(12, 6.5))
+    fig, (ax, tax) = plt.subplots(
+        2, 1, figsize=(12, 7.8), gridspec_kw={'height_ratios': [4, 1]})
 
     start = lcoes[0]
     target = lcoes[-2]  # last computed lever value
@@ -174,6 +190,10 @@ def plot_waterfall(labels, lcoes):
         if 0 < i < n - 1:
             ax.plot([i + 0.3, i + 1 - 0.3], [lcoes[i], lcoes[i]],
                     color='gray', lw=0.8, ls='--', zorder=2)
+        # net power tag at the foot of every column
+        ax.text(i, 1.5, f"{metrics[i]['mw']:.0f} MW", ha='center', va='bottom',
+                fontsize=8, color='white' if i in (0, n - 1) else '#555',
+                fontweight='bold', zorder=4)
 
     ax.set_xticks(range(n))
     ax.set_xticklabels(labels, fontsize=9)
@@ -185,6 +205,29 @@ def plot_waterfall(labels, lcoes):
     ax.grid(axis='y', alpha=0.3)
     for spine in ['top', 'right']:
         ax.spines[spine].set_visible(False)
+
+    # ---- power table beneath the waterfall ----
+    tax.axis('off')
+    row_labels = ['Net power (MW)', 'Production wells', 'Net MW / well', 'Flow / well (kg/s)']
+    cell_text = [
+        [f"{m['mw']:.1f}" for m in metrics],
+        [f"{m['nprod']:.0f}" for m in metrics],
+        [f"{m['mw_per_well']:.2f}" for m in metrics],
+        [f"{m['flow_per_well']:.0f}" for m in metrics],
+    ]
+    col_labels = [lbl.replace('\n', ' ') for lbl in labels]
+    tbl = tax.table(cellText=cell_text, rowLabels=row_labels, colLabels=col_labels,
+                    cellLoc='center', rowLoc='right', loc='center')
+    tbl.auto_set_font_size(False)
+    tbl.set_fontsize(8)
+    tbl.scale(1, 1.4)
+    for (r, c), cell in tbl.get_celld().items():
+        if r == 0:                       # header row
+            cell.set_text_props(fontweight='bold')
+        if c == -1:                      # row labels
+            cell.set_text_props(fontweight='bold', ha='right')
+        cell.set_edgecolor('#dddddd')
+
     fig.tight_layout()
     out = HERE / 'lcoe_waterfall.png'
     fig.savefig(out, dpi=150)
