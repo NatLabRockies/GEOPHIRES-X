@@ -1,5 +1,10 @@
-step,LCOE_USD_per_MWh,net_MW,production_wells,net_MW_per_well,flow_per_well_kg_s,total_CAPEX_MUSD
-Today,154.0,1.6,1,1.59,40.0,26.4
-Scale (drill the field),116.1,9.3,6,1.54,40.0,112.1
-Temperature,58.7,35.7,6,5.95,40.0,218.3
-Monobore → flow → turbine,42.7,50.1,6,8.35,80.0,211.3
+step,category,LCOE_USD_per_MWh,net_MW,production_wells,net_MW_per_well,flow_per_well_kg_s,pump_MW,total_CAPEX_MUSD
+Today,anchor,238.8,3.2,2,1.59,40.0,0.06,48.7
+Scale (more wells),phys,207.9,11.3,8,1.41,40.0,0.32,161.6
+Temperature,phys,103.0,43.1,8,5.39,40.0,1.11,308.2
+Flow / laterals,phys,101.5,46.1,8,5.76,80.0,5.62,446.4
+Monobore (wider bore),phys,98.4,48.0,8,6.0,80.0,3.63,444.9
+Subsurface (reservoir eng.),phys,68.3,97.5,8,12.18,80.0,1.76,448.1
+Drilling ROP (tech),cost,62.9,97.5,8,12.18,80.0,1.76,409.3
+Turbine economy of scale,cost,46.6,97.5,8,12.18,80.0,1.76,298.3
+Cost of capital (FOAK→NOAK),cost,33.7,97.5,8,12.18,80.0,1.76,276.1

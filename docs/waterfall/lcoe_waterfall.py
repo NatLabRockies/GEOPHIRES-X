@@ -1,25 +1,41 @@
 """
-LCOE cost-reduction waterfall for next-gen (EGS) geothermal.
+LCOE cost-reduction waterfall for next-gen (EGS) geothermal -- COMPREHENSIVE.
 
 Reproduces the "innovations concatenate into a step-change in cost" story
-(slide 45c) using GEOPHIRES-X. A conservative, sub-scale, first-of-a-kind
-(FOAK) EGS doublet is taken as "today". Five physics-backed levers are then
-applied *cumulatively* and the levelized cost of electricity (LCOE) is read
-after each step. The descending steps form the waterfall.
+(slide 45c) using GEOPHIRES-X, broken into the full set of defensible levers
+(technical backup version). A conservative first-of-a-kind (FOAK) EGS field is
+taken as "today"; levers are applied *cumulatively* and the levelized cost of
+electricity (LCOE) is read after each step.
 
-Levers (in order):
-    1. Scale          -- "drill the field, not the well": more wells amortize
-                         fixed (exploration/surface) cost + cross-well learning
-                         lowers the per-well drilling cost factor.
-    2. Temperature     -- deeper/hotter resource. Conversion efficiency is
-                         physically coupled to temperature, so this lever
-                         captures the efficiency gain too (plant held at
-                         subcritical ORC throughout).
-    3. Monobore -> flow -> turbine -- one causal chain: a wider monobore flows
-                         more kg/s per well at low parasitic pumping (-> more
-                         power per well) and simplifies the well (cheaper
-                         $/well); the bigger plant then unlocks a larger,
-                         cheaper turbine (lower plant $/kW).
+Levers, in order (order matters in a cumulative waterfall):
+    1. Scale            -- "drill the field": more wells. Amortizes fixed
+                           (exploration/surface) cost + cross-well learning.
+    2. Temperature      -- deeper/hotter resource. Conversion efficiency is
+                           coupled to temperature, so this carries the
+                           efficiency gain (plant held at subcritical ORC).
+    3. Flow / laterals  -- more throughput per well. Models the *effect* of
+                           horizontal/multilateral laterals (more flow + better
+                           connectivity); explicit lateral geometry would need a
+                           closed-loop reservoir model, so it is represented
+                           here by flow + productivity index.
+    4. Monobore         -- wider bore cuts parasitic pumping (friction ~1/D^5).
+                           Small in $/MWh but it is what makes high flow viable.
+    5. Subsurface       -- reservoir engineering: a larger heat-exchange network
+                           resists thermal drawdown so the high flow pays off
+                           (coupled with lever 3).
+    6. Drilling ROP     -- faster/simpler drilling (MWD/information) lowers the
+                           per-well drilling cost (technology learning).
+    7. Turbine scale    -- the larger plant unlocks a bigger, cheaper turbine
+                           (lower plant $/kW). INPUT ASSUMPTION, not a model
+                           output.
+    8. Cost of capital  -- FOAK -> NOAK de-risking: lower discount rate, plus a
+                           further drilling-cost reduction from repeated
+                           execution.
+
+Note on what is model physics vs. assumption:
+    * GEOPHIRES OUTPUTS (derived): scale, temperature/efficiency, flow, monobore
+      pumping, subsurface drawdown, discount-rate effect.
+    * INPUT ASSUMPTIONS (asserted): turbine $/kW, drilling-cost factors.
 
 Run:  python docs/waterfall/lcoe_waterfall.py
 Outputs: lcoe_waterfall.png and lcoe_waterfall.csv in this folder.
@@ -45,6 +61,7 @@ def run_case(params: dict) -> dict:
         GeophiresInputParameters(params=params, from_file_path=BASE_FILE)
     ).result
     summary = result['SUMMARY OF RESULTS']
+    surf = result['SURFACE EQUIPMENT SIMULATION RESULTS']
     mw = summary['Average Net Electricity Production']['value']
     nprod = summary['Number of production wells']['value']
     return {
@@ -53,185 +70,205 @@ def run_case(params: dict) -> dict:
         'nprod': nprod,
         'mw_per_well': mw / nprod,
         'flow_per_well': summary['Flowrate per production well']['value'],
+        'pump_mw': surf['Average Pumping Power']['value'],
         'capex': result['CAPITAL COSTS (M$)']['Total capital costs']['value'],
     }
 
 
 # ----------------------------------------------------------------------------
-# "Today": conservative, sub-scale, FOAK EGS doublet (1 prod + 1 inj well),
-# narrow wellbore, modest flow, cool resource, subcritical ORC, FOAK cost premium.
+# "Today": conservative FOAK EGS field -- small (2 doublets), cool resource,
+# narrow bore, low flow, baseline reservoir, subcritical ORC, FOAK cost premium,
+# high (FOAK) discount rate. Economic Model 2 so the discount rate is explicit.
 # ----------------------------------------------------------------------------
 today = {
     'Reservoir Model': 1,                  # multiple parallel fractures (EGS)
     'Reservoir Depth': 3,                  # km
-    'Gradient 1': 50,                      # degC/km  -> ~170 C resource
-    'Number of Production Wells': 1,
-    'Number of Injection Wells': 1,
+    'Gradient 1': 50,                      # degC/km
+    'Number of Production Wells': 2,
+    'Number of Injection Wells': 2,
     'Production Well Diameter': 6.625,     # inch (narrow / telescoped)
     'Injection Well Diameter': 6.625,      # inch
     'Production Flow Rate per Well': 40,   # kg/s (low)
-    'Power Plant Type': 1,                 # subcritical ORC (lower efficiency)
+    'Productivity Index': 5,               # kg/s/bar
+    'Injectivity Index': 5,
+    'Number of Fractures': 20,             # baseline heat-exchange network
+    'Fracture Height': 900,                # m
+    'Power Plant Type': 1,                 # subcritical ORC (held throughout)
     'Utilization Factor': 0.85,
     'Well Drilling Cost Correlation': 1,
-    'Well Drilling and Completion Capital Cost Adjustment Factor': 1.4,  # FOAK premium
-    'Print Output to Console': 0,          # keep our console clean
+    'Well Drilling and Completion Capital Cost Adjustment Factor': 1.5,  # FOAK premium
+    'Economic Model': 2,                   # standard levelized cost (uses Discount Rate)
+    'Discount Rate': 0.10,                 # FOAK cost of capital
+    'Print Output to Console': 0,
 }
 
-# Cumulative lever deltas applied on top of the running case.
-# Three levers, matching the physical story:
-#   1. Scale   -- "drill the field": more wells. Spreads fixed (exploration/
-#                 surface) cost over more output + cross-well learning trims
-#                 the per-well drilling cost factor (1.4 FOAK -> 1.15).
-#   2. Temperature -- deeper/hotter resource. Conversion efficiency is coupled
-#                 to temperature, so this lever carries the efficiency gain too
-#                 (plant held at subcritical ORC throughout). Pulled BEFORE flow
-#                 so the extra mass flow lands on a hot resource.
-#   3. Monobore -> flow -> turbine -- one causal chain: a wider monobore lets
-#                 each well flow more kg/s without a pumping penalty (diameter
-#                 up, productivity/injectivity up), which lifts power per well;
-#                 the bigger plant then unlocks a larger, cheaper turbine (lower
-#                 plant $/kW). The monobore also simplifies the well (fewer
-#                 casing strings), trimming the drilling cost factor 1.15 -> 0.85.
+# Cumulative lever deltas. 'cat' tags the bar colour: 'phys' = GEOPHIRES-derived
+# physics, 'cost' = input cost/finance assumption.
 levers = [
-    ('Scale\n(drill the field)', {
-        'Number of Production Wells': 6,
-        'Number of Injection Wells': 6,
-        'Well Drilling and Completion Capital Cost Adjustment Factor': 1.15,  # cross-well learning
+    ('Scale\n(more wells)', 'phys', {
+        'Number of Production Wells': 8,
+        'Number of Injection Wells': 8,
+        'Well Drilling and Completion Capital Cost Adjustment Factor': 1.35,  # cross-well learning
     }),
-    ('Temperature', {
+    ('Temperature', 'phys', {
         'Reservoir Depth': 4,
         'Gradient 1': 60,                  # ~260 C bottom-hole
     }),
-    ('Monobore →\nflow → turbine', {
-        # wider monobore: more flow per well with low parasitic pumping
-        'Production Well Diameter': 8.5,
-        'Injection Well Diameter': 8.5,
+    ('Flow /\nlaterals', 'phys', {
         'Production Flow Rate per Well': 80,
         'Productivity Index': 15,
         'Injectivity Index': 15,
-        # monobore simplifies the well (fewer casing strings) -> cheaper $/well
-        'Well Drilling and Completion Capital Cost Adjustment Factor': 0.85,
-        # the bigger plant unlocks a larger, cheaper turbine (economy of scale).
-        # NB: this plant $/kW is an input assumption, not a GEOPHIRES output.
-        'Capital Cost for Power Plant for Electricity Generation': 1200,  # $/kW
+    }),
+    ('Monobore\n(wider bore)', 'phys', {
+        'Production Well Diameter': 8.5,
+        'Injection Well Diameter': 8.5,
+    }),
+    ('Subsurface\n(reservoir eng.)', 'phys', {
+        'Number of Fractures': 40,
+        'Fracture Height': 1500,           # larger heat-exchange area resists drawdown
+    }),
+    ('Drilling ROP\n(tech)', 'cost', {
+        'Well Drilling and Completion Capital Cost Adjustment Factor': 1.0,
+    }),
+    ('Turbine\neconomy of scale', 'cost', {
+        'Capital Cost for Power Plant for Electricity Generation': 1200,  # $/kW (ASSUMPTION)
+    }),
+    ('Cost of capital\n(FOAK→NOAK)', 'cost', {
+        'Discount Rate': 0.06,
+        'Well Drilling and Completion Capital Cost Adjustment Factor': 0.8,  # NOAK learning-by-doing
     }),
 ]
 
 
 def main():
     running = dict(today)
-    hdr = f"{'step':24s} {'LCOE':>8s} {'net MW':>8s} {'wells':>6s} {'MW/well':>8s} {'flow/well':>10s}"
+    hdr = f"{'step':26s} {'LCOE':>8s} {'net MW':>8s} {'wells':>6s} {'MW/well':>8s} {'pump MW':>8s}"
     print(hdr); print('-' * len(hdr))
 
-    def show(tag, m, prev_lcoe=None):
-        d = '' if prev_lcoe is None else f'  Δ={m["lcoe"]-prev_lcoe:+6.1f}'
-        print(f"{tag:24s} {m['lcoe']:7.1f}$ {m['mw']:7.1f} {m['nprod']:6.0f} "
-              f"{m['mw_per_well']:7.2f} {m['flow_per_well']:8.0f} kg/s{d}")
+    def show(tag, m, prev=None):
+        d = '' if prev is None else f'  Δ={m["lcoe"]-prev:+7.1f}'
+        print(f"{tag:26s} {m['lcoe']:7.1f}$ {m['mw']:7.1f} {m['nprod']:6.0f} "
+              f"{m['mw_per_well']:7.2f} {m['pump_mw']:7.2f}{d}")
 
     metrics = [run_case(running)]
     labels = ['Today']
+    cats = ['anchor']
     show('Today (FOAK)', metrics[0])
 
-    for name, delta in levers:
+    for name, cat, delta in levers:
         running.update(delta)
         m = run_case(running)
         show('+ ' + name.replace('\n', ' '), m, metrics[-1]['lcoe'])
         metrics.append(m)
         labels.append(name)
+        cats.append(cat)
 
     lcoes = [m['lcoe'] for m in metrics]
     labels.append('Stacked\ntarget')
+    cats.append('anchor')
     lcoes.append(lcoes[-1])
-    metrics.append(metrics[-1])  # target column repeats final config
+    metrics.append(metrics[-1])
 
     # ---- write csv ----
     import csv
     with open(HERE / 'lcoe_waterfall.csv', 'w', newline='') as f:
         w = csv.writer(f)
-        w.writerow(['step', 'LCOE_USD_per_MWh', 'net_MW', 'production_wells',
-                    'net_MW_per_well', 'flow_per_well_kg_s', 'total_CAPEX_MUSD'])
-        cols = ['Today'] + [n.replace('\n', ' ') for n, _ in levers]
-        for name, m in zip(cols, metrics):
-            w.writerow([name, round(m['lcoe'], 1), round(m['mw'], 1), int(m['nprod']),
+        w.writerow(['step', 'category', 'LCOE_USD_per_MWh', 'net_MW', 'production_wells',
+                    'net_MW_per_well', 'flow_per_well_kg_s', 'pump_MW', 'total_CAPEX_MUSD'])
+        cols = ['Today'] + [n.replace('\n', ' ') for n, _, _ in levers]
+        catcol = ['anchor'] + [c for _, c, _ in levers]
+        for name, cat, m in zip(cols, catcol, metrics):
+            w.writerow([name, cat, round(m['lcoe'], 1), round(m['mw'], 1), int(m['nprod']),
                         round(m['mw_per_well'], 2), round(m['flow_per_well'], 0),
-                        round(m['capex'], 1)])
+                        round(m['pump_mw'], 2), round(m['capex'], 1)])
 
-    plot_waterfall(labels, lcoes, metrics)
+    plot_waterfall(labels, lcoes, cats, metrics)
 
 
-def plot_waterfall(labels, lcoes, metrics):
+def plot_waterfall(labels, lcoes, cats, metrics):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
 
+    colors = {'anchor': '#34495e', 'phys': '#2e86c1', 'cost': '#e67e22'}
     n = len(labels)
     fig, (ax, tax) = plt.subplots(
-        2, 1, figsize=(12, 7.8), gridspec_kw={'height_ratios': [4, 1]})
+        2, 1, figsize=(16, 8.6), gridspec_kw={'height_ratios': [4, 1.25]})
 
     start = lcoes[0]
-    target = lcoes[-2]  # last computed lever value
+    target = lcoes[-2]
 
-    # bar bottoms/heights for the descending steps
     for i in range(n):
         if i == 0 or i == n - 1:
-            # anchor bars (Today, Target): full-height columns
             val = lcoes[i] if i == 0 else target
-            ax.bar(i, val, width=0.6, color='#34495e', zorder=3)
-            ax.text(i, val + 3, f'${val:.0f}', ha='center', va='bottom',
+            ax.bar(i, val, width=0.62, color=colors['anchor'], zorder=3)
+            ax.text(i, val + 4, f'${val:.0f}', ha='center', va='bottom',
                     fontweight='bold', fontsize=11)
         else:
             top = lcoes[i - 1]
             bottom = lcoes[i]
-            ax.bar(i, top - bottom, bottom=bottom, width=0.6,
-                   color='#2e86c1', zorder=3)
-            drop = bottom - top
-            ax.text(i, top + 2, f'{drop:+.0f}', ha='center', va='bottom',
-                    color='#c0392b', fontsize=10, fontweight='bold')
-            # connector line
-            ax.plot([i - 1 + 0.3, i + 0.3], [top, top], color='gray',
+            ax.bar(i, top - bottom, bottom=bottom, width=0.62,
+                   color=colors[cats[i]], zorder=3)
+            ax.text(i, top + 3, f'{bottom - top:+.0f}', ha='center', va='bottom',
+                    color='#c0392b', fontsize=9, fontweight='bold')
+            ax.plot([i - 1 + 0.31, i + 0.31], [top, top], color='gray',
                     lw=0.8, ls='--', zorder=2)
         if 0 < i < n - 1:
-            ax.plot([i + 0.3, i + 1 - 0.3], [lcoes[i], lcoes[i]],
+            ax.plot([i + 0.31, i + 1 - 0.31], [lcoes[i], lcoes[i]],
                     color='gray', lw=0.8, ls='--', zorder=2)
-        # net power tag at the foot of every column
-        ax.text(i, 1.5, f"{metrics[i]['mw']:.0f} MW", ha='center', va='bottom',
-                fontsize=8, color='white' if i in (0, n - 1) else '#555',
+        ax.text(i, 2, f"{metrics[i]['mw']:.0f} MW", ha='center', va='bottom',
+                fontsize=7.5, color='white' if i in (0, n - 1) else '#555',
                 fontweight='bold', zorder=4)
 
     ax.set_xticks(range(n))
-    ax.set_xticklabels(labels, fontsize=9)
+    ax.set_xticklabels(labels, fontsize=8.5)
     ax.set_ylabel('LCOE  ($/MWh)', fontsize=11)
-    ax.set_title('Next-Gen Geothermal LCOE Waterfall — Innovations Concatenate\n'
-                 rf'(GEOPHIRES-X; \${start:.0f}/MWh $\rightarrow$ \${target:.0f}/MWh)',
+    ax.set_title('Next-Gen Geothermal LCOE Waterfall — Innovations Concatenate (comprehensive)\n'
+                 rf'(GEOPHIRES-X; \${start:.0f}/MWh $\rightarrow$ \${target:.0f}/MWh, subcritical ORC throughout)',
                  fontsize=13, fontweight='bold')
-    ax.set_ylim(0, start * 1.15)
+    ax.set_ylim(0, start * 1.12)
     ax.grid(axis='y', alpha=0.3)
     for spine in ['top', 'right']:
         ax.spines[spine].set_visible(False)
 
-    # ---- power table beneath the waterfall ----
+    # legend for categories
+    from matplotlib.patches import Patch
+    ax.legend(handles=[
+        Patch(color=colors['phys'], label='Modeled physics (GEOPHIRES output)'),
+        Patch(color=colors['cost'], label='Cost / finance (input assumption)'),
+    ], loc='upper right', fontsize=9, frameon=False)
+
+    # ---- power table ----
     tax.axis('off')
-    row_labels = ['Net power (MW)', 'Production wells', 'Net MW / well', 'Flow / well (kg/s)']
+    row_labels = ['Net power (MW)', 'Production wells', 'Net MW / well',
+                  'Flow / well (kg/s)', 'Pumping (MW)']
     cell_text = [
         [f"{m['mw']:.1f}" for m in metrics],
         [f"{m['nprod']:.0f}" for m in metrics],
         [f"{m['mw_per_well']:.2f}" for m in metrics],
         [f"{m['flow_per_well']:.0f}" for m in metrics],
+        [f"{m['pump_mw']:.2f}" for m in metrics],
     ]
     col_labels = [lbl.replace('\n', ' ') for lbl in labels]
     tbl = tax.table(cellText=cell_text, rowLabels=row_labels, colLabels=col_labels,
                     cellLoc='center', rowLoc='right', loc='center')
     tbl.auto_set_font_size(False)
-    tbl.set_fontsize(8)
-    tbl.scale(1, 1.4)
+    tbl.set_fontsize(7)
+    tbl.scale(1, 1.35)
     for (r, c), cell in tbl.get_celld().items():
-        if r == 0:                       # header row
+        if r == 0:
             cell.set_text_props(fontweight='bold')
-        if c == -1:                      # row labels
+        if c == -1:
             cell.set_text_props(fontweight='bold', ha='right')
         cell.set_edgecolor('#dddddd')
 
-    fig.tight_layout()
+    fig.text(0.01, 0.005,
+             'Notes: Flow & Subsurface are coupled — high flow only pays off with a drawdown-resistant reservoir. '
+             'Laterals shown via per-well flow + connectivity (explicit multilateral geometry needs a closed-loop model). '
+             'Turbine $/kW and drilling-cost factors are input assumptions, not GEOPHIRES outputs.',
+             fontsize=6.5, color='#666', style='italic')
+
+    fig.tight_layout(rect=(0, 0.02, 1, 1))
     out = HERE / 'lcoe_waterfall.png'
     fig.savefig(out, dpi=150)
     print(f'\nSaved chart -> {out}')
