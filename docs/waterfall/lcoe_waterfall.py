@@ -13,9 +13,13 @@ Levers (in order):
                          lowers per-well drilling cost.
     2. Drilling/monobore -- larger-diameter monobore + conventional-rig
                          efficiency lowers $/well.
-    3. Flow            -- bigger wells flow more kg/s -> more MW per well.
-    4. Temperature     -- deeper/hotter resource -> higher conversion efficiency.
-    5. Turbine/efficiency -- supercritical ORC + higher utilization.
+    3. Temperature     -- deeper/hotter resource. Conversion efficiency is
+                          physically coupled to temperature, so this lever
+                          captures the efficiency gain too (plant held at
+                          subcritical ORC throughout).
+    4. Flow / turbine scale -- bigger bore + better connectivity flow more kg/s,
+                          and the larger throughput unlocks a bigger, cheaper
+                          turbine (lower plant $/kW).
 
 Run:  python docs/waterfall/lcoe_waterfall.py
 Outputs: lcoe_waterfall.png and lcoe_waterfall.csv in this folder.
@@ -98,11 +102,10 @@ levers = [
         # (~$4,000/kW gross here) to a large-unit specific cost.
         'Capital Cost for Power Plant for Electricity Generation': 1200,  # $/kW
     }),
-    ('Conversion\nefficiency', {
-        'Power Plant Type': 2,             # subcritical -> supercritical ORC
-        'Utilization Factor': 0.90,
-        'Circulation Pump Efficiency': 0.85,
-    }),
+    # NOTE: no separate "conversion efficiency" lever. Conversion efficiency is
+    # physically coupled to resource temperature and is already captured by the
+    # Temperature lever (GEOPHIRES derives plant efficiency from temperature for
+    # the given plant type). The plant is held at subcritical ORC throughout.
 ]
 
 
