@@ -1,7 +1,7 @@
 step,LCOE_USD_per_MWh,net_MW,production_wells,net_MW_per_well,flow_per_well_kg_s,pump_MW,total_CAPEX_MUSD
-Today,171.3,1.6,1,1.59,40.0,0.03,30.0
-Scale (more wells),134.6,6.3,4,1.59,40.0,0.13,90.2
-Temperature,67.0,24.6,4,6.14,40.0,0.44,170.2
-Monobore + laterals → flow → turbine,54.3,45.4,4,11.34,80.0,1.12,254.8
-Subsurface (lower drawdown),47.7,51.8,4,12.96,80.0,0.9,255.9
-Drilling cost (ROP + NOAK),45.0,51.8,4,12.96,80.0,0.9,238.6
+Today,191.6,1.6,1,1.59,40.0,0.03,30.0
+Scale (more wells),149.8,6.3,4,1.59,40.0,0.13,90.2
+Temperature,74.4,24.6,4,6.14,40.0,0.44,170.2
+Monobore + laterals → flow → turbine,62.9,45.4,4,11.34,80.0,1.12,266.9
+Subsurface (lower drawdown),55.3,51.8,4,12.96,80.0,0.9,268.2
+Drilling cost (ROP + NOAK),52.3,51.8,4,12.96,80.0,0.9,250.9

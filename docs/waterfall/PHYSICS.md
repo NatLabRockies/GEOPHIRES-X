@@ -16,36 +16,41 @@ levers to whichever one comes second.
 
 | Step | Net MW | LCOE ($/MWh) | Δ |
 |---|---|---|---|
-| Today (FOAK) | 1.6 | 171 | — |
-| + Scale (more wells) | 6.3 | 135 | −37 |
-| + Temperature | 24.6 | 67 | −68 |
-| + Monobore + laterals → flow → turbine | 45.5 | 54 | −13 |
-| + Subsurface (lower drawdown) | 52.0 | 47 | −7 |
-| + Drilling cost (ROP + NOAK) | 52.0 | 45 | −3 |
+| Today (FOAK) | 1.6 | 192 | — |
+| + Scale (more wells) | 6.3 | 150 | −42 |
+| + Temperature | 24.6 | 74 | −75 |
+| + Monobore + laterals → flow → turbine | 45.5 | 63 | −12 |
+| + Subsurface (lower drawdown) | 52.0 | 55 | −8 |
+| + Drilling cost (ROP + NOAK) | 52.0 | 52 | −3 |
 
-The whole story is a **~3.8× reduction in LCOE** ($171 → $45/MWh) reached by a
+The whole story is a **~3.7× reduction in LCOE** ($192 → $52/MWh) reached by a
 **~33× increase in net power** (1.6 → 52 MW) at constant plant technology
 (subcritical ORC throughout).
 
 ### Where the endpoint lands, and why that matters
 
-The stack lands at **~$45/MWh — exactly the DOE Enhanced Geothermal Shot
-("moonshot") target for 2035.** This is deliberate. An earlier version of this
-analysis used more aggressive cost inputs and landed at ~$29/MWh, which is
-*below* the 2035 target — that reads as implausibly optimistic and undermines
-credibility. The cost assumptions here are therefore set to be **realistic, not
-aggressive**:
+The stack lands at **~$52/MWh — the EXPECTED (central) outcome**, which is the
+**median of the Monte Carlo** over realistic 2035 uncertainty (see
+`tornado_montecarlo.py` and §"How robust is the $52 endpoint?" below). This is a
+deliberate re-anchoring: an earlier version landed at the **$45 DOE Enhanced
+Geothermal Shot ("moonshot") target**, but the Monte Carlo showed $45 is only a
+*favorable* (~P15–P20) case — beaten by just ~19 % of runs — so presenting it as
+*the* headline would oversell. The waterfall is therefore anchored on **central,
+not favorable, assumptions**:
 
-* The **plant cost (2300 $/kW)** is *below* GEOPHIRES's own size-correlated
-  estimate for this plant (~2480 $/kW), so it reflects a modest economy of
-  scale, not a heroic one.
+* **Cost of capital at the median fixed charge rate (5.8 %)**, not the optimistic
+  5.0 % an earlier version used. This single change (the dominant lever in the
+  tornado) is most of the $45 → $52 difference.
+* The **plant cost (2480 $/kW)** is GEOPHIRES's *own* size-correlated estimate —
+  i.e. **no asserted economy-of-scale discount** (the earlier 2300 $/kW was a
+  modest favorable discount).
 * **NOAK drilling (factor 1.2)** keeps a realistic deep-EGS premium over the
   generic well-cost correlation rather than being driven below it.
 * The **resource temperature is left hot and unchanged** (see Lever 2) because
   ~256 °C at 4 km is a genuinely realistic deep-EGS target, not a stretch.
 
-The result is a story that reaches the moonshot target *with the physics doing
-the work*, while the cost assumptions stay conservative.
+The result reaches a credible **central** cost *with the physics doing the work*,
+while explicitly showing that the $45 moonshot is reachable but favorable.
 
 ### The one equation that ties it together
 
@@ -82,7 +87,7 @@ Drilling several similar wells back-to-back also produces a **learning curve**
 (crews, logistics, bit selection), which we credit as a modest drop in the
 per-well drilling cost factor.
 
-**Why it matters.** −$37/MWh. This is the cheapest, lowest-technology-risk lever
+**Why it matters.** −$42/MWh. This is the cheapest, lowest-technology-risk lever
 there is — it is project structuring, not invention. Note the **net MW/well is
 essentially flat** (1.59 → 1.59): scale does *not* make any single well better;
 it just amortizes the fixed costs. It is the foundation the other levers build
@@ -112,7 +117,7 @@ efficiently. The **heat-to-power conversion efficiency of the final plant is
 ~18.9%** at ~256 °C (it falls to ~10–12% near 200 °C), which is realistic for a
 subcritical ORC at this temperature.
 
-**Why it matters.** −$68/MWh, the single largest lever. It is why next-gen
+**Why it matters.** −$75/MWh, the single largest lever. It is why next-gen
 geothermal chases deeper/hotter rock (and, ultimately, superhot/supercritical
 resources). Temperature appears once and carries the **entire conversion-
 efficiency story** — there is deliberately no separate "efficiency" lever,
@@ -132,8 +137,8 @@ a separate bar would double-count it.
 ## Lever 3 — Monobore + laterals → flow → turbine (the bundle)
 
 **What changes in the model:** production/injection diameter 6.625″ → 8.5″;
-flow per well 40 → 80 kg/s; productivity & injectivity index 5 → 15 kg/s/bar;
-plant capital cost set to a large-unit specific cost (2300 $/kW).
+flow per well 40 → 80 kg/s; productivity & injectivity index 5 → 10 kg/s/bar;
+plant capital cost set to GEOPHIRES's own size-correlated estimate (2480 $/kW).
 
 This is **one causal chain**, deliberately kept as a single bar because the
 pieces only make sense together:
@@ -168,18 +173,18 @@ Result: net MW/well roughly doubles (6.14 → 11.37) while pumping stays modest.
 ### 3b. Bigger plant → cheaper turbine ($/kW economy of scale)
 
 Doubling flow per well across the field turns a few-MW plant into a ~45 MW
-plant. Power-block capital cost per kW falls with unit size (a 50 MW turbine
-costs less per kW than a 1 MW unit). We capture this with a **2300 $/kW** plant
-cost — note this is *below* GEOPHIRES's own size-correlated estimate for this
-plant (~2480 $/kW), so it is a **modest, realistic** economy of scale, not an
-aggressive one. (An earlier version used 1200 $/kW; that was about half the
-model's correlation and pushed the endpoint implausibly low.)
+plant. Power-block capital cost per kW falls with unit size in principle, but in
+this **central** version we assert **no economy-of-scale discount at all**: the
+plant cost is set to **2480 $/kW = GEOPHIRES's own size-correlated estimate** for
+this plant. (Earlier versions used 1200 $/kW — about half the correlation, far
+too aggressive — and then 2300 $/kW — a modest favorable discount; the central
+case removes the discount entirely.)
 
-**Why it matters.** −$13/MWh. This is the headline engineering innovation —
+**Why it matters.** −$12/MWh, almost entirely from the **flow → power** jump, not
+from any turbine-cost saving. This is the headline engineering innovation —
 "bigger, better wells feeding a big turbine." Bundling keeps the narrative
 honest: the flow is what justifies the big turbine, and the wide bore is what
-makes the flow affordable. The bar is smaller than in the aggressive-cost
-version precisely *because* the turbine cost is now realistic.
+makes the flow affordable.
 
 > **What is physics vs. assumption here:** the flow → power and the bore →
 > pumping relationships are GEOPHIRES *outputs* (real hydraulics). The turbine
@@ -209,7 +214,7 @@ through a small reservoir drains it fast, so the high flow only delivers its ful
 rises 45.5 → 52.0 MW with no extra wells or flow — purely from sustaining the
 resource temperature over the project life.
 
-**Why it matters.** −$7/MWh in this ordering — but that *understates* its
+**Why it matters.** −$8/MWh in this ordering — but that *understates* its
 importance. Reservoir performance is the dominant **risk**, not just a cost
 lever: a poorly connected reservoir (the opposite of this lever) does not merely
 cost more, it can make the project produce almost nothing and fail outright.
@@ -277,37 +282,44 @@ For credibility with a technical audience, keep this distinction explicit:
 | Flow → power | GEOPHIRES output |
 | Bore diameter → parasitic pumping (∝ 1/D⁵) | GEOPHIRES output |
 | Thermal drawdown vs. heat-exchange area | GEOPHIRES output |
-| **Turbine $/kW economy of scale** | **Input assumption** (2300 $/kW, below GEOPHIRES's ~2480 correlation) |
+| **Turbine $/kW** | **Input assumption** (2480 $/kW = GEOPHIRES's own correlation; no discount) |
 | **Drilling-cost factors (ROP, FOAK→NOAK)** | **Input assumption** (FOAK 1.7 → NOAK 1.2, keeps a real premium) |
-| Cost of capital / discount rate | *Not modeled* (fixed charge rate held constant) |
+| **Cost of capital (fixed charge rate)** | **Input assumption** (held at central 5.8 % throughout) |
 
-The two input assumptions are held **conservative on purpose** so the endpoint
-lands *at* the $45/MWh moonshot target, not below it.
+The cost inputs are now anchored on **central, not favorable, values** so the
+endpoint lands at the **expected ~$52/MWh** (the Monte Carlo median), not the
+favorable $45 moonshot.
 
-The cost-of-capital lever is intentionally excluded so this chart isolates
-**engineering and resource physics**. In reality, moving from a FOAK risk
-premium to a NOAK discount rate is often the single largest LCOE lever of all —
-but it is a financing story, not a physics one, and belongs on a separate slide.
-**The tornado analysis (below) confirms this empirically: cost of capital is the
-single largest swing on the $45 endpoint, bigger than any physics lever.**
+Unlike earlier versions, **cost of capital is now included** — held constant at
+the central fixed charge rate of **5.8 %** across all steps. The tornado shows it
+is the single largest swing on the endpoint (bigger than any physics lever), so
+omitting it would hide the dominant uncertainty. We hold it *constant* (rather
+than making it a separate waterfall bar) because it is a financing story, not a
+physics one; its effect is explored in the tornado and Monte Carlo instead.
 
 ---
 
-## How robust is the $45 endpoint? (tornado + Monte Carlo)
+## How robust is the endpoint? (tornado + Monte Carlo)
 
-The waterfall is one deterministic path. `tornado_montecarlo.py` stress-tests the
-endpoint by perturbing each driver over realistic 2035 ranges:
+`tornado_montecarlo.py` stress-tests the result by perturbing each driver over
+realistic 2035 ranges. **It is exactly this analysis that set the $52 endpoint:**
 
-- **`tornado.png`** — each waterfall category, *plus cost of capital*, swung from
-  a favorable to an unfavorable value with all else held at the NOAK base. Cost
-  of capital dominates (≈$39 ↔ $70); the flow/turbine bundle and temperature are
-  the largest physics levers; and **subsurface drawdown is downside-only** (a
-  good reservoir can't beat the base, a bad one adds ~$14/MWh).
 - **`montecarlo.png`** — all drivers varied simultaneously (triangular
-  distributions): P10/P50/P90 = **$43 / $52 / $65/MWh**, with only **~19 % of
-  runs beating $45**. The key honest takeaway: the deterministic $45 endpoint is
-  a *favorable* (~P15–20) case, not the expected one — the median is ~$52, and
-  the upside tail is dominated by cost of capital and reservoir drawdown.
+  distributions, modes at the engineering-optimum values): P10/P50/P90 =
+  **$43 / $52 / $65/MWh**, with only **~19 % of runs beating $45**. The
+  **median is $52**, and that is what the waterfall is now anchored to. The
+  engineering-optimum point ($45, the old headline) turns out to be only a
+  *favorable* ~P15–P20 case; the upside tail is dominated by cost of capital and
+  reservoir drawdown.
+- **`tornado.png`** — each waterfall category, *plus cost of capital*, swung from
+  a favorable to an unfavorable value, anchored on the engineering-optimum ($45)
+  point. Cost of capital dominates (≈$39 ↔ $70) — bigger than any physics lever;
+  the flow/turbine bundle and temperature are the largest physics swings; and
+  **subsurface drawdown is downside-only** (a good reservoir can't beat the base,
+  a bad one adds ~$14/MWh).
+
+So the two figures and the waterfall tie together: the waterfall endpoint ($52) =
+the Monte Carlo **median**; the $45 moonshot = the Monte Carlo **~P19** (favorable).
 
 See `hypothesis.md` §3b for the full ranges, distributions, and results.
 

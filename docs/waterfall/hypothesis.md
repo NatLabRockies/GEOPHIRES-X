@@ -8,9 +8,19 @@ that check were changed and the model re-run; those changes are noted below.*
 
 The analysis runs GEOPHIRES-X on top of `tests/examples/example1.txt`, starting
 from a first-of-a-kind (FOAK) field and applying five levers cumulatively. It
-lands at **~$45/MWh — the DOE Enhanced Geothermal Shot 2035 target** — from a
-**~$171/MWh** FOAK start, while keeping every input within a defensible 2035
-envelope.
+lands at **~$52/MWh — the EXPECTED (central, Monte-Carlo-median) 2035 cost** —
+from a **~$192/MWh** FOAK start, while keeping every input within a defensible
+2035 envelope.
+
+> **Re-anchored to the median (May 2026).** An earlier version landed at
+> **$45/MWh — the DOE "moonshot" target**. The Monte Carlo (§3b) then showed $45
+> is only a *favorable* (~P15–P20) outcome — beaten by ~19 % of runs — so the
+> waterfall is now anchored on **central, not favorable, cost assumptions** and
+> lands at the **$52 median**. The two changes that move $45 → $52 are: cost of
+> capital at the **median** fixed charge rate (5.8 %, not an optimistic 5.0 %),
+> and plant cost at GEOPHIRES's **own** size correlation (2480 $/kW, no
+> economy-of-scale discount). The $45 moonshot remains reachable, just not the
+> central expectation.
 
 ---
 
@@ -32,8 +42,9 @@ small, and not yet optimized.
 | Plant | Subcritical ORC (binary) | Held constant across **all** steps | ✔ |
 | Utilization factor | 0.85 | Conservative baseload availability | ✔ (often higher) |
 | Drilling cost factor | **1.7** (FOAK premium) | Early EGS wells run well above the generic cost correlation | ✔ FOAK is expensive |
+| Cost of capital (FCR) | **5.8 %** (held throughout) | Central/median fixed charge rate (see §3b); applied to every step | ✔ central, not optimistic |
 
-**Resulting FOAK LCOE: ~$171/MWh, ~1.6 MW net.** This is consistent with
+**Resulting FOAK LCOE: ~$192/MWh, ~1.6 MW net.** This is consistent with
 published FOAK EGS estimates (commonly ~$150–200+/MWh), so the *starting point*
 is realistic rather than artificially inflated.
 
@@ -43,7 +54,7 @@ is realistic rather than artificially inflated.
 
 Each lever is applied **on top of** the previous state. "Δ" is the LCOE change.
 
-### Lever 1 — Scale (more wells) Δ = −$37/MWh
+### Lever 1 — Scale (more wells) Δ = −$42/MWh
 - **Change:** production/injection wells 1 → **4**; drilling cost factor 1.7 → **1.5**.
 - **Hypothesis:** "Drill the field, not the well." Fixed costs (exploration,
   pads, interconnection, FOAK engineering) are amortized over more output, and
@@ -53,7 +64,7 @@ Each lever is applied **on top of** the previous state. "Δ" is the LCOE change.
   stage) is a small commercial field. The learning credit (1.7→1.5, ~12 %) is
   modest versus observed drilling learning rates.
 
-### Lever 2 — Temperature Δ = −$68/MWh (largest lever)
+### Lever 2 — Temperature Δ = −$75/MWh (largest lever)
 - **Change:** depth 3 → **4 km**, gradient 50 → **60 °C/km** (~256 °C average
   production temperature).
 - **Hypothesis:** Hotter rock → more exergy per kg → higher conversion
@@ -69,12 +80,13 @@ Each lever is applied **on top of** the previous state. "Δ" is the LCOE change.
   not a generic one. A cooler 52 °C/km site lands at ~$53/MWh instead of $45 (see
   §3). The temperature is the single biggest swing factor in the whole analysis.
 
-### Lever 3 — Monobore + laterals → flow → turbine Δ = −$13/MWh
+### Lever 3 — Monobore + laterals → flow → turbine Δ = −$12/MWh
 - **Change:** diameter 6.625″ → **8.5″**; flow 40 → **80 kg/s**; PI/II 5 → **10
-  kg/s/bar**; plant cost set to **2300 $/kW**.
+  kg/s/bar**; plant cost set to **2480 $/kW**.
 - **Hypothesis:** A wider monobore plus horizontal/multilateral laterals push
-  more flow per well at low parasitic pumping (friction ∝ 1/diameter⁵), and the
-  resulting larger plant earns a modest turbine economy of scale.
+  more flow per well at low parasitic pumping (friction ∝ 1/diameter⁵). The bar
+  is almost entirely the flow → power jump — in the central case we assert **no**
+  turbine economy-of-scale discount.
 - **2035 realism:**
   - Flow **80 kg/s/well**: ✔ **demonstrated** — Fervo has reported ~80–100 kg/s
     from horizontal EGS wells. This is at the achievable frontier, not beyond it.
@@ -83,12 +95,13 @@ Each lever is applied **on top of** the previous state. "Δ" is the LCOE change.
     optimistic; 10 is a solid-but-realistic stimulated value. *(Sensitivity:
     LCOE is nearly insensitive to PI here because pumping is small — PI 15→8
     moves it <$0.3/MWh — so the conservative value costs nothing.)*
-  - Plant **2300 $/kW**: ✔ **conservative** — this is *below* GEOPHIRES's own
-    size-correlated estimate (~2480 $/kW) for this plant, i.e. a modest, not
-    heroic, economy of scale. Utility ORC binary plants run ~$2000–3000/kW.
-    *(An earlier 1200 $/kW value was rejected as ~half the model's correlation.)*
+  - Plant **2480 $/kW**: ✔ **central** — this is GEOPHIRES's *own* size-correlated
+    estimate for this plant, i.e. **no asserted discount**. Utility ORC binary
+    plants run ~$2000–3000/kW. *(Earlier versions used 1200 $/kW — rejected as
+    ~half the correlation — then 2300 $/kW — a modest favorable discount; the
+    central case removes the discount.)*
 
-### Lever 4 — Subsurface (lower drawdown) Δ = −$7/MWh
+### Lever 4 — Subsurface (lower drawdown) Δ = −$8/MWh
 - **Change:** fractures 20 → **60**, fracture height 900 → **1000 m** (larger
   heat-exchange area).
 - **Hypothesis:** A larger, well-distributed fracture network (more frac stages
@@ -123,17 +136,18 @@ Each lever is applied **on top of** the previous state. "Δ" is the LCOE change.
 | Gradient / temperature | 60 °C/km / ~256 °C | FORGE & Fervo Utah ~70 °C/km | Realistic *for a targeted site* | kept + caveat |
 | Flow per well | 80 kg/s | Fervo ~80–100 kg/s demonstrated | Realistic (frontier) | kept |
 | Productivity index | 10 kg/s/bar | stimulated EGS | Realistic | **lowered 15→10** |
-| Plant cost | 2300 $/kW | ORC binary $2000–3000/kW | Conservative | kept (rejected 1200) |
+| Plant cost | 2480 $/kW | ORC binary $2000–3000/kW | Central (= GEOPHIRES correlation) | **raised 2300→2480 (no discount)** |
 | Fracture network | 60 × 1000 m | multilateral frac stages | Realistic | **changed from 40 × 1500 m** |
 | Drilling cost | factor 1.2 (~$7.9M/well) | Fervo trending to ~$5M (shallower) | Conservative | kept (not driven <1.0) |
 | Efficiency | 18.9 % | subcritical ORC at 256 °C | Realistic | kept |
-| Cost of capital | fixed charge rate, **unchanged** | — | Excluded on purpose | not modeled |
+| Cost of capital | FCR **5.8 %** (held throughout) | central NOAK financing | Central (median) | **raised 5.0→5.8 % (re-anchor)** |
 
-**Net result of the realism pass:** two parameters were tightened (PI 15→10;
-fracture geometry 40×1500 m → 60×1000 m) and one earlier value had already been
-rejected (plant cost 1200→2300 $/kW). None of these materially changed the
-outcome — the stack still lands at **$45.0/MWh** — which is the point: the result
-is robust to using realistic rather than aggressive inputs.
+**Net result of the realism pass:** the engineering inputs were tightened to
+realistic values (PI 15→10; fracture geometry 40×1500 m → 60×1000 m; plant
+1200→2300→2480 $/kW), and the two *favorable* cost assumptions were finally moved
+to their **central** values (plant cost to the GEOPHIRES correlation; cost of
+capital 5.0→5.8 %). With those central values the stack lands at **$52.3/MWh**,
+the Monte Carlo **median** (§3b) — the expected case, not a favorable one.
 
 ---
 
@@ -198,20 +212,21 @@ distribution** (min, mode = NOAK base, max):
 | Mean | 52.9 |
 | Share of runs meeting the $45 target | **19 %** |
 
-The distribution is **right-skewed**: the median is ~$52, *well above* the
-deterministic $45 endpoint, and only ~1 run in 5 actually beats $45. The long
-upside tail is driven mainly by the **cost-of-capital and reservoir-drawdown**
-draws, while the favorable tail is bounded because several physics levers
-(especially subsurface) cannot improve much beyond the already-optimized base.
+The distribution is **right-skewed**: the median is ~$52, and only ~1 run in 5
+actually beats $45. The long upside tail is driven mainly by the **cost-of-capital
+and reservoir-drawdown** draws, while the favorable tail is bounded because
+several physics levers (especially subsurface) cannot improve much beyond the
+already-optimized base.
 
 **Interpretation — this is the most important honest finding of the whole
-analysis.** The deterministic waterfall's $45/MWh is **not the expected outcome;
-it is a favorable (~P15–P20) case.** The *expected* LCOE under realistic 2035
-uncertainty is ~$52/MWh, and hitting the $45 moonshot reliably depends as much on
-**low-cost financing** (the cost-of-capital draw) and a **well-behaved reservoir**
-as on the engineering levers. The honest way to present the waterfall is
-therefore: "$45 is achievable and credible, but it requires several things to go
-right at once — the central expectation is closer to $50."
+analysis, and the reason the waterfall was re-anchored.** The engineering-optimum
+point ($45/MWh) is **not the expected outcome; it is a favorable (~P15–P20)
+case.** The *expected* LCOE under realistic 2035 uncertainty is the median
+**~$52/MWh — which is what the deterministic waterfall now reports.** Hitting the
+$45 moonshot reliably depends as much on **low-cost financing** (the
+cost-of-capital draw) and a **well-behaved reservoir** as on the engineering
+levers. The honest framing: "$52 is the central expectation; $45 is achievable
+but requires several things to go right at once."
 
 ---
 
@@ -221,15 +236,16 @@ right at once — the central expectation is closer to $50."
    high-gradient (~60 °C/km) resource. On a merely good site (~52 °C/km) the
    endpoint is ~$53/MWh. State this as "for the high-gradient sites next-gen
    geothermal targets," not as a generic national number.
-2. **Two inputs are assumptions, not GEOPHIRES outputs:** the plant $/kW and the
-   drilling cost factors. Both are held conservative (below the model's own
-   correlation / above a generic well cost) precisely so the endpoint sits *at*
-   the moonshot target rather than below it.
-3. **Cost of capital is excluded.** A FOAK→NOAK discount-rate reduction is, in
-   reality, often the single largest LCOE lever — but it is a *financing* story,
-   not physics, and is intentionally kept out of this chart. Adding it would
-   create headroom *below* $45 attributable to de-risking rather than to
-   optimistic engineering.
+2. **Three inputs are assumptions, not GEOPHIRES outputs:** plant $/kW, the
+   drilling cost factors, and cost of capital. All are held at **central** values
+   (plant = the model's own correlation; drilling above a generic well cost; FCR
+   at the median 5.8 %) so the endpoint is the expected case, not a favorable one.
+3. **Cost of capital is the dominant lever and is now included (held constant).**
+   The tornado shows FCR swings the endpoint more than any physics lever
+   (≈$39↔$70 over 4–9 %). It is held *constant* at the central 5.8 % rather than
+   made a waterfall bar, because it is a *financing* story, not physics; its full
+   effect is shown in the tornado/Monte Carlo. The $45 moonshot is essentially
+   the same project financed cheaply (~5 %) and with a small plant-cost discount.
 4. **Flow is at the demonstrated frontier (80 kg/s).** Achievable today in the
    best wells; assuming it as the field-wide norm by 2035 is a genuine (but
    defensible) bet on stimulation/lateral technology maturing.

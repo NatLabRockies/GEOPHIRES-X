@@ -3,12 +3,15 @@ LCOE cost-reduction waterfall for next-gen (EGS) geothermal.
 
 Reproduces the "innovations concatenate into a step-change in cost" story
 (slide 45c) using GEOPHIRES-X. A conservative first-of-a-kind (FOAK) EGS field
-is taken as "today" (~$170/MWh); levers are applied *cumulatively* and the
+is taken as "today" (~$190/MWh); levers are applied *cumulatively* and the
 levelized cost of electricity (LCOE) is read after each step. The stack lands at
-~$45/MWh -- the DOE Enhanced Geothermal Shot ("moonshot") target for 2035 --
-using cost assumptions that are deliberately realistic (the plant $/kW is below
-GEOPHIRES's own size correlation, and NOAK drilling keeps a deep-EGS premium),
-so the endpoint sits AT the target rather than implausibly below it.
+~$52/MWh -- the EXPECTED (central / Monte-Carlo-median) outcome under realistic
+2035 uncertainty (see tornado_montecarlo.py). The endpoint is deliberately
+anchored on *central*, not favorable, assumptions: cost of capital at the median
+fixed charge rate (5.8%, not an optimistic 5.0%) and plant $/kW at GEOPHIRES's
+own size correlation (no asserted economy-of-scale discount). The $45/MWh DOE
+"moonshot" is still reachable but is a favorable (~P15-P20) case, not the
+central expectation -- so the headline does not oversell.
 
 Five levers, in order (order matters in a cumulative waterfall):
     1. Scale          -- "drill the field": more wells amortize fixed
@@ -94,6 +97,7 @@ today = {
     'Utilization Factor': 0.85,
     'Well Drilling Cost Correlation': 1,
     'Well Drilling and Completion Capital Cost Adjustment Factor': 1.7,  # FOAK premium
+    'Fixed Charge Rate': 0.058,            # cost of capital: central/median case (see below)
     'Print Output to Console': 0,
 }
 
@@ -115,10 +119,10 @@ levers = [
         'Production Flow Rate per Well': 80,
         'Productivity Index': 10,
         'Injectivity Index': 10,
-        # the bigger plant unlocks a larger turbine at a modest economy of scale.
-        # 2300 $/kW is below GEOPHIRES's own size correlation (~2480 $/kW here),
-        # i.e. a realistic, NOT aggressive, plant cost. (Input assumption.)
-        'Capital Cost for Power Plant for Electricity Generation': 2300,  # $/kW
+        # the bigger plant gets a larger turbine, but we assert NO economy-of-scale
+        # discount: 2480 $/kW is GEOPHIRES's own size-correlated estimate for this
+        # plant. This is the central (not favorable) cost. (Input assumption.)
+        'Capital Cost for Power Plant for Electricity Generation': 2480,  # $/kW
     }),
     ('Subsurface\n(lower drawdown)', {
         'Number of Fractures': 60,         # more frac stages (multilateral laterals)
@@ -155,7 +159,7 @@ def main():
         labels.append(name)
 
     lcoes = [m['lcoe'] for m in metrics]
-    labels.append('Stacked\ntarget')
+    labels.append('Central case\n(~P50)')
     lcoes.append(lcoes[-1])
     metrics.append(metrics[-1])
 
@@ -216,6 +220,10 @@ def plot_waterfall(labels, lcoes, metrics):
                  rf'(GEOPHIRES-X; \${start:.0f}/MWh $\rightarrow$ \${target:.0f}/MWh, subcritical ORC throughout)',
                  fontsize=14, fontweight='bold')
     ax.set_ylim(0, start * 1.12)
+    # $45 DOE moonshot reference -- below the $52 central endpoint (favorable case)
+    ax.axhline(45, color='#2e7d32', lw=1.2, ls='--', alpha=0.8)
+    ax.text(n - 1, 45, '  $45 moonshot (favorable case)', color='#2e7d32',
+            fontsize=8.5, va='center', ha='right')
     ax.grid(axis='y', alpha=0.3)
     for spine in ['top', 'right']:
         ax.spines[spine].set_visible(False)
@@ -231,7 +239,7 @@ def plot_waterfall(labels, lcoes, metrics):
     ]
     # short headers so the 7 columns don't overlap
     col_labels = ['Today', 'Scale', 'Temp', 'Monobore+\nlaterals',
-                  'Subsurface', 'Drilling', 'Target']
+                  'Subsurface', 'Drilling', 'Central\n(~P50)']
     tbl = tax.table(cellText=cell_text, rowLabels=row_labels, colLabels=col_labels,
                     cellLoc='center', rowLoc='right', loc='center')
     tbl.auto_set_font_size(False)
@@ -245,8 +253,8 @@ def plot_waterfall(labels, lcoes, metrics):
         cell.set_edgecolor('#dddddd')
 
     fig.text(0.01, 0.005,
-             'Notes: Endpoint ~ \\$45/MWh = DOE Enhanced Geothermal Shot 2035 target. Plant \\$/kW (2300) is below GEOPHIRES\'s own ~2480 \\$/kW correlation; NOAK drilling keeps a deep-EGS premium (factor 1.2) — realistic, not aggressive.\n'
-             'Flow & subsurface are coupled; laterals shown via per-well flow + connectivity. Turbine \\$/kW and drilling factors are input assumptions, not GEOPHIRES outputs. See PHYSICS.md.',
+             'Notes: Endpoint ~ \\$52/MWh = central (Monte-Carlo-median) case. Anchored on central assumptions: cost of capital at median FCR 5.8% and plant \\$/kW at GEOPHIRES\'s own ~2480 correlation (no economy-of-scale discount).\n'
+             'The \\$45 DOE moonshot is reachable but is a favorable (~P15-20) case. Flow & subsurface are coupled; turbine \\$/kW, drilling factors and FCR are input assumptions, not GEOPHIRES outputs. See tornado_montecarlo.py / PHYSICS.md.',
              fontsize=6.5, color='#666', style='italic')
 
     fig.tight_layout(rect=(0, 0.02, 1, 1))
