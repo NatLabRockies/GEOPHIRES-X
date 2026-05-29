@@ -1,0 +1,7 @@
+step,LCOE_USD_per_MWh,net_MW,total_CAPEX_MUSD
+Today,154.0,1.6,26.4
+Scale (drill the field),116.1,9.3,112.1
+Drilling / monobore,100.5,9.3,95.2
+Temperature,52.8,35.7,192.4
+Flow / turbine scale,42.7,50.1,211.3
+Conversion efficiency,38.0,50.0,198.3
