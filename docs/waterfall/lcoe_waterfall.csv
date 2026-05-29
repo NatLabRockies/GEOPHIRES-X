@@ -1,6 +1,5 @@
 step,LCOE_USD_per_MWh,net_MW,production_wells,net_MW_per_well,flow_per_well_kg_s,total_CAPEX_MUSD
 Today,154.0,1.6,1,1.59,40.0,26.4
 Scale (drill the field),116.1,9.3,6,1.54,40.0,112.1
-Drilling / monobore,100.5,9.3,6,1.56,40.0,95.2
-Temperature,52.8,35.7,6,5.96,40.0,192.4
-Flow / turbine scale,42.7,50.1,6,8.35,80.0,211.3
+Temperature,58.7,35.7,6,5.95,40.0,218.3
+Monobore → flow → turbine,42.7,50.1,6,8.35,80.0,211.3

@@ -10,16 +10,16 @@ after each step. The descending steps form the waterfall.
 Levers (in order):
     1. Scale          -- "drill the field, not the well": more wells amortize
                          fixed (exploration/surface) cost + cross-well learning
-                         lowers per-well drilling cost.
-    2. Drilling/monobore -- larger-diameter monobore + conventional-rig
-                         efficiency lowers $/well.
-    3. Temperature     -- deeper/hotter resource. Conversion efficiency is
-                          physically coupled to temperature, so this lever
-                          captures the efficiency gain too (plant held at
-                          subcritical ORC throughout).
-    4. Flow / turbine scale -- bigger bore + better connectivity flow more kg/s,
-                          and the larger throughput unlocks a bigger, cheaper
-                          turbine (lower plant $/kW).
+                         lowers the per-well drilling cost factor.
+    2. Temperature     -- deeper/hotter resource. Conversion efficiency is
+                         physically coupled to temperature, so this lever
+                         captures the efficiency gain too (plant held at
+                         subcritical ORC throughout).
+    3. Monobore -> flow -> turbine -- one causal chain: a wider monobore flows
+                         more kg/s per well at low parasitic pumping (-> more
+                         power per well) and simplifies the well (cheaper
+                         $/well); the bigger plant then unlocks a larger,
+                         cheaper turbine (lower plant $/kW).
 
 Run:  python docs/waterfall/lcoe_waterfall.py
 Outputs: lcoe_waterfall.png and lcoe_waterfall.csv in this folder.
@@ -78,40 +78,43 @@ today = {
 }
 
 # Cumulative lever deltas applied on top of the running case.
-# NOTE: order matters in a cumulative waterfall. Temperature is pulled before
-# Flow so that the extra mass flow lands on a hotter resource (more net MW,
-# not just more parasitic pumping).
+# Three levers, matching the physical story:
+#   1. Scale   -- "drill the field": more wells. Spreads fixed (exploration/
+#                 surface) cost over more output + cross-well learning trims
+#                 the per-well drilling cost factor (1.4 FOAK -> 1.15).
+#   2. Temperature -- deeper/hotter resource. Conversion efficiency is coupled
+#                 to temperature, so this lever carries the efficiency gain too
+#                 (plant held at subcritical ORC throughout). Pulled BEFORE flow
+#                 so the extra mass flow lands on a hot resource.
+#   3. Monobore -> flow -> turbine -- one causal chain: a wider monobore lets
+#                 each well flow more kg/s without a pumping penalty (diameter
+#                 up, productivity/injectivity up), which lifts power per well;
+#                 the bigger plant then unlocks a larger, cheaper turbine (lower
+#                 plant $/kW). The monobore also simplifies the well (fewer
+#                 casing strings), trimming the drilling cost factor 1.15 -> 0.85.
 levers = [
     ('Scale\n(drill the field)', {
         'Number of Production Wells': 6,
         'Number of Injection Wells': 6,
-        # cross-well learning brings the FOAK premium down toward NOAK
-        'Well Drilling and Completion Capital Cost Adjustment Factor': 1.15,
-    }),
-    ('Drilling /\nmonobore', {
-        'Production Well Diameter': 8.5,
-        'Injection Well Diameter': 8.5,
-        'Well Drilling and Completion Capital Cost Adjustment Factor': 0.85,
+        'Well Drilling and Completion Capital Cost Adjustment Factor': 1.15,  # cross-well learning
     }),
     ('Temperature', {
         'Reservoir Depth': 4,
-        'Gradient 1': 60,                  # ~250 C resource
+        'Gradient 1': 60,                  # ~260 C bottom-hole
     }),
-    ('Flow /\nturbine scale', {
-        # bigger bore + better-stimulated reservoir delivers more kg/s without
-        # the parasitic-pumping penalty (raise reservoir deliverability too) ...
+    ('Monobore →\nflow → turbine', {
+        # wider monobore: more flow per well with low parasitic pumping
+        'Production Well Diameter': 8.5,
+        'Injection Well Diameter': 8.5,
         'Production Flow Rate per Well': 80,
         'Productivity Index': 15,
         'Injectivity Index': 15,
-        # ... and the larger throughput unlocks a bigger, cheaper turbine:
-        # move down the turbine size curve from the default correlation
-        # (~$4,000/kW gross here) to a large-unit specific cost.
+        # monobore simplifies the well (fewer casing strings) -> cheaper $/well
+        'Well Drilling and Completion Capital Cost Adjustment Factor': 0.85,
+        # the bigger plant unlocks a larger, cheaper turbine (economy of scale).
+        # NB: this plant $/kW is an input assumption, not a GEOPHIRES output.
         'Capital Cost for Power Plant for Electricity Generation': 1200,  # $/kW
     }),
-    # NOTE: no separate "conversion efficiency" lever. Conversion efficiency is
-    # physically coupled to resource temperature and is already captured by the
-    # Temperature lever (GEOPHIRES derives plant efficiency from temperature for
-    # the given plant type). The plant is held at subcritical ORC throughout.
 ]
 
 
