@@ -193,6 +193,97 @@ def _worker_chunk(seed: int, count: int, csv_path: str):
             f.flush()
 
 
+def _replay_inputs(n: int, chunk: int = 50) -> list:
+    """Reconstruct the exact sampled inputs for an n-run MC from the fixed seeds.
+
+    The MC runs in chunks of `chunk`, chunk `idx` seeded `1000 + idx`. Replaying
+    the same RNG stream regenerates the identical inputs WITHOUT re-running
+    GEOPHIRES, so results are fully reproducible from the saved LCOEs alone.
+    """
+    out, done, idx = [], 0, 0
+    while done < n:
+        c = min(chunk, n - done)
+        rng = np.random.default_rng(1000 + idx)
+        for _ in range(c):
+            out.append(_sample(rng))
+        done += c
+        idx += 1
+    return out
+
+
+# friendly column name per (distinct) sampled driver, for the spreadsheet
+_FRIENDLY = [
+    ('Gradient 1', 'gradient_C_per_km'),
+    ('Production Flow Rate per Well', 'flow_kg_per_s'),
+    ('Capital Cost for Power Plant for Electricity Generation', 'plant_cost_USD_per_kW'),
+    ('Well Drilling and Completion Capital Cost Adjustment Factor', 'drilling_factor'),
+    ('Fixed Charge Rate', 'fixed_charge_rate'),
+    ('Productivity Index', 'productivity_index_kg_s_bar'),
+    ('Number of Fractures', 'num_fractures'),
+    ('Fracture Height', 'fracture_height_m'),
+    ('Number of Production Wells', 'doublets'),
+]
+
+
+def build_workbook(lcoes: np.ndarray):
+    """Write montecarlo_results.xlsx (+ .csv) from the LCOE array via input replay."""
+    import pandas as pd
+
+    inputs = _replay_inputs(len(lcoes))
+    rows = []
+    for s, lc in zip(inputs, lcoes):
+        row = {friendly: s[key] for key, friendly in _FRIENDLY}
+        row['LCOE_USD_per_MWh'] = round(float(lc), 2)
+        rows.append(row)
+    df = pd.DataFrame(rows)
+    df.insert(0, 'run', range(1, len(df) + 1))
+
+    v = df['LCOE_USD_per_MWh'].to_numpy()
+    pct = lambda q: round(float(np.percentile(v, q)), 2)
+    summary = pd.DataFrame({
+        'statistic': ['runs', 'mean', 'std', 'min', 'P10', 'P25', 'P50 (median)',
+                      'P75', 'P90', 'max', '% of runs <= $45 (moonshot)',
+                      '% of runs <= $52 (central)'],
+        'LCOE_USD_per_MWh': [len(v), round(float(v.mean()), 2), round(float(v.std()), 2),
+                             round(float(v.min()), 2), pct(10), pct(25), pct(50), pct(75),
+                             pct(90), round(float(v.max()), 2),
+                             round(float((v <= 45).mean() * 100), 1),
+                             round(float((v <= 52).mean() * 100), 1)],
+    })
+
+    # tornado (recompute -- 12 GEOPHIRES runs) for a self-contained workbook
+    _init()
+    base = _lcoe({})
+    trows = []
+    for label, fav, unf in TORNADO:
+        lo, hi = _lcoe(fav), _lcoe(unf)
+        trows.append({'driver': label.replace('\n', ' '),
+                      'favorable_LCOE': round(lo, 2), 'base_LCOE': round(base, 2),
+                      'unfavorable_LCOE': round(hi, 2), 'swing': round(abs(hi - lo), 2)})
+    tornado_df = pd.DataFrame(trows).sort_values('swing', ascending=False)
+
+    inputs_doc = pd.DataFrame({
+        'driver': [f for _, f in _FRIENDLY],
+        'distribution': ['triangular(min, mode, max)'] * len(_FRIENDLY),
+        'min': [52, 66, 2000, 0.95, 0.04, 7, 30, 700, 3],
+        'mode': [60, 80, 2300, 1.2, 0.05, 10, 60, 1000, 4],
+        'max': [68, 92, 2800, 1.5, 0.09, 14, 100, 1200, 6],
+    })
+
+    df.to_csv(HERE / 'montecarlo_results.csv', index=False)
+    xlsx = HERE / 'montecarlo_results.xlsx'
+    try:
+        with pd.ExcelWriter(xlsx, engine='openpyxl') as w:
+            summary.to_excel(w, sheet_name='summary', index=False)
+            df.to_excel(w, sheet_name='monte_carlo_runs', index=False)
+            inputs_doc.to_excel(w, sheet_name='input_distributions', index=False)
+            tornado_df.to_excel(w, sheet_name='tornado', index=False)
+        print(f'Saved {xlsx} (+ .csv)  [{len(df)} runs, 4 sheets]')
+    except ImportError:
+        print(f'Saved {HERE / "montecarlo_results.csv"} '
+              f'(install openpyxl for the .xlsx workbook: pip install openpyxl)')
+
+
 def run_montecarlo(n: int, base_lcoe: float):
     import matplotlib
     matplotlib.use('Agg')
@@ -261,6 +352,7 @@ def run_montecarlo(n: int, base_lcoe: float):
     print(f'Saved {out}')
     print(f'\nMonte Carlo ({len(lcoes)} runs): P10=${p10:.1f} P50=${p50:.1f} P90=${p90:.1f}  '
           f'| {p_target:.0f}% meet the $45 target  | mean=${lcoes.mean():.1f}')
+    build_workbook(lcoes)
     return p10, p50, p90, p_target
 
 
@@ -277,5 +369,8 @@ if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == '_mcworker':
         # _mcworker <seed> <count> <csv_path>  -- internal chunk worker
         _worker_chunk(int(sys.argv[2]), int(sys.argv[3]), sys.argv[4])
+    elif len(sys.argv) > 1 and sys.argv[1] == 'excel':
+        # rebuild montecarlo_results.xlsx from saved montecarlo_samples.csv (no rerun)
+        build_workbook(np.loadtxt(HERE / 'montecarlo_samples.csv'))
     else:
         main()

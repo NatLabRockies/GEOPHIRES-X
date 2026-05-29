@@ -328,9 +328,16 @@ See `hypothesis.md` §3b for the full ranges, distributions, and results.
 ## Reproducing the numbers
 
 ```bash
-python docs/waterfall/lcoe_waterfall.py        # the waterfall chart + csv
-python docs/waterfall/tornado_montecarlo.py    # tornado.png + montecarlo.png
+python docs/waterfall/lcoe_waterfall.py            # the waterfall chart + csv
+python docs/waterfall/tornado_montecarlo.py        # tornado.png + montecarlo.png + montecarlo_results.xlsx
+python docs/waterfall/tornado_montecarlo.py excel  # rebuild the .xlsx from saved draws (no GEOPHIRES rerun)
 ```
+
+The Monte Carlo writes **`montecarlo_results.xlsx`** (sheets: `summary`,
+`monte_carlo_runs` = every run's inputs + LCOE, `input_distributions`,
+`tornado`) and a diffable **`montecarlo_results.csv`**. Inputs are reproducible
+from fixed per-chunk seeds, so the workbook can be rebuilt from the saved draws
+with the `excel` subcommand without re-running GEOPHIRES.
 
 The waterfall outputs `lcoe_waterfall.png` (the chart) and `lcoe_waterfall.csv`
 (every step's LCOE, net MW, well count, flow, pumping, and total CAPEX). All

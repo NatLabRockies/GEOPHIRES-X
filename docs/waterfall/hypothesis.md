@@ -210,7 +210,13 @@ distribution** (min, mode = NOAK base, max):
 | P50 (median) | **52.4** |
 | P90 (unfavorable) | **64.9** |
 | Mean | 52.9 |
-| Share of runs meeting the $45 target | **19 %** |
+| Share of runs meeting the $45 target | **18.8 %** |
+
+All 400 runs (their sampled inputs + LCOE), these summary statistics, the input
+distributions, and the tornado are saved to **`montecarlo_results.xlsx`** (and a
+diffable `montecarlo_results.csv`). The draws are reproducible from fixed
+per-chunk seeds, so the workbook can be regenerated with
+`python tornado_montecarlo.py excel` without re-running GEOPHIRES.
 
 The distribution is **right-skewed**: the median is ~$52, and only ~1 run in 5
 actually beats $45. The long upside tail is driven mainly by the **cost-of-capital
