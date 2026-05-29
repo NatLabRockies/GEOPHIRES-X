@@ -21,6 +21,7 @@ Everything is anchored on the same NOAK configuration as the waterfall endpoint.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import numpy as np
@@ -178,28 +179,53 @@ def _sample(rng) -> dict:
     }
 
 
+def _worker_chunk(seed: int, count: int, csv_path: str):
+    """Run `count` MC samples and APPEND their LCOEs to csv_path (one per line).
+
+    Invoked as a fresh subprocess per chunk so GEOPHIRES's per-run memory leak is
+    reset and partial results are persisted (a kill cannot wipe earlier chunks).
+    """
+    rng = np.random.default_rng(seed)
+    _init()
+    with open(csv_path, 'a') as f:
+        for _ in range(count):
+            f.write(f'{_lcoe(_sample(rng))}\n')
+            f.flush()
+
+
 def run_montecarlo(n: int, base_lcoe: float):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
 
-    # NOTE: GEOPHIRES serializes across processes (JIT/file-lock contention), so
-    # multiprocessing is pathologically slow here -- run serially with progress.
+    # NOTE: GEOPHIRES (a) serializes across processes (JIT/file-lock contention)
+    # and (b) leaks memory across hundreds of runs in one process (it OOM-kills
+    # near ~400 runs). So we run the MC in *fresh subprocess chunks* that each
+    # append results to a CSV: the leak resets every chunk, and partial results
+    # survive a kill. See `_worker_chunk` and the CLI dispatch at the bottom.
+    import subprocess
     import sys
     import time
 
-    rng = np.random.default_rng(42)
-    samples = [_sample(rng) for _ in range(n)]
-    _init()
+    csv = HERE / 'montecarlo_samples.csv'
+    csv.unlink(missing_ok=True)
+    chunk = 50
+    env = {**os.environ, 'PYTHONPATH': 'src' + os.pathsep + os.environ.get('PYTHONPATH', '')}
     t0 = time.time()
-    vals = []
-    for i, s in enumerate(samples, 1):
-        vals.append(_lcoe(s))
-        if i % 25 == 0 or i == n:
-            rate = i / (time.time() - t0)
-            print(f'  MC run {i}/{n}  ({rate:.1f}/s, eta {((n - i) / rate):.0f}s)', flush=True)
-            sys.stdout.flush()
-    lcoes = np.array(vals)
+    done = 0
+    idx = 0
+    while done < n:
+        c = min(chunk, n - done)
+        subprocess.run([sys.executable, __file__, '_mcworker', str(1000 + idx), str(c), str(csv)],
+                       check=True, env=env)
+        done += c
+        idx += 1
+        have = sum(1 for _ in open(csv)) if csv.exists() else 0
+        rate = have / (time.time() - t0) if have else 0
+        print(f'  MC chunk {idx}: {have}/{n} done ({rate:.2f}/s, eta {((n - have) / rate if rate else 0):.0f}s)',
+              flush=True)
+
+    lcoes = np.loadtxt(csv)
     lcoes = lcoes[np.isfinite(lcoes)]
 
     p10, p50, p90 = np.percentile(lcoes, [10, 50, 90])
@@ -247,4 +273,9 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == '_mcworker':
+        # _mcworker <seed> <count> <csv_path>  -- internal chunk worker
+        _worker_chunk(int(sys.argv[2]), int(sys.argv[3]), sys.argv[4])
+    else:
+        main()
