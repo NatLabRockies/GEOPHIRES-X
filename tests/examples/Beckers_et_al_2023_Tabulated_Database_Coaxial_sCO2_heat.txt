@@ -1,23 +1,25 @@
-# Example 1 from "Tabulated Database of Closed-Loop Geothermal Systems Performance for Cloud-Based Technical and
+# Example from "Tabulated Database of Closed-Loop Geothermal Systems Performance for Cloud-Based Technical and
 #   Economic Modeling of Heat Production and Electricity Generation"
 # Koenraad Beckers Yaroslav Vasyliv Gabriela A. Bran-Anleu Mario Martinez Chad Augustine and Mark White
 # Presented at the 48th Stanford Geothermal Workshop Stanford California February 6-8 2023
 # https://www.nrel.gov/docs/fy23osti/84979.pdf
 #
-# This configuration is water filled U-loop with 1 lateral for direct-use heat.
+# This configuration is sCO2-filled coaxial with 1 lateral for direct-use heat.
 
 Is AGS, True
-Closed-loop Configuration, 1
+Closed-loop Configuration, 2, -- Coaxial
 End-Use Option, 2,        -----direct heat
-Economic Model, 4,        -----CLGS
 Heat Transfer Fluid, 2, ----sCO2
-Production Flow Rate per Well, 40, ---- kg/s for water / 40 kg/s for sCO2
+Number of Production Wells, 1,      ---- 1 production well accounts for the full configuration - 1 up, one down, and a horizontal section
+Number of Injection Wells, 0,		---- No injectors in a closed coaxial
+Production Flow Rate per Well, 20, ---- kg/s; coaxial CLGS database is unpopulated above ~20 kg/s at 8.5 inch/9,000 m
 All-in Vertical Drilling Costs, 1000.0
 All-in Nonvertical Drilling Costs, 1000.0
+Exploration Capital Cost, 0
 Cylindrical Reservoir Input Depth, 3000 meter,
 Reservoir Depth, 3.0, -----kilometers
 Gradient 1, 0.06, ----deg.c/m
-Total Horizontal Length, 9000, ----- m
+Nonvertical Length per Multilateral Section, 9000, ----- m
 Production Well Diameter,8.5,		--- [inch]
 Injection Temperature, 60.0, -----deg.C
 Plant Lifetime, 40, --- years
