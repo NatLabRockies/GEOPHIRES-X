@@ -4,10 +4,10 @@
 
 Simulation Metadata
 ----------------------
- GEOPHIRES Version: 3.7.19
- Simulation Date: 2025-02-28
- Simulation Time:  11:35
- Calculation Time:      0.997 sec
+ GEOPHIRES Version: 3.15.3
+ Simulation Date: 2026-08-21
+ Simulation Time:  10:35
+ Calculation Time:      0.722 sec
 
 
                            ***AGS/CLGS STYLE OUTPUT***
@@ -40,7 +40,7 @@ Simulation Metadata
                                         ******************************
   YEAR       THERMAL               GEOFLUID               PUMP               NET
              DRAWDOWN             TEMPERATURE             POWER              HEAT
-                                   (deg C)                (MW)               (MW)
+                                   (deg C)            (kWh/yr)               (MW)
    0           1.0000                122.04               0.0000            4.6663
    1           0.9497                115.90               0.0000            4.6663
    2           0.9277                113.21               0.0000            4.4253

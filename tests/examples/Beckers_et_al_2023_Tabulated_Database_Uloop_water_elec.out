@@ -4,10 +4,10 @@
 
 Simulation Metadata
 ----------------------
- GEOPHIRES Version: 3.7.19
- Simulation Date: 2025-02-28
- Simulation Time:  11:33
- Calculation Time:      0.858 sec
+ GEOPHIRES Version: 3.15.3
+ Simulation Date: 2026-08-21
+ Simulation Time:  10:35
+ Calculation Time:      0.752 sec
 
 
                            ***AGS/CLGS STYLE OUTPUT***
@@ -42,7 +42,7 @@ Simulation Metadata
                                         ******************************
   YEAR       THERMAL               GEOFLUID               PUMP               NET               FIRST LAW
              DRAWDOWN             TEMPERATURE             POWER             POWER              EFFICIENCY
-                                     (degC)               (MW)              (MW)                  (%)
+                                     (degC)           (kWh/yr)              (MW)                  (%)
    1           1.0000                122.04               0.0000            0.4143               10.5760
    2           0.9497                122.04               0.0000            0.4143               10.5760
    3           0.9277                118.86               0.0000            0.3841                9.8066

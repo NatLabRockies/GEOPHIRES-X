@@ -732,7 +732,13 @@ class SurfacePlantAGS(SurfacePlant):
         # Now transfer the results to the GEOPHIRES-X arrays: Deep Copy the Arrays
         model.wellbores.ProducedTemperature.value = self.Linear_production_temperature.copy()
         self.TenteringPP.value = model.wellbores.ProducedTemperature.value
+        # Annual_pumping_power is pumping energy per year, not power (see calculatepumpingpower), so relabel
+        # the parameter to match - otherwise AGS outputs report kWh/yr under a MW heading. Preferred and
+        # current units are set together to keep UnitsMatch true and avoid a bogus conversion in Outputs.
         model.wellbores.PumpingPower.value = self.Annual_pumping_power.copy()
+        model.wellbores.PumpingPower.UnitType = Units.ENERGYFREQUENCY
+        model.wellbores.PumpingPower.PreferredUnits = EnergyFrequencyUnit.KWhPERYEAR
+        model.wellbores.PumpingPower.CurrentUnits = EnergyFrequencyUnit.KWhPERYEAR
         self.HeatExtracted.value = self.Instantaneous_heat_production.copy()
         # convert to MW because that is what GEOPHIRES expects
         self.HeatExtracted.value = self.HeatExtracted.value / 1000.0
