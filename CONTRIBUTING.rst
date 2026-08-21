@@ -79,6 +79,7 @@ Run commands in a terminal with View → Tool Windows → Terminal
 2. Install package dependencies (from ``setup.py``)::
 
     pip install -e .
+    pip install -e ".[development]"
 
 (PyCharm may prompt you to install dependencies, making this step unnecessary to run on the command line)
 

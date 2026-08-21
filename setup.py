@@ -96,6 +96,7 @@ setup(
             'bumpversion',
             'sphinx_py3doc_enhanced_theme',
             'opencv-python',  # generate_fervo_project_red_2026_docs
+            'jinja2',  # generate_fervo_project_cape_5_md
         ],
     },
 )
