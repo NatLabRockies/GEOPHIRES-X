@@ -5,6 +5,11 @@ Changelog
 GEOPHIRES v3 (2023-2026)
 ------------------------
 
+3.16
+^^^^
+
+3.16: `Fix Beckers_et_al_2023_Tabulated_Database_Coaxial_sCO2_heat and CLGS Pump Power unit display <https://github.com/NREL/GEOPHIRES-X/pull/515>`__ | `release <https://github.com/NREL/GEOPHIRES-X/releases/tag/v3.16.0>`__
+
 3.15
 ^^^^
 
