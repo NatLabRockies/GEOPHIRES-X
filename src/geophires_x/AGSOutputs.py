@@ -134,12 +134,16 @@ class AGSOutputs(Outputs.Outputs):
                     f.write('                                        *  POWER GENERATION PROFILE  *\n')
                     f.write('                                        ******************************\n')
                     if model.surfaceplant.enduse_option.value == EndUseOptions.ELECTRICITY:  # only electricity
+                        pump_units = f'({model.wellbores.PumpingPower.CurrentUnits.value})'
+                        net_units = f'({model.surfaceplant.NetElectricityProduced.CurrentUnits.value})'
                         f.write(
                             '  YEAR       THERMAL               GEOFLUID               PUMP               NET               FIRST LAW\n')
                         f.write(
                             '             DRAWDOWN             TEMPERATURE             POWER             POWER              EFFICIENCY\n')
                         f.write(
-                            "                                     (" + model.wellbores.ProducedTemperature.CurrentUnits.value + ")               (" + model.wellbores.PumpingPower.CurrentUnits.value + ")              (" + model.surfaceplant.NetElectricityProduced.CurrentUnits.value + ")                  (%)\n")
+                            '                                     '
+                            f'({model.wellbores.ProducedTemperature.CurrentUnits.value})'
+                            f'{pump_units:>19}{net_units:>18}' + f'{"(%)":>21}' + NL)
                         for i in range(0, model.surfaceplant.plant_lifetime.value):
                             f.write(
                                 '  {0:2.0f}         {1:8.4f}              {2:8.2f}             {3:8.4f}          {4:8.4f}              {5:8.4f}'.format(
@@ -153,7 +157,10 @@ class AGSOutputs(Outputs.Outputs):
                     elif model.surfaceplant.enduse_option.value == EndUseOptions.HEAT:  # only direct-use
                         f.write('  YEAR       THERMAL               GEOFLUID               PUMP               NET\n')
                         f.write('             DRAWDOWN             TEMPERATURE             POWER              HEAT\n')
-                        f.write('                                   (deg C)                (MW)               (MW)\n')
+                        pump_units = f'({model.wellbores.PumpingPower.CurrentUnits.value})'
+                        heat_units = f'({model.surfaceplant.HeatProduced.CurrentUnits.value})'
+                        f.write('                                   (deg C)'
+                                f'{pump_units:>20}{heat_units:>19}' + NL)
                         for i in range(0, model.surfaceplant.plant_lifetime.value - 1):
                             f.write(
                                 '  {0:2.0f}         {1:8.4f}              {2:8.2f}             {3:8.4f}          {4:8.4f}'.format(
