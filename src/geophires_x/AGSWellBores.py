@@ -564,6 +564,15 @@ class AGSWellBores(WellBores):
         :return: None
         """
         model.logger.info(f'Init {str(__class__)}: {sys._getframe().f_code.co_name}')
+
+        # AGS/CLGS models do not model laterals on a per-vertical-section basis, so the total number of multilateral
+        # sections may not be derived from a per-vertical-section value.
+        if self.numnonverticalsections_per_vertical_section.Name in model.InputParameters:
+            msg = (f'{self.numnonverticalsections_per_vertical_section.Name} is not supported by AGS/CLGS models. '
+                   f'Provide {self.numnonverticalsections.Name} instead.')
+            model.logger.error(msg)
+            raise NotImplementedError(msg)
+
         super().read_parameters(model)  # read the default parameters
         # if we call super, we don't need to deal with setting the parameters here, just deal with the special cases
         # for the variables in this class because the call to the super.read_parameters will set all the variables,

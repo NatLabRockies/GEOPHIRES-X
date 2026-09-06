@@ -1038,6 +1038,15 @@
       "minimum": 0,
       "maximum": 1199
     },
+    "Number of Multilateral Sections per Vertical Section": {
+      "description": "Number of nonvertical wellbore sections (aka laterals or horizontals) per vertical section, where the number of vertical sections is the total number of wells (Number of Production Wells + Number of Injection Wells). Pass this parameter instead of Number of Multilateral Sections to define laterals on a per-well basis - the total number of multilateral sections for the project is calculated as this value multiplied by the number of vertical sections. For example, a project with 2 injectors and 2 producers with 3 laterals per well may set Number of Multilateral Sections per Vertical Section = 3, which is equivalent to Number of Multilateral Sections = 2 * 2 * 3 = 12. May not be provided in combination with Number of Multilateral Sections. Not supported by AGS/CLGS models.",
+      "type": "integer",
+      "units": null,
+      "category": "Well Bores",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 1199
+    },
     "Multilaterals Cased": {
       "description": "If set to True, casing & cementing are assumed to comprise 50% of drilling costs (doubling cost compared to uncased).",
       "type": "boolean",
