@@ -142,7 +142,15 @@ class WellBoresTestCase(BaseTestCase):
             {**laterals_params, 'Number of Multilateral Sections': 12}
         )
 
-        self.assertEqual(self._lateral_costs(r_total_sections), self._lateral_costs(r_per_vertical_section))
+        # noinspection PyMethodMayBeStatic
+        def _lateral_costs(_r: GeophiresXResult) -> tuple[float, float]:
+            capital_costs = _r.result['CAPITAL COSTS (M$)']
+            return (
+                capital_costs['Drilling and completion costs']['value'],
+                capital_costs['Drilling and completion costs per non-vertical section']['value'],
+            )
+
+        self.assertEqual(_lateral_costs(r_total_sections), _lateral_costs(r_per_vertical_section))
 
         # Total sections (and therefore total lateral cost) scale with the number of vertical sections, whereas the
         # cost per section does not.
@@ -155,8 +163,8 @@ class WellBoresTestCase(BaseTestCase):
             }
         )
 
-        self.assertEqual(self._lateral_costs(r_double_wells)[1], self._lateral_costs(r_per_vertical_section)[1])
-        self.assertGreater(self._lateral_costs(r_double_wells)[0], self._lateral_costs(r_per_vertical_section)[0])
+        self.assertEqual(_lateral_costs(r_double_wells)[1], _lateral_costs(r_per_vertical_section)[1])
+        self.assertGreater(_lateral_costs(r_double_wells)[0], _lateral_costs(r_per_vertical_section)[0])
 
     def test_multilateral_sections_per_vertical_section_validation(self):
         with self.assertRaises(RuntimeError):
@@ -295,14 +303,6 @@ class WellBoresTestCase(BaseTestCase):
             {'Reservoir Depth': 5, 'Gradient 1': 74, 'Power Plant Type': 2, 'Maximum Temperature': 600, **_params}
         )
         return GeophiresXClient().get_geophires_result(params)
-
-    # noinspection PyMethodMayBeStatic
-    def _lateral_costs(self, _r: GeophiresXResult) -> tuple[float, float]:
-        capital_costs = _r.result['CAPITAL COSTS (M$)']
-        return (
-            capital_costs['Drilling and completion costs']['value'],
-            capital_costs['Drilling and completion costs per non-vertical section']['value'],
-        )
 
     # noinspection PyMethodMayBeStatic
     def _prod_inj_lcoe_production(self, _r: GeophiresXResult) -> tuple[int, int, float, float]:
