@@ -126,6 +126,64 @@ class WellBoresTestCase(BaseTestCase):
                 }
             )
 
+    def test_multilateral_sections_per_vertical_section(self):
+        laterals_params = {
+            'Well Geometry Configuration': 4,
+            'Number of Production Wells': 2,
+            'Number of Injection Wells': 2,
+        }
+
+        r_per_vertical_section: GeophiresXResult = self._get_result(
+            {**laterals_params, 'Number of Multilateral Sections per Vertical Section': 3}
+        )
+
+        # 2 producers + 2 injectors with 3 laterals per well is equivalent to 2 * 2 * 3 = 12 total sections.
+        r_total_sections: GeophiresXResult = self._get_result(
+            {**laterals_params, 'Number of Multilateral Sections': 12}
+        )
+
+        self.assertEqual(self._lateral_costs(r_total_sections), self._lateral_costs(r_per_vertical_section))
+
+        # Total sections (and therefore total lateral cost) scale with the number of vertical sections, whereas the
+        # cost per section does not.
+        r_double_wells: GeophiresXResult = self._get_result(
+            {
+                'Well Geometry Configuration': 4,
+                'Number of Production Wells': 4,
+                'Number of Injection Wells': 4,
+                'Number of Multilateral Sections per Vertical Section': 3,
+            }
+        )
+
+        self.assertEqual(self._lateral_costs(r_double_wells)[1], self._lateral_costs(r_per_vertical_section)[1])
+        self.assertGreater(self._lateral_costs(r_double_wells)[0], self._lateral_costs(r_per_vertical_section)[0])
+
+    def test_multilateral_sections_per_vertical_section_validation(self):
+        with self.assertRaises(RuntimeError):
+            self._get_result(
+                {
+                    'Well Geometry Configuration': 4,
+                    'Number of Multilateral Sections': 12,
+                    'Number of Multilateral Sections per Vertical Section': 3,
+                }
+            )
+
+    def test_multilateral_sections_per_vertical_section_unsupported_by_ags(self):
+        """
+        AGS/CLGS models do not support deriving the total number of multilateral sections from a
+        per-vertical-section value.
+        """
+
+        with self.assertRaises(RuntimeError):
+            GeophiresXClient().get_geophires_result(
+                GeophiresInputParameters(
+                    from_file_path=self._get_test_file_path(
+                        '../examples/Wanju_Yuan_Closed-Loop_Geothermal_Energy_Recovery.txt'
+                    ),
+                    params={'Number of Multilateral Sections per Vertical Section': 1},
+                )
+            )
+
     def test_redrilling_thermal_drawdown_dominates(self):
         """
         Verify that if thermal drawdown triggers before well integrity failure,
@@ -237,6 +295,14 @@ class WellBoresTestCase(BaseTestCase):
             {'Reservoir Depth': 5, 'Gradient 1': 74, 'Power Plant Type': 2, 'Maximum Temperature': 600, **_params}
         )
         return GeophiresXClient().get_geophires_result(params)
+
+    # noinspection PyMethodMayBeStatic
+    def _lateral_costs(self, _r: GeophiresXResult) -> tuple[float, float]:
+        capital_costs = _r.result['CAPITAL COSTS (M$)']
+        return (
+            capital_costs['Drilling and completion costs']['value'],
+            capital_costs['Drilling and completion costs per non-vertical section']['value'],
+        )
 
     # noinspection PyMethodMayBeStatic
     def _prod_inj_lcoe_production(self, _r: GeophiresXResult) -> tuple[int, int, float, float]:

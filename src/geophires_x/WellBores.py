@@ -1146,6 +1146,26 @@ class WellBores:
                         'per well should set Number of Multilateral Sections = 2 * 2 * 3 = 12.'
         )
 
+        # noinspection SpellCheckingInspection
+        self.numnonverticalsections_per_vertical_section = self.ParameterDict[
+            self.numnonverticalsections_per_vertical_section.Name] = intParameter(
+            "Number of Multilateral Sections per Vertical Section",
+            DefaultValue=0,
+            AllowableRange=list(range(0, max_allowed_total_wells * max_allowed_laterals_per_well_when_max_wells, 1)),
+            UnitType=Units.NONE,
+            ErrMessage="assume default for Number of Multilateral Sections per Vertical Section (0)",
+            ToolTipText=f'Number of nonvertical wellbore sections (aka laterals or horizontals) per vertical '
+                        f'section, where the number of vertical sections is the total number of wells '
+                        f'({self.nprod.Name} + {self.ninj.Name}). Pass this parameter instead of '
+                        f'{self.numnonverticalsections.Name} to define laterals on a per-well basis - the total '
+                        f'number of multilateral sections for the project is calculated as this value multiplied by '
+                        f'the number of vertical sections. For example, a project with 2 injectors and 2 producers '
+                        f'with 3 laterals per well may set Number of Multilateral Sections per Vertical Section = 3, '
+                        f'which is equivalent to {self.numnonverticalsections.Name} = 2 * 2 * 3 = 12. '
+                        f'May not be provided in combination with {self.numnonverticalsections.Name}. '
+                        f'Not supported by AGS/CLGS models.'
+        )
+
         self.NonverticalsCased = self.ParameterDict[self.NonverticalsCased.Name] = boolParameter(
             "Multilaterals Cased",
             DefaultValue=False,
@@ -1439,6 +1459,7 @@ class WellBores:
         coerce_int_params_to_enum_values(self.ParameterDict)
 
         self._set_well_counts_from_parameters(model)
+        self._set_multilateral_section_count_from_parameters(model)
 
         model.logger.info(f"read parameters complete {self.__class__.__name__}: {__name__}")
 
@@ -1467,6 +1488,39 @@ class WellBores:
                 _raise_incompatible_param_error(self.ninj, self.ninj_per_production_well)
 
             self.ninj.value = int(math.ceil(self.nprod.value * self.ninj_per_production_well.value))
+
+    def _set_multilateral_section_count_from_parameters(self, model: Model):
+        """
+        Calculates the total number of multilateral sections from the number of multilateral sections per vertical
+        section, if the latter is provided. Must be called after well counts have been set.
+        """
+        sections_per_vertical_section = self.numnonverticalsections_per_vertical_section
+        if not sections_per_vertical_section.Provided:
+            return
+
+        if self.numnonverticalsections.Provided:
+            msg = (f'{self.numnonverticalsections.Name} may not be provided when '
+                   f'{sections_per_vertical_section.Name} is provided.')
+            model.logger.error(msg)
+            raise ValueError(msg)
+
+        vertical_sections = self.nprod.value + self.ninj.value
+        total_sections = sections_per_vertical_section.value * vertical_sections
+        max_total_sections = max(self.numnonverticalsections.AllowableRange)
+        if total_sections > max_total_sections:
+            msg = (f'Calculated {self.numnonverticalsections.Name} ({total_sections}) exceeds the maximum allowable '
+                   f'value ({max_total_sections}) '
+                   f'({sections_per_vertical_section.Name}: {sections_per_vertical_section.value}, '
+                   f'number of vertical sections: {vertical_sections}).')
+            model.logger.error(msg)
+            raise ValueError(msg)
+
+        self.numnonverticalsections.value = total_sections
+        self.numnonverticalsections.Provided = True
+
+        model.logger.info(f'Calculated {self.numnonverticalsections.Name} ({total_sections}) from '
+                          f'{sections_per_vertical_section.Name} ({sections_per_vertical_section.value}) and '
+                          f'number of vertical sections ({vertical_sections}).')
 
     def Calculate(self, model: Model) -> None:
         """
