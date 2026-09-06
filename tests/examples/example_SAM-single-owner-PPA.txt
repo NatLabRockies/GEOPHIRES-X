@@ -74,9 +74,8 @@ Surface Temperature, 10, -- degC
 Circulation Pump Efficiency, 0.80
 
 Well Geometry Configuration, 4
-Has Nonvertical Section, True
 Multilaterals Cased, True
-Number of Multilateral Sections, 3
+Number of Multilateral Sections per Vertical Section, 1
 Nonvertical Length per Multilateral Section, 1433, -- meters
 
 
