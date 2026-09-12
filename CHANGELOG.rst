@@ -5,6 +5,11 @@ Changelog
 GEOPHIRES v3 (2023-2026)
 ------------------------
 
+3.17
+^^^^
+
+3.17: `Warn user if ORC is used with production temperature greater than 200 degrees C <https://github.com/NatLabRockies/GEOPHIRES-X/pull/517>`__; `Include indirect costs in vertical and lateral (non-vertical) section drilling costs <https://github.com/NatLabRockies/GEOPHIRES-X/pull/520>`__ | `release <https://github.com/NREL/GEOPHIRES-X/releases/tag/v3.17.0>`__
+
 3.16
 ^^^^
 

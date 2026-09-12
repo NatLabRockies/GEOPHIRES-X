@@ -421,9 +421,25 @@ class GeophiresXClientTestCase(BaseTestCase):
     def test_non_vertical_section_cost(self):
         result_path = self._get_test_file_path('examples/Fervo_Norbeck_Latimer_2023.out')
         result = GeophiresXResult(result_path)
-        entry = result.result['CAPITAL COSTS (M$)']['Drilling and completion costs per non-vertical section']
+        cap_costs = result.result['CAPITAL COSTS (M$)']
+        entry = cap_costs['Drilling and completion costs per non-vertical section']
         self.assertIsNotNone(entry['value'])
         self.assertEqual(entry['unit'], 'MUSD')
+
+        total_wells = (
+            result.result['SUMMARY OF RESULTS']['Number of production wells']['value']
+            + result.result['SUMMARY OF RESULTS']['Number of injection wells']['value']
+        )
+
+        self.assertAlmostEqual(
+            cap_costs['Drilling and completion costs']['value'],
+            (
+                cap_costs['Drilling and completion costs per vertical production well']['value']
+                + cap_costs['Drilling and completion costs per non-vertical section']['value']
+            )
+            * total_wells,
+            places=1,
+        )  # (test assumes Number of Multilateral Sections = total_wells)
 
     def test_input_hashing(self):
         input1 = ImmutableGeophiresInputParameters(

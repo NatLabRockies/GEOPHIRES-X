@@ -4,10 +4,10 @@
 
 Simulation Metadata
 ----------------------
- GEOPHIRES Version: 3.9.7
- Simulation Date: 2025-05-15
- Simulation Time:  09:22
- Calculation Time:      1.580 sec
+ GEOPHIRES Version: 3.17.0
+ Simulation Date: 2026-09-12
+ Simulation Time:  07:19
+ Calculation Time:      1.869 sec
 
                            ***SUMMARY OF RESULTS***
 
@@ -24,7 +24,7 @@ Simulation Metadata
                            ***ECONOMIC PARAMETERS***
 
       Economic Model = BICYCLE
-      Accrued financing during construction:                  0.00 %
+      Accrued financing during construction:                 0.00 %
       Project lifetime:                                      40 yr
       Capacity factor:                                       90.0 %
       Project NPV:                                         -74.72 MUSD
@@ -74,15 +74,15 @@ The AGS models contain an intrinsic reservoir model that doesn't expose values t
 
                           ***CAPITAL COSTS (M$)***
 
+         Exploration costs:                                   7.74 MUSD
          Drilling and completion costs:                      53.82 MUSD
-             Drilling and completion costs per vertical production well:         8.35 MUSD
-             Drilling and completion costs per vertical injection well:          8.35 MUSD
-             Drilling and completion costs per non-vertical section:            11.52 MUSD
+             Drilling and completion costs per vertical production well:         8.76 MUSD
+             Drilling and completion costs per vertical injection well:          8.76 MUSD
+             Drilling and completion costs per non-vertical section:            12.10 MUSD
          Stimulation costs:                                   0.00 MUSD
          Surface power plant costs:                           6.74 MUSD
          Field gathering system costs:                        0.99 MUSD
          Total surface equipment costs:                       7.72 MUSD
-         Exploration costs:                                   7.74 MUSD
       Total capital costs:                                   69.27 MUSD
 
 

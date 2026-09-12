@@ -435,11 +435,19 @@
           "description": "Cost of One Injection Well",
           "units": "MUSD"
         },
-        "Drilling and completion costs per vertical production well": {},
-        "Drilling and completion costs per vertical injection well": {},
+        "Drilling and completion costs per vertical production well": {
+          "type": "number",
+          "description": "Drilling and completion costs per vertical production well section, including indirect costs (default: 5%).",
+          "units": "MUSD"
+        },
+        "Drilling and completion costs per vertical injection well": {
+          "type": "number",
+          "description": "Drilling and completion costs per vertical production well section, including indirect costs (default: 5%).",
+          "units": "MUSD"
+        },
         "Drilling and completion costs per non-vertical section": {
           "type": "number",
-          "description": "",
+          "description": "Drilling and completion costs per non-vertical section (lateral), including indirect costs (default: 5%).",
           "units": "MUSD"
         },
         "Drilling and completion costs (for redrilling)": {},

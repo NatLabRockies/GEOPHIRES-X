@@ -2042,6 +2042,9 @@ class Economics:
                         f'Provide {self.ccexplfixed.Name} to override the default correlation and set your own cost.'
         )
 
+        wellfield_indirect_costs_default_note = (f'(default: '
+                                                 f'{self.wellfield_indirect_capital_cost_percentage.DefaultValue}%)')
+
         # noinspection SpellCheckingInspection
         self.Cwell = self.OutputParameterDict[self.Cwell.Name] = OutputParameter(
             Name="Wellfield cost",
@@ -2051,7 +2054,7 @@ class Economics:
             CurrentUnits=CurrencyUnit.MDOLLARS,
             ToolTipText=f'Includes total drilling and completion cost of all injection and production wells and '
                         f'laterals, plus indirect costs '
-                        f'(default: {self.wellfield_indirect_capital_cost_percentage.DefaultValue}%).'
+                        f'{wellfield_indirect_costs_default_note}.'
         )
         self.drilling_and_completion_costs_per_well = self.OutputParameterDict[
             self.drilling_and_completion_costs_per_well.Name] = OutputParameter(
@@ -2060,7 +2063,7 @@ class Economics:
             PreferredUnits=CurrencyUnit.MDOLLARS,
             CurrentUnits=CurrencyUnit.MDOLLARS,
             ToolTipText='Drilling and completion cost per well, including indirect costs '
-                        f'(default: {self.wellfield_indirect_capital_cost_percentage.DefaultValue}%).'
+                        f'{wellfield_indirect_costs_default_note}.'
         )
 
         # noinspection SpellCheckingInspection
@@ -2514,7 +2517,25 @@ class Economics:
             Name='Drilling and completion costs per non-vertical section',
             UnitType=Units.CURRENCY,
             PreferredUnits=CurrencyUnit.MDOLLARS,
-            CurrentUnits=CurrencyUnit.MDOLLARS
+            CurrentUnits=CurrencyUnit.MDOLLARS,
+            ToolTipText=f'Drilling and completion costs per non-vertical section (lateral), '
+                        f'including indirect costs {wellfield_indirect_costs_default_note}.'
+        )
+        self.cost_per_vertical_production_well = self.OutputParameterDict[self.cost_per_vertical_production_well.Name] = OutputParameter(
+            Name="Drilling and completion costs per vertical production well",
+            UnitType=Units.CURRENCY,
+            PreferredUnits=CurrencyUnit.MDOLLARS,
+            CurrentUnits=CurrencyUnit.MDOLLARS,
+            ToolTipText=f'Drilling and completion costs per vertical production well section, '
+                        f'including indirect costs {wellfield_indirect_costs_default_note}.'
+        )
+        self.cost_per_vertical_injection_well = self.OutputParameterDict[self.cost_per_vertical_injection_well.Name] = OutputParameter(
+            Name="Drilling and completion costs per vertical injection well",
+            UnitType=Units.CURRENCY,
+            PreferredUnits=CurrencyUnit.MDOLLARS,
+            CurrentUnits=CurrencyUnit.MDOLLARS,
+            ToolTipText=f'Drilling and completion costs per vertical production well section, '
+                        f'including indirect costs {wellfield_indirect_costs_default_note}.'
         )
         self.cost_to_junction_section = self.OutputParameterDict[self.cost_to_junction_section.Name] = OutputParameter(
             Name="Cost of the entire section of a well from bottom of vertical to junction with laterals",
@@ -4101,7 +4122,11 @@ class Economics:
             self.cost_per_lateral_section.value = (
                 self.cost_lateral_section.quantity().to(self.cost_per_lateral_section.CurrentUnits).magnitude
                 / model.wellbores.numnonverticalsections.value
-            )
+            ) * self._wellfield_indirect_cost_factor
+            self.cost_per_vertical_production_well.value = self.cost_one_production_well.quantity().to(
+                self.cost_per_vertical_production_well.CurrentUnits).magnitude * self._wellfield_indirect_cost_factor
+            self.cost_per_vertical_injection_well.value = self.cost_one_injection_well.quantity().to(
+                self.cost_per_vertical_injection_well.CurrentUnits).magnitude * self._wellfield_indirect_cost_factor
 
         if hasattr(self, 'discountrate'):
             self.real_discount_rate.value = self.discountrate.quantity().to(convertible_unit(

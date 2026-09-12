@@ -486,9 +486,15 @@ class Outputs:
                     f.write(f'         {model.economics.Cwell.display_name}:                 {model.economics.Cwell.value:10.2f} {model.economics.Cwell.CurrentUnits.value}\n')
 
                     if econ.cost_lateral_section.value > 0.0:
-                        f.write(f'             Drilling and completion costs per vertical production well:   {econ.cost_one_production_well.value:10.2f} {econ.cost_one_production_well.CurrentUnits.value}\n')
-                        f.write(f'             Drilling and completion costs per vertical injection well:    {econ.cost_one_injection_well.value:10.2f} {econ.cost_one_injection_well.CurrentUnits.value}\n')
-                        f.write(f'             {econ.cost_per_lateral_section.Name}:       {econ.cost_per_lateral_section.value:10.2f} {econ.cost_lateral_section.CurrentUnits.value}\n')
+                        f.write(f'             {econ.cost_per_vertical_production_well.display_name}:   '
+                                f'{econ.cost_per_vertical_production_well.value:10.2f} '
+                                f'{econ.cost_per_vertical_production_well.CurrentUnits.value}\n')
+                        f.write(f'             {econ.cost_per_vertical_injection_well.display_name}:    '
+                                f'{econ.cost_per_vertical_injection_well.value:10.2f} '
+                                f'{econ.cost_per_vertical_injection_well.CurrentUnits.value}\n')
+                        f.write(f'             {econ.cost_per_lateral_section.display_name}:       '
+                                f'{econ.cost_per_lateral_section.value:10.2f} '
+                                f'{econ.cost_lateral_section.CurrentUnits.value}\n')
                     elif round(econ.cost_one_production_well.value, 4) != round(econ.cost_one_injection_well.value, 4) \
                         and model.economics.cost_one_injection_well.value != -1:
                         f.write(f'             {econ.cost_one_production_well.display_name}:   {econ.cost_one_production_well.value:10.2f} {econ.cost_one_production_well.CurrentUnits.value}\n')
@@ -633,7 +639,7 @@ class Outputs:
                 else:
                     f.write(f'      {econ.Coam.display_name}:            {econ.Coam.value:10.2f} {econ.Coam.CurrentUnits.value}\n')
 
-                f.write('\n\n                           ***SURFACE EQUIPMENT SIMULATION RESULTS***\n')
+                f.write('\n\n                           ***SURFACE EQUIPMENT SIMULATION RESULTS***\n\n')
 
                 if model.surfaceplant.enduse_option.value.has_electricity_component:
                     sp = model.surfaceplant
