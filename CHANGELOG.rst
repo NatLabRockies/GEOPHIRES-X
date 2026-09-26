@@ -8,7 +8,7 @@ GEOPHIRES v3 (2023-2026)
 3.18
 ^^^^
 
-3.18: `Ignore default Ending {End-Use} Sale Price if not provided <https://github.com/NatLabRockies/GEOPHIRES-X/pull/525>`__ | `release <https://github.com/NREL/GEOPHIRES-X/releases/tag/v3.18.0>`__ | **Changed:** An ending sale price that is not explicitly provided no longer caps price escalation. See `the tracking issue <https://github.com/NatLabRockies/GEOPHIRES-X/issues/449>`__ for details.
+3.18: `Ignore default Ending {End-Use} Sale Price if not provided <https://github.com/NatLabRockies/GEOPHIRES-X/pull/525>`__ | `release <https://github.com/NREL/GEOPHIRES-X/releases/tag/v3.18.1>`__ | **Changed:** An ending sale price that is not explicitly provided no longer caps price escalation. See `the tracking issue <https://github.com/NatLabRockies/GEOPHIRES-X/issues/449>`__ for details.
 
 3.17
 ^^^^
