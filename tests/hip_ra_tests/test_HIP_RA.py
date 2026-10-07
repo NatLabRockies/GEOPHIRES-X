@@ -1,3 +1,4 @@
+import tempfile
 from pathlib import Path
 
 from hip_ra import HipRaClient
@@ -97,3 +98,48 @@ class HIP_RATestCase(BaseTestCase):
             },
             result.result,
         )
+
+    def test_parse_fields_captures_non_numeric_values(self):
+        """
+        Report fields whose values are text (such as GRMS classification
+        designations) are parsed alongside numeric fields.
+        """
+
+        report = (
+            '                               *********************\n'
+            '                               ***HIP CASE REPORT***\n'
+            '                               *********************\n'
+            '\n'
+            '      ***SUMMARY OF RESULTS***\n'
+            '      Reservoir Temperature:          250.00 degC\n'
+            '      Reservoir Stored Heat:        1.23e+15 kJ\n'
+            '\n'
+            '      ***GRMS CLASSIFICATION***\n'
+            '      Resource Class:                 Reserves\n'
+            '      Cumulative Category:            2P\n'
+            '      Uncertainty Category:           Proved (P1)\n'
+            '      Reserves Status:                Developed Producing\n'
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            report_path = Path(temp_dir) / 'HIP.out'
+            report_path.write_text(report, encoding='UTF-8')
+
+            parsed = HipRaResult(report_path).result
+
+        # Numeric fields are unchanged by the non-numeric pass
+        self.assertEqual({'value': 250.0, 'unit': 'degC'}, parsed['Reservoir Temperature'])
+        self.assertEqual({'value': 1.23e15, 'unit': 'kJ'}, parsed['Reservoir Stored Heat'])
+
+        # Text fields are now captured, with no unit
+        self.assertEqual({'value': 'Reserves', 'unit': None}, parsed['Resource Class'])
+
+        # '2P' must stay a string: the numeric pattern splits it into 2.0 with
+        # unit 'P' because it does not require whitespace before the unit.
+        self.assertEqual({'value': '2P', 'unit': None}, parsed['Cumulative Category'])
+        self.assertEqual({'value': 'Proved (P1)', 'unit': None}, parsed['Uncertainty Category'])
+        self.assertEqual({'value': 'Developed Producing', 'unit': None}, parsed['Reserves Status'])
+
+        # Banner lines carry no colon-delimited field and must not become keys
+        for key in parsed:
+            self.assertNotIn('*', key)
