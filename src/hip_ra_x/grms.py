@@ -193,6 +193,62 @@ class EconomicStatus(GeophiresInputEnum):
         raise ValueError(f'Unknown Economic Status integer input value: {int_val}')
 
 
+class EstimateScenario(GeophiresInputEnum):
+    """
+    The low, best or high estimate a deterministic evaluation represents
+    (PRMS 2.2.1.4). Combined with the resource class this gives the cumulative
+    category: a best estimate of Reserves is 2P, a low estimate of Contingent
+    Resources is 1C, and so on.
+    """
+
+    LOW = 1, 'Low Estimate'
+    BEST = 2, 'Best Estimate'
+    HIGH = 3, 'High Estimate'
+
+    @staticmethod
+    def from_int(int_val: int) -> EstimateScenario:
+        for member in EstimateScenario:
+            if member.int_value == int_val:
+                return member
+        raise ValueError(f'Unknown Estimate Scenario integer input value: {int_val}')
+
+
+def cumulative_category_for(resource_class: ResourceClass, estimate_scenario: EstimateScenario) -> CumulativeCategory:
+    """
+    The cumulative category a given class and estimate scenario denote
+    (PRMS 2.2.2.2-2.2.2.4).
+    """
+
+    return CumulativeCategory.from_int(resource_class.int_value * 10 + estimate_scenario.int_value)
+
+
+def resolve(enum_cls, raw: str):
+    """
+    Resolve a user-provided designation given either as its name ('Reserves')
+    or as its integer code ('3'). Matching on names ignores case and
+    surrounding whitespace.
+
+    :raises ValueError: if the value matches no member of enum_cls
+    """
+
+    value = str(raw).strip()
+    if not value:
+        raise ValueError(f'No value provided for {enum_cls.__name__}')
+
+    try:
+        return enum_cls.from_int(int(value))
+    except ValueError:
+        pass
+
+    folded = value.casefold()
+    for member in enum_cls:
+        if folded in (member.value.casefold(), member.name.casefold()):
+            return member
+
+    options = ', '.join(m.value for m in enum_cls)
+    raise ValueError(f'Unknown {enum_cls.__name__} value: {raw!r}. Valid values are: {options}.')
+
+
 def validate_classification(
     resource_class: ResourceClass,
     uncertainty_category: UncertaintyCategory | None = None,

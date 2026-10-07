@@ -51,6 +51,14 @@ from geophires_x.Units import TemperatureUnit
 from geophires_x.Units import TimeUnit
 from geophires_x.Units import Units
 from geophires_x.Units import VolumeUnit
+from hip_ra_x.grms import EconomicStatus
+from hip_ra_x.grms import EstimateScenario
+from hip_ra_x.grms import ProjectMaturitySubClass
+from hip_ra_x.grms import ReservesStatus
+from hip_ra_x.grms import ResourceClass
+from hip_ra_x.grms import cumulative_category_for
+from hip_ra_x.grms import resolve
+from hip_ra_x.grms import validate_classification
 
 """
 Heat in Place calculation: Muffler, P., and Raffaele Cataldi.
@@ -82,6 +90,7 @@ class HIP_RA_X:
     _ureg = pint.get_application_registry()
 
     _SUMMARY_OF_RESULTS_OUTPUT_CATEGORY: ClassVar[str] = 'SUMMARY OF RESULTS'
+    _GRMS_CLASSIFICATION_OUTPUT_CATEGORY: ClassVar[str] = 'GRMS CLASSIFICATION'
     _SUMMARY_OF_INPUTS_OUTPUT_CATEGORY: ClassVar[str] = 'SUMMARY OF INPUTS'
 
     def __init__(self, enable_hip_ra_logging_config=True):
@@ -368,6 +377,65 @@ class HIP_RA_X:
             )
         )
 
+        # GRMS classification designations. All optional; declaring none leaves
+        # the case report unchanged. Each accepts a name or an integer code.
+        self.grms_resource_class = parameter_dict_entry(
+            strParameter(
+                'GRMS Resource Class',
+                DefaultValue='',
+                Required=False,
+                Provided=False,
+                ErrMessage='assume no GRMS classification',
+                ToolTipText='GRMS commercial maturity: Prospective Resources, Contingent Resources '
+                'or Reserves. Required for any other GRMS designation to be reported.',
+            )
+        )
+        self.grms_estimate_scenario = parameter_dict_entry(
+            strParameter(
+                'GRMS Estimate Scenario',
+                DefaultValue='',
+                Required=False,
+                Provided=False,
+                ErrMessage='assume no GRMS estimate scenario',
+                ToolTipText='Which estimate this evaluation represents: Low Estimate, Best Estimate '
+                'or High Estimate. Combined with GRMS Resource Class this gives the cumulative '
+                'category (for example Best Estimate of Reserves is 2P).',
+            )
+        )
+        self.grms_project_maturity_sub_class = parameter_dict_entry(
+            strParameter(
+                'GRMS Project Maturity Sub-Class',
+                DefaultValue='',
+                Required=False,
+                Provided=False,
+                ErrMessage='assume no GRMS project maturity sub-class',
+                ToolTipText='GRMS project maturity sub-class, such as On Production, Development '
+                'Pending or Prospect. Must belong to the declared GRMS Resource Class.',
+            )
+        )
+        self.grms_reserves_status = parameter_dict_entry(
+            strParameter(
+                'GRMS Reserves Status',
+                DefaultValue='',
+                Required=False,
+                Provided=False,
+                ErrMessage='assume no GRMS reserves status',
+                ToolTipText='Development and production status, such as Developed Producing or '
+                'Undeveloped. Resources other than Reserves are undeveloped.',
+            )
+        )
+        self.grms_economic_status = parameter_dict_entry(
+            strParameter(
+                'GRMS Economic Status',
+                DefaultValue='',
+                Required=False,
+                Provided=False,
+                ErrMessage='assume no GRMS economic status',
+                ToolTipText='Economic status of Contingent Resources: Economically Viable, '
+                'Economically Not Viable or Undetermined.',
+            )
+        )
+
         # Output parameters
         self.reservoir_volume = self.OutputParameterDict[self.reservoir_volume.Name] = OutputParameter(
             Name='Reservoir Volume (reservoir)',
@@ -644,7 +712,59 @@ class HIP_RA_X:
                     self.InputParameters[key].sValue
                 )[0]
 
+        self._grms_classification = self._resolve_grms_classification()
+
         self.logger.info(f'complete {__class__.__name__!s}: {__name__}')
+
+    def _resolve_grms_classification(self) -> dict[str, str]:
+        """
+        Resolve and validate the GRMS designations the user declared.
+
+        :return: display names keyed by report field name; empty if the user
+            declared no GRMS Resource Class.
+        :raises ValueError: if a designation is unrecognized or the declared
+            designations are mutually inconsistent.
+        """
+
+        if not self.grms_resource_class.Provided or not str(self.grms_resource_class.value).strip():
+            return {}
+
+        resource_class = resolve(ResourceClass, self.grms_resource_class.value)
+
+        def _declared(param, enum_cls):
+            if not param.Provided or not str(param.value).strip():
+                return None
+            return resolve(enum_cls, param.value)
+
+        estimate_scenario = _declared(self.grms_estimate_scenario, EstimateScenario)
+        sub_class = _declared(self.grms_project_maturity_sub_class, ProjectMaturitySubClass)
+        reserves_status = _declared(self.grms_reserves_status, ReservesStatus)
+        economic_status = _declared(self.grms_economic_status, EconomicStatus)
+
+        validate_classification(
+            resource_class,
+            sub_class=sub_class,
+            reserves_status=reserves_status,
+            economic_status=economic_status,
+        )
+
+        classification = {'Resource Class': resource_class.value}
+
+        if estimate_scenario is not None:
+            cumulative = cumulative_category_for(resource_class, estimate_scenario)
+            classification['Estimate Scenario'] = estimate_scenario.value
+            classification['Cumulative Category'] = cumulative.value
+
+        if sub_class is not None:
+            classification['Project Maturity Sub-Class'] = sub_class.value
+
+        if reserves_status is not None:
+            classification['Reserves Status'] = reserves_status.value
+
+        if economic_status is not None:
+            classification['Economic Status'] = economic_status.value
+
+        return classification
 
     def Calculate(self):
         self.logger.info(f'Init {__class__!s}: {__class__.__name__!s}: {__name__}')
@@ -864,6 +984,8 @@ class HIP_RA_X:
 
             case_data_results = {self._SUMMARY_OF_RESULTS_OUTPUT_CATEGORY: summary_of_results}
 
+            grms_classification = getattr(self, '_grms_classification', None) or {}
+
             with open(outputfile, 'w', encoding='UTF-8') as f:
                 nl = '\n'
 
@@ -886,6 +1008,15 @@ class HIP_RA_X:
                     kv_spaces = max(1, (24 - (len(v.split(' ')[0]) + len(k)))) * ' '
 
                     f.write(f'      {k}:{kv_spaces}{v}{nl}')
+
+                if grms_classification:
+                    f.write(nl)
+                    f.write(f'      ***{self._GRMS_CLASSIFICATION_OUTPUT_CATEGORY}***{nl}')
+                    for k, v in grms_classification.items():
+                        # Values are text, so align them at a fixed column rather
+                        # than by the width of a leading number.
+                        kv_spaces = max(1, 30 - len(k)) * ' '
+                        f.write(f'      {k}:{kv_spaces}{v}{nl}')
 
         except FileNotFoundError as ex:
             traceback_str = traceback.format_exc()
