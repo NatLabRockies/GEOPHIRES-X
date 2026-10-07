@@ -196,9 +196,11 @@ Running the example input file above produces:
 
 ## Interpreting the Results
 
-The report has two sections. **Summary of Inputs** echoes the parameters used,
-including any defaults applied and any unit conversions performed. **Summary of
-Results** gives the calculated resource estimate.
+The report has two sections, and a third if a resource classification is
+declared. **Summary of Inputs** echoes the parameters used, including any
+defaults applied and any unit conversions performed. **Summary of Results**
+gives the calculated resource estimate. **GRMS Classification**, described
+below, records how the estimate is classified.
 
 The calculation proceeds from reservoir geometry to recoverable energy:
 
@@ -217,6 +219,74 @@ Per-unit-area and per-unit-volume figures allow comparison between prospects of
 different size.
 
 See [Outputs in the Parameters Reference](https://softwareengineerprogrammer.github.io/GEOPHIRES/hip_ra_x_parameters.html#outputs) for the full list of outputs and their default units.
+
+## Resource Classification (GRMS)
+
+A heat-in-place estimate is a quantity of energy. It says nothing about whether
+that energy can be produced, or whether producing it would be commercial. The
+Geothermal Resource Management System (GRMS) provides standard vocabulary for
+that second question, adapting the petroleum industry's SPE-PRMS classification
+to geothermal projects (Gardner and Faulder 2024). Classifying an estimate
+records, in terms other evaluators recognise, how commercially mature the
+project is, which of several estimates this one is, and how far the project has
+been developed.
+
+Classification is optional and affects no calculation. Five parameters are
+available, and none take effect unless `GRMS Resource Class` is given:
+
+```
+Reservoir Temperature, 250
+GRMS Resource Class, Reserves
+GRMS Estimate Scenario, Best Estimate
+GRMS Project Maturity Sub-Class, On Production
+GRMS Reserves Status, Developed Producing
+```
+
+- **GRMS Resource Class** — commercial maturity. `Prospective Resources` for an
+  undiscovered prospect, `Contingent Resources` for a discovery that is not yet
+  commercially producible, `Reserves` for quantities that are. Required before
+  any other designation is reported.
+- **GRMS Estimate Scenario** — whether this evaluation is the `Low Estimate`,
+  `Best Estimate` or `High Estimate`.
+- **GRMS Project Maturity Sub-Class** — the project's position within its class,
+  such as `Prospect`, `Development Pending` or `On Production`.
+- **GRMS Reserves Status** — development and production status, such as
+  `Developed Producing` or `Undeveloped`.
+- **GRMS Economic Status** — for Contingent Resources only: `Economically
+  Viable`, `Economically Not Viable` or `Undetermined`.
+
+Each parameter also accepts a designation's integer code in place of its name,
+which is convenient when input files are generated programmatically: `3` is
+equivalent to `Reserves`.
+
+The declared designations are checked against one another, and a classification
+that contradicts itself is rejected rather than reported. `Development Pending`
+belongs to Contingent Resources, so pairing it with `Reserves` is an error — a
+project cannot both be commercially producible and be awaiting a development
+decision. An economic status is likewise meaningful only for Contingent
+Resources, and a developed status only for Reserves.
+
+Sub-class and status are not checked against each other, because they describe
+different things: the sub-class describes the project, while the status
+describes quantities within it. A project `On Production` may legitimately hold
+undeveloped quantities (Gardner and Chen 2026).
+
+When a classification is declared, the report gains a third section:
+
+```
+      ***GRMS CLASSIFICATION***
+      Resource Class:                Reserves
+      Estimate Scenario:             Best Estimate
+      Cumulative Category:           2P
+      Project Maturity Sub-Class:    On Production
+      Reserves Status:               Developed Producing
+```
+
+**Cumulative Category** is derived rather than declared: the resource class and
+the estimate scenario together identify it. The best estimate of Reserves is
+`2P`, the low estimate of Contingent Resources is `1C`, the high estimate of
+Prospective Resources is `3U`. These denote cumulative quantities, so `2P` means
+proved plus probable rather than probable alone.
 
 ## Web Interface
 
