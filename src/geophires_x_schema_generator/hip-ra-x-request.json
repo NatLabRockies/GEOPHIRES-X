@@ -177,6 +177,51 @@
       "default": true,
       "minimum": null,
       "maximum": null
+    },
+    "GRMS Resource Class": {
+      "description": "GRMS commercial maturity: Prospective Resources, Contingent Resources or Reserves. Required for any other GRMS designation to be reported.",
+      "type": "string",
+      "units": null,
+      "category": null,
+      "default": "",
+      "minimum": null,
+      "maximum": null
+    },
+    "GRMS Estimate Scenario": {
+      "description": "Which estimate this evaluation represents: Low Estimate, Best Estimate or High Estimate. Combined with GRMS Resource Class this gives the cumulative category (for example Best Estimate of Reserves is 2P).",
+      "type": "string",
+      "units": null,
+      "category": null,
+      "default": "",
+      "minimum": null,
+      "maximum": null
+    },
+    "GRMS Project Maturity Sub-Class": {
+      "description": "GRMS project maturity sub-class, such as On Production, Development Pending or Prospect. Must belong to the declared GRMS Resource Class.",
+      "type": "string",
+      "units": null,
+      "category": null,
+      "default": "",
+      "minimum": null,
+      "maximum": null
+    },
+    "GRMS Reserves Status": {
+      "description": "Development and production status, such as Developed Producing or Undeveloped. Resources other than Reserves are undeveloped.",
+      "type": "string",
+      "units": null,
+      "category": null,
+      "default": "",
+      "minimum": null,
+      "maximum": null
+    },
+    "GRMS Economic Status": {
+      "description": "Economic status of Contingent Resources: Economically Viable, Economically Not Viable or Undetermined.",
+      "type": "string",
+      "units": null,
+      "category": null,
+      "default": "",
+      "minimum": null,
+      "maximum": null
     }
   }
 }
