@@ -1,4 +1,5 @@
 import logging
+import re
 import shutil
 from pathlib import Path
 
@@ -45,6 +46,21 @@ def _get_baseline_input_params_table_md(baseline_input_params):
     return tabulate(table, ['Parameter', 'Value', 'Comment'], tablefmt='github', floatfmt='')
 
 
+def _example_result_value(text: str, label: str) -> float:
+    """
+    Read a single numeric value from a committed GEOPHIRES example output file.
+
+    Reading rather than hard-coding keeps the analysis document consistent with
+    the example if the example is regenerated.
+    """
+
+    match = re.search(rf'^\s+{re.escape(label)}:\s+([0-9.eE+-]+)', text, re.MULTILINE)
+    if match is None:
+        raise ValueError(f'{label!r} not found in example output')
+
+    return float(match.group(1))
+
+
 def generate_fpc_hiip_analysis_doc():
     _BUILD_DIR.mkdir(parents=True, exist_ok=True)
     _IMAGES_DIR.mkdir(parents=True, exist_ok=True)
@@ -88,6 +104,19 @@ def generate_fpc_hiip_analysis_doc():
     # D&M mean Electric Power Capacity, Project Cape Area total, from the filing.
     dm_mean_elec_mw = 14005
     dm_elec_ratio = dm_mean_elec_mw / rec_elec_mw
+
+    # Headline economics of a modelled development at Cape Station, read from the
+    # committed example output. A volumetric assessment has no levelised cost;
+    # cost belongs to a project, and this is the project GEOPHIRES models.
+    fpc5_out = (_PROJECT_ROOT / 'tests' / 'examples' / 'Fervo_Project_Cape-5.out').read_text(encoding='UTF-8')
+    fpc5_elec_mw = _example_result_value(fpc5_out, 'Average Net Electricity Production')
+    fpc5_breakeven = _example_result_value(fpc5_out, 'Electricity breakeven price')
+    fpc5_capex_musd = _example_result_value(fpc5_out, 'Total CAPEX')
+    fpc5_capex_per_kw = _example_result_value(fpc5_out, r'Total CAPEX ($/kW)')
+    fpc5_production_wells = _example_result_value(fpc5_out, 'Number of production wells')
+
+    fpc5_fraction_pct = 100.0 * fpc5_elec_mw / rec_elec_mw
+    fpc5_mw_per_well = fpc5_elec_mw / fpc5_production_wells
 
     # 2. Configure and Run Monte Carlo Simulation
     mc_settings_path = _BUILD_DIR / 'fpc_hiip_mc_settings.txt'
@@ -164,6 +193,13 @@ def generate_fpc_hiip_analysis_doc():
         'rec_estimate_scenario': rec_estimate_scenario,
         'rec_cumulative_category': rec_cumulative_category,
         'dm_elec_ratio': f'{dm_elec_ratio:,.1f}',
+        'fpc5_elec_mw': f'{fpc5_elec_mw:,.0f}',
+        'fpc5_breakeven': f'{fpc5_breakeven:,.2f}',
+        'fpc5_capex_musd': f'{fpc5_capex_musd:,.0f}',
+        'fpc5_capex_per_kw': f'{fpc5_capex_per_kw:,.0f}',
+        'fpc5_production_wells': f'{fpc5_production_wells:,.0f}',
+        'fpc5_fraction_pct': f'{fpc5_fraction_pct:,.0f}',
+        'fpc5_mw_per_well': f'{fpc5_mw_per_well:,.1f}',
     }
 
     env = Environment(loader=FileSystemLoader(docs_dir), autoescape=True)
