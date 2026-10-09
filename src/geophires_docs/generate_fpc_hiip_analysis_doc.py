@@ -64,6 +64,31 @@ def generate_fpc_hiip_analysis_doc():
     # Convert kJ to 10^15 Joules (10^15 J = 10^12 kJ)
     det_stored_heat_15j = det_stored_heat_kj / 1e12
 
+    # The recoverable case: the same reservoir with HIP-RA-X's recovery factors
+    # applied rather than overridden to 1.0, carrying GRMS designations. This is
+    # the heat recovery factor assessment D&M state is still required.
+    _log.info('Running recoverable-case HIP-RA-X baseline...')
+    rec_input_path = (
+        _PROJECT_ROOT / 'tests' / 'hip_ra_x_tests' / 'examples' / 'Fervo_Project_Cape-HIIP-analysis-recoverable.txt'
+    )
+    rec_result: HipRaXResult = client.get_hip_ra_x_result(HipRaInputParameters(file_path_or_params_dict=rec_input_path))
+    _rec = rec_result.result['SUMMARY OF RESULTS']
+    _grms = rec_result.result['GRMS CLASSIFICATION']
+
+    rec_stored_heat_15j = _rec['Stored Heat (reservoir)']['value'] / 1e12
+    rec_available_heat_15j = _rec['Available Heat (reservoir)']['value'] / 1e12
+    rec_producible_heat_15j = _rec['Producible Heat (reservoir)']['value'] / 1e12
+    rec_recovery_factor = _rec['Recovery Factor (reservoir)']['value']
+    rec_elec_mw = _rec['Producible Electricity (reservoir)']['value']
+
+    rec_resource_class = _grms['Resource Class']['value']
+    rec_estimate_scenario = _grms['Estimate Scenario']['value']
+    rec_cumulative_category = _grms['Cumulative Category']['value']
+
+    # D&M mean Electric Power Capacity, Project Cape Area total, from the filing.
+    dm_mean_elec_mw = 14005
+    dm_elec_ratio = dm_mean_elec_mw / rec_elec_mw
+
     # 2. Configure and Run Monte Carlo Simulation
     mc_settings_path = _BUILD_DIR / 'fpc_hiip_mc_settings.txt'
     mc_output_path = _BUILD_DIR / 'fpc_hiip_mc_results.txt'
@@ -130,6 +155,15 @@ def generate_fpc_hiip_analysis_doc():
         'det_elec_mw': f'{det_elec_mw:,.0f}',
         'mc_stored_heat_mean_15j': f'{mc_stored_heat_mean_15j:,.0f}',
         'mc_elec_mean_mw': f'{mc_elec_mean_mw:,.0f}',
+        'rec_stored_heat_15j': f'{rec_stored_heat_15j:,.0f}',
+        'rec_available_heat_15j': f'{rec_available_heat_15j:,.0f}',
+        'rec_producible_heat_15j': f'{rec_producible_heat_15j:,.0f}',
+        'rec_recovery_factor': f'{rec_recovery_factor:,.2f}',
+        'rec_elec_mw': f'{rec_elec_mw:,.0f}',
+        'rec_resource_class': rec_resource_class,
+        'rec_estimate_scenario': rec_estimate_scenario,
+        'rec_cumulative_category': rec_cumulative_category,
+        'dm_elec_ratio': f'{dm_elec_ratio:,.1f}',
     }
 
     env = Environment(loader=FileSystemLoader(docs_dir), autoescape=True)

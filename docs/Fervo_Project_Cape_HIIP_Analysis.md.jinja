@@ -104,29 +104,78 @@ claims about the resource's shape.
 
 ![](_images/fpc_hiip_mc_Stored_Heat_reservoir.png)
 
-### Electric Power Capacity
+### From Heat in Place to Recoverable Heat
 
-**SEC HIIP Claim:** The SEC HIIP converts thermal energy to electricity by taking the raw HIIP and applying a static
-19.5% ORC plant efficiency and a 1.069 peak output correction factor over 30 years.
-This yields a Mean Estimate Electric Power Capacity of 14,005 MW.
+**SEC HIIP Claim:** The filing applies no heat recovery factor. It states that
+*"a heat recovery factor assessment is still required to evaluate recoverable heat"*, and converts
+thermal energy to electricity by applying a static 19.5% ORC plant efficiency and a 1.069 peak output
+correction factor to the raw HIIP over 30 years, yielding a Mean Estimate Electric Power Capacity of
+14,005 MW. That figure therefore describes the conversion of the entire in-place accumulation, not an
+estimate of what can be produced from it.
 
-**HIP-RA-X Evaluation:**
-This is where the two methodologies diverge. The SEC filing assumes that 19.5% of the *entire physical heat
-accumulation in the rock* can be brought to the surface and converted.
+**HIP-RA-X Evaluation:** That assessment is what HIP-RA-X performs. Running the same reservoir at the
+228°C volume-weighted mean with the tool's recovery factors applied, rather than overridden to 1.0 as
+in the baseline above, gives the following chain (10<sup>15</sup> Joules):
 
-HIP-RA-X operates under strict thermodynamic limits. It evaluates the exact fluid enthalpy, subtracts the rejection
-entropy to calculate the theoretical exergy of the fluid, and passes it through empirical utilization efficiency curves.
-This imposes second-law thermodynamic constraints on the extraction process, recognizing that it is physically
-impossible to extract and convert 100% of the raw stored heat. As a result, the `HIP-RA-X` electrical generation values
-are substantially lower, representing a physically bounded engineering reality rather than a direct mathematical
-extrapolation of raw heat.
+| Quantity | Result | Basis |
+| :--- | ---: | :--- |
+| Gross HIIP (D&M, Mean Estimate) | 63,560 | Total thermal energy in place |
+| Stored Heat, recovery applied | {{ rec_stored_heat_15j }} | 75% recoverable heat from rock |
+| Available Heat | {{ rec_available_heat_15j }} | Second-law limit on the recovered heat |
+| Producible Heat | {{ rec_producible_heat_15j }} | Over the 30-year reservoir life cycle |
+
+The resulting Recovery Factor of {{ rec_recovery_factor }}% — the proportion of heat in place that
+reaches the surface as useful energy — is the quantity the filing identifies as missing.
+
+Carried through to generation:
 
 * **SEC HIIP Estimated Power Capacity (Mean):** 14,005 MW
-* **HIP-RA-X Producible Electricity (MC Mean):** {{ mc_elec_mean_mw }} MW
+* **HIP-RA-X Producible Electricity, un-risked (MC Mean):** {{ mc_elec_mean_mw }} MW
+* **HIP-RA-X Producible Electricity, recovery applied:** {{ rec_elec_mw }} MW
 
-**Producible Electricity Distribution:**
+The filing's figure is {{ dm_elec_ratio }} times the HIP-RA-X estimate. This is not a disagreement
+about the resource: both describe the same rock at the same temperature, and the Gross HIIP estimates
+agree to within 1%. It is the difference between the energy present and the energy obtainable, which
+is the step the filing explicitly declines to take.
+
+**Producible Electricity Distribution (un-risked):**
 
 ![](_images/fpc_hiip_mc_Producible_Electricity_reservoir.png)
+
+### Classification under GRMS
+
+**SEC HIIP Claim:** The report classifies the Project Cape Area accumulation as *discovered*, and
+states that *"application of any risk factor to HIIP does not equate HIIP with reserves or contingent
+resources"*. It applies no further classification: no reserves, contingent or prospective categories,
+no 1P/2P/3P or 1C/2C/3C designations, and no reporting standard cited by name.
+
+**HIP-RA-X Evaluation:** That caveat marks the boundary of what a volumetric in-place estimate can
+claim. Heat in place is the parent quantity, and classification applies to quantities that are
+recoverable — which requires the recovery assessment above. Having performed it, the estimate can be
+placed within the Geothermal Resource Management System, the geothermal adaptation of SPE-PRMS.
+
+HIP-RA-X reports the classification alongside the physical results:
+
+<pre>
+<b>      ***GRMS CLASSIFICATION***</b>
+      Resource Class:                {{ rec_resource_class }}
+      Estimate Scenario:             {{ rec_estimate_scenario }}
+      Cumulative Category:           {{ rec_cumulative_category }}
+</pre>
+
+Contingent Resources because the accumulation is discovered and this analysis establishes a
+recoverable quantity without determining commerciality; Reserves would require that determination.
+The cumulative category is derived from the resource class and estimate scenario rather than
+declared, so the Best Estimate of Contingent Resources is reported as 2C. The filing's Low, Best and
+High estimates correspond to the GRMS Low, Best and High estimate scenarios, and hence to 1C, 2C
+and 3C.
+
+Two designations are deliberately absent. Project maturity sub-class and economic status describe the
+project rather than the resource — whether development is pending, on hold or approved, and whether
+the economics have been demonstrated — and those are determinations for an evaluator with access to
+the project, not conclusions an independent analysis of a public filing can draw. HIP-RA-X reports
+only the designations declared, which keeps the boundary between the model's results and the
+evaluator's judgement visible in the output itself.
 
 ---
 
