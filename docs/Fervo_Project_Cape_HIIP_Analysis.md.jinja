@@ -1,13 +1,23 @@
-# Project Cape HIIP Validation
+# Project Cape HIIP Validation and Resource Classification
 
-**Overview:** This analysis evaluates the accuracy and methodology of GEOPHIRES' HIP-RA-X volumetric heat-in-place tool
-by comparing its calculations against the DeGolyer and MacNaughton (D&M) Heat Initially In Place (HIIP)
-[report](https://www.sec.gov/Archives/edgar/data/1853868/000162828026025821/exhibit991-sx1.htm) prepared
-for Fervo Energy's Cape Station (filed with the SEC in June 2024).
+**Overview:** This analysis evaluates GEOPHIRES' HIP-RA-X volumetric heat-in-place tool against the
+DeGolyer and MacNaughton (D&M) Heat Initially In Place (HIIP)
+[report](https://www.sec.gov/Archives/edgar/data/1853868/000162828026025821/exhibit991-sx1.htm)
+prepared for Fervo Energy's Cape Station and filed with the SEC in June 2024, and then carries the
+resource estimate through the steps that report leaves open.
 
-The results confirm that the HIP-RA-X core volumetric methodology is mathematically aligned to the
-D&M HIIP methodology. When appropriately parameterized to remove secondary thermodynamic recovery
-constraints, HIP-RA-X produces results in agreements with the SEC filing's baseline thermal energy estimates.
+Parameterised to match the filing's assumptions, HIP-RA-X reproduces its volumetric results closely.
+The deterministic case agrees with the Low Estimate to within 0.5%, and a Monte Carlo simulation
+centred on the temperature implied by the filing's own per-interval figures agrees with the Mean
+Estimate to within 1%.
+
+Beyond that agreement, the analysis supplies three things the report defers or places outside its
+scope. It performs the heat recovery factor assessment D&M record as still required, which reduces
+the un-risked capacity figure of 14,005 MW to {{ rec_elec_mw }} MW producible. It classifies the
+resulting recoverable quantity under the Geothermal Resource Management System as
+{{ rec_cumulative_category }} — the kind of designation the report states heat in place alone cannot
+support. And it sets that resource beside a development GEOPHIRES models in full, which allows a
+statement of economic potential in standard terms.
 
 **Disclaimer: Independent Analysis:** This is an independent evaluation developed by the author and contributors to the
 GEOPHIRES open-source project. It is not affiliated with, sponsored by, or endorsed by Fervo Energy, DeGolyer and MacNaughton,
