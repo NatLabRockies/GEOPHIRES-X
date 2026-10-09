@@ -44,7 +44,9 @@ To evaluate the raw HIIP claim 1:1, we explicitly overrode `Recoverable Heat fro
 
 Furthermore, to mirror the SEC filing's probabilistic approach, GEOPHIRES's [Monte Carlo module](Monte-Carlo-User-Guide.html)
 was utilized, supplying normal distributions for Reservoir Temperature, Reservoir Area, Reservoir Thickness,
-Rock Heat Capacity, and Density of Reservoir Rock.
+Rock Heat Capacity, and Density of Reservoir Rock. The central temperature is derived from the filing's
+per-interval figures rather than taken as the midpoint of the quoted range; see
+[Thermal structure of the accumulation](#thermal-structure-of-the-accumulation) below.
 
 ## Results
 
@@ -64,10 +66,39 @@ Mean (using the 1,000-iteration Monte Carlo simulation).
 | **SEC Filing (D&M)** | Gross HIIP (Mean Estimate) | **63,560** |
 | **HIP-RA-X (Monte Carlo)**| Stored Heat (reservoir) Mean | **{{ mc_stored_heat_mean_15j }}** |
 
-Because our deterministic run used a static 199°C input, sitting in the lower half of the SEC's 170°C to 250°C distribution,
-it maps closely to the P90 "Low Estimate".
-Meanwhile, the Monte Carlo simulation demonstrates that when supplied with identical bounding conditions and normal
-distributions, HIP-RA-X mirrors the SEC HIIP probabilistic Mean.
+Because our deterministic run used a static 199°C input, sitting in the lower half of the SEC's 170°C to 250°C
+range, it maps closely to the P90 "Low Estimate", agreeing to within 0.5%.
+
+#### Thermal structure of the accumulation
+
+The central temperature for the probabilistic run requires more care than the deterministic case. The
+midpoint of the 170°C to 250°C range is 210°C, but the accumulation is not thermally uniform, and a
+Monte Carlo centred on 210°C returns a mean Stored Heat approximately 13% below the reported mean HIIP.
+
+D&M's own figures show the structure. Their mean capacity per unit rock volume rises with depth, from
+66 MW/km³ in the Base interval to 77 and 78 MW/km³ in Benches 1 and 2. Taking each interval's volume as
+its mean capacity divided by its capacity per unit rock volume, and its temperature as the value that
+reproduces its reported Gross HIIP at the rock heat capacity adopted above:
+
+| Interval | Mean capacity (MW) | MW/km<sup>3</sup> | Volume (km<sup>3</sup>) | Gross HIIP (10<sup>15</sup> J) | Implied temperature |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Base (0–3,200 m) | 5,908 | 66 | 89.5 | 26,815 | 215°C |
+| Bench 1 (3,200–3,600 m) | 4,018 | 77 | 52.2 | 18,234 | 238°C |
+| Bench 2 (3,600–4,000 m) | 4,078 | 78 | 52.3 | 18,510 | 240°C |
+| **Total** | **14,005** | **73** | **194.0** | **63,559** | **228°C** |
+
+Three features support the reconstruction rather than merely fitting it. The interval HIIP values sum to
+the reported mean of 63,560. The implied temperatures increase monotonically with depth although nothing
+constrains them to. And all three fall inside the stated 170°C to 250°C window.
+
+The volume-weighted mean of 228°C, rather than the 210°C range midpoint, is therefore the appropriate
+central value for a lumped probabilistic run, and is what the Monte Carlo above uses.
+
+Two limitations are worth stating plainly. These are effective temperatures that reproduce the reported
+HIIP at the rock heat capacity adopted here; a different heat capacity would shift them. And because D&M
+publish neither areal extent nor net thickness, the volumes carry no geometric interpretation — the
+baseline's area and thickness are chosen so that their product reproduces the productive volume, not as
+claims about the resource's shape.
 
 **Stored Heat Distribution:**
 

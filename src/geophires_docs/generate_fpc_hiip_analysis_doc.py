@@ -71,7 +71,11 @@ def generate_fpc_hiip_analysis_doc():
     with open(mc_settings_path, 'w') as f:
         # The SEC HIIP methodology explicitly models productive volume (Area * Thickness),
         # density, specific heat (Rock Heat Capacity), and temperature using normal distributions.
-        f.write('INPUT, Reservoir Temperature, normal, 210.0, 15.0\n')
+        # 228 C is the volume-weighted mean of the temperatures implied by D&M's
+        # per-interval HIIP and capacity per unit rock volume, not the 170-250 C
+        # range midpoint of 210 C. See the Estimation of Heat Initially in Place
+        # section of the analysis document for the reconstruction.
+        f.write('INPUT, Reservoir Temperature, normal, 228.0, 15.0\n')
         f.write('INPUT, Reservoir Area, normal, 48.0, 2.4\n')
         f.write('INPUT, Reservoir Thickness, normal, 4.0, 0.2\n')
         f.write('INPUT, Rock Heat Capacity, normal, 2.212e12, 1.1e11\n')
