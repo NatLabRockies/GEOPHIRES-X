@@ -36,6 +36,10 @@ class HipRaInputParameters:
     def output_file_path(self) -> Path:
         return self._output_file_path
 
+    def as_text(self):
+        with open(self.as_file_path(), encoding='UTF-8') as f:
+            return f.read()
+
 
 class HipRaResult:
     def __init__(self, output_file_path):

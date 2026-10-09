@@ -1,0 +1,16 @@
+# Project Cape HIIP Validation Analysis Baseline
+# See https://softwareengineerprogrammer.github.io/GEOPHIRES-X/Fervo_Project_Cape_HIIP_Analysis.html
+
+Reservoir Temperature, 199.0, -- Explicitly cited as the ORC design intake temperature
+Rejection Temperature, 80.0, -- Fixed by D&M to match the produced water injection temperature
+Reservoir Porosity, 0.0, -- Matches the "little to no porosity" description
+Reservoir Area, 48.0, -- Back-calculated from the SEC's total mean electric capacity of 14,005 MW and volumetric power density of 73 MW/km³ over a 4.0 km depth range
+Reservoir Thickness, 4.0, -- Matches the base accumulation depth bound
+Reservoir Life Cycle, 30,
+Rock Heat Capacity, 2.212e12, -- GEOPHIRES Cape Station baseline
+Fluid Specific Heat Capacity, -1.0,
+Density Of Reservoir Fluid, -1.0,
+Density Of Reservoir Rock, 2.8e12, -- GEOPHIRES Cape Station baseline
+Recoverable Heat from Rock, 1.0,
+Recoverable Fluid Factor, 1.0,
+Print Output to Console, False,
