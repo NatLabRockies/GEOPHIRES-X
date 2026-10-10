@@ -7,9 +7,9 @@ prepared for Fervo Energy's Cape Station and filed with the SEC in June 2024, an
 resource estimate through the steps that report leaves open.
 
 Parameterised to match the filing's assumptions, HIP-RA-X reproduces its volumetric results closely.
-The deterministic case agrees with the Low Estimate to within 0.5%, and a Monte Carlo simulation
-centred on the temperature implied by the filing's own per-interval figures agrees with the Mean
-Estimate to within 1%.
+The deterministic case agrees with the Low Estimate to within {{ det_agreement_pct }}%, and a Monte
+Carlo simulation centred on the temperature implied by the filing's own per-interval figures agrees
+with the Mean Estimate to within {{ mc_agreement_pct }}%.
 
 Beyond that agreement, the analysis supplies three things the report defers or places outside its
 scope. It performs the heat recovery factor assessment D&M record as still required, which reduces
@@ -77,7 +77,7 @@ Mean (using the 1,000-iteration Monte Carlo simulation).
 | **HIP-RA-X (Monte Carlo)**| Stored Heat (reservoir) Mean | **{{ mc_stored_heat_mean_15j }}** |
 
 Because our deterministic run used a static 199°C input, sitting in the lower half of the SEC's 170°C to 250°C
-range, it maps closely to the P90 "Low Estimate", agreeing to within 0.5%.
+range, it maps closely to the P90 "Low Estimate", agreeing to within {{ det_agreement_pct }}%.
 
 #### Thermal structure of the accumulation
 
@@ -145,7 +145,7 @@ Carried through to generation:
 
 The filing's figure is {{ dm_elec_ratio }} times the HIP-RA-X estimate. This is not a disagreement
 about the resource: both describe the same rock at the same temperature, and the Gross HIIP estimates
-agree to within 1%. It is the difference between the energy present and the energy obtainable, which
+agree to within {{ mc_agreement_pct }}%. It is the difference between the energy present and the energy obtainable, which
 is the step the filing explicitly declines to take.
 
 **Producible Electricity Distribution (un-risked):**
@@ -205,10 +205,10 @@ simulation of a development at Cape Station:
 | | Modelled development | Accumulation (this analysis) |
 | :--- | ---: | ---: |
 | Net electricity | {{ fpc5_elec_mw }} MW | {{ rec_elec_mw }} MW recoverable |
-| Production wells | {{ fpc5_production_wells }} | &mdash; |
-| Total CAPEX | {{ fpc5_capex_musd }} MUSD | &mdash; |
-| Capital intensity | {{ fpc5_capex_per_kw }} USD/kW | &mdash; |
-| Electricity breakeven price | {{ fpc5_breakeven }} cents/kWh | &mdash; |
+| Production wells | {{ fpc5_production_wells }} | — |
+| Total CAPEX | {{ fpc5_capex_musd }} MUSD | — |
+| Capital intensity | {{ fpc5_capex_per_kw }} USD/kW | — |
+| Electricity breakeven price | {{ fpc5_breakeven }} cents/kWh | — |
 | GRMS classification | project-specific | {{ rec_cumulative_category }} |
 
 The modelled development accounts for roughly {{ fpc5_fraction_pct }}% of the recoverable estimate.

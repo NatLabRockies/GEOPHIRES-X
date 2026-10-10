@@ -5,10 +5,10 @@
 # recovery to reproduce the D&M un-risked HIIP. This case applies HIP-RA-X's
 # recovery factors to give a recoverable quantity, which GRMS can classify.
 
-Reservoir Temperature, 228.0, -- Volume-weighted mean implied by D&M's per-interval HIIP and capacity per unit rock volume
-Rejection Temperature, 80.0, -- Fixed by D&M to match the produced water injection temperature
+Reservoir Temperature, 228.0, -- Volume-weighted mean implied by the per-interval HIIP and capacity per unit rock volume
+Rejection Temperature, 80.0, -- Fixed by DeGolyer and MacNaughton to match the produced water injection temperature
 Reservoir Porosity, 0.0, -- Matches the "little to no porosity" description
-Reservoir Area, 48.0, -- Back-calculated from the SEC's total mean electric capacity of 14,005 MW and volumetric power density of 73 MW/km³ over a 4.0 km depth range
+Reservoir Area, 48.0, -- Back-calculated from the SEC total mean electric capacity and volumetric power density over the 4.0 km depth range
 Reservoir Thickness, 4.0, -- Matches the base accumulation depth bound
 Reservoir Life Cycle, 30,
 Rock Heat Capacity, 2.212e12, -- GEOPHIRES Cape Station baseline

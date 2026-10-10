@@ -105,6 +105,11 @@ def generate_fpc_hiip_analysis_doc():
     dm_mean_elec_mw = 14005
     dm_elec_ratio = dm_mean_elec_mw / rec_elec_mw
 
+    # D&M Gross HIIP, 10^15 J. Agreement is computed rather than written into the
+    # prose: the Monte Carlo is unseeded, so its mean moves between builds.
+    dm_low_hiip_15j = 50730
+    dm_mean_hiip_15j = 63560
+
     # Headline economics of a modelled development at Cape Station, read from the
     # committed example output. A volumetric assessment has no levelised cost;
     # cost belongs to a project, and this is the project GEOPHIRES models.
@@ -193,6 +198,8 @@ def generate_fpc_hiip_analysis_doc():
         'rec_estimate_scenario': rec_estimate_scenario,
         'rec_cumulative_category': rec_cumulative_category,
         'dm_elec_ratio': f'{dm_elec_ratio:,.1f}',
+        'det_agreement_pct': f'{abs(det_stored_heat_15j - dm_low_hiip_15j) / dm_low_hiip_15j * 100:,.1f}',
+        'mc_agreement_pct': f'{abs(mc_stored_heat_mean_15j - dm_mean_hiip_15j) / dm_mean_hiip_15j * 100:,.1f}',
         'fpc5_elec_mw': f'{fpc5_elec_mw:,.0f}',
         'fpc5_breakeven': f'{fpc5_breakeven:,.2f}',
         'fpc5_capex_musd': f'{fpc5_capex_musd:,.0f}',
