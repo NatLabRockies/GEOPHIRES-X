@@ -1,0 +1,243 @@
+# Project Cape HIIP Validation and Resource Classification
+
+**Overview:** This analysis evaluates GEOPHIRES' HIP-RA-X volumetric heat-in-place tool against the
+DeGolyer and MacNaughton (D&M) Heat Initially In Place (HIIP)
+[report](https://www.sec.gov/Archives/edgar/data/1853868/000162828026025821/exhibit991-sx1.htm)
+prepared for Fervo Energy's Cape Station and filed with the SEC in June 2024, and then carries the
+resource estimate through the steps that report leaves open.
+
+Parameterised to match the filing's assumptions, HIP-RA-X reproduces its volumetric results closely.
+The deterministic case agrees with the Low Estimate to within {{ det_agreement_pct }}%, and a Monte
+Carlo simulation centred on the temperature implied by the filing's own per-interval figures agrees
+with the Mean Estimate to within {{ mc_agreement_pct }}%.
+
+Beyond that agreement, the analysis supplies three things the report defers or places outside its
+scope. It performs the heat recovery factor assessment D&M record as still required, which reduces
+the un-risked capacity figure of 14,005 MW to {{ rec_elec_mw }} MW producible. It classifies the
+resulting recoverable quantity under the Geothermal Resource Management System as
+{{ rec_cumulative_category }} — the kind of designation the report states heat in place alone cannot
+support. And it sets that resource beside a development GEOPHIRES models in full, which allows a
+statement of economic potential in standard terms.
+
+**Disclaimer: Independent Analysis:** This is an independent evaluation developed by the author and contributors to the
+GEOPHIRES open-source project. It is not affiliated with, sponsored by, or endorsed by Fervo Energy, DeGolyer and MacNaughton,
+the SEC, or any other party.
+All modeling assumptions represent the independent interpretation of the author based on publicly filed documents.
+
+---
+
+## Methodology
+
+### Geologic and Thermal Model
+
+**SEC HIIP Claim:** The Project Cape Area targets a high-temperature geothermal anomaly in low-permeability Granitic
+Basement rocks with little to no porosity. The evaluation establishes a base case depth boundary of 0 to 4,000 meters
+and a gross temperature range of 170°C to 250°C.
+
+**HIP-RA-X Evaluation:**
+HIP-RA-X mathematically aligns with the SEC's thermal energy physics. Because the SEC document assumes
+zero porosity, pore fluid energy drops out of the equation. To mirror this exact state, we calibrated the base
+GEOPHIRES model with the following parameters derived from the filing:
+
+{{ baseline_input_params_table_md }}
+
+### Estimation Methodology
+
+**SEC HIIP Claim:** The SEC HIIP estimates are raw, un-risked baselines. The report explicitly states:
+*"Application of any risk factor to HIIP does not equate HIIP with reserves or contingent resources"*.
+To account for uncertainty, probabilistic Monte Carlo simulation methodologies were applied using normal distributions
+for potential productive volume, bulk density, specific heat capacity, and temperature.
+
+**HIP-RA-X Evaluation:**
+By default, HIP-RA-X acts as a resource assessment tool and bakes in a 75% rock heat recovery factor.
+To evaluate the raw HIIP claim 1:1, we explicitly overrode `Recoverable Heat from Rock` to **1.0 (100%)**.
+
+Furthermore, to mirror the SEC filing's probabilistic approach, GEOPHIRES's [Monte Carlo module](Monte-Carlo-User-Guide.html)
+was utilized, supplying normal distributions for Reservoir Temperature, Reservoir Area, Reservoir Thickness,
+Rock Heat Capacity, and Density of Reservoir Rock. The central temperature is derived from the filing's
+per-interval figures rather than taken as the midpoint of the quoted range; see
+[Thermal structure of the accumulation](#thermal-structure-of-the-accumulation) below.
+
+## Results
+
+### Estimation of Heat Initially in Place
+
+**SEC HIIP Claim:** The probabilistic evaluation yielded a "Low Estimate" (P90) Gross HIIP of 50,730 PJ and a
+"Mean Estimate" of 63,560 PJ.
+
+**HIP-RA-X Evaluation:**
+Our evaluation captures both the deterministic proxy (using the 199°C ORC intake temperature) and the probabilistic
+Mean (using the 1,000-iteration Monte Carlo simulation).
+
+| Model | Evaluated Thermal Metric | Result (10<sup>15</sup> Joules) |
+| :--- | :--- | :--- |
+| **SEC Filing (D&M)** | Gross HIIP (Low Estimate) | **50,730** |
+| **HIP-RA-X (Deterministic)** | Stored Heat (reservoir) | **{{ det_stored_heat_15j }}** |
+| **SEC Filing (D&M)** | Gross HIIP (Mean Estimate) | **63,560** |
+| **HIP-RA-X (Monte Carlo)**| Stored Heat (reservoir) Mean | **{{ mc_stored_heat_mean_15j }}** |
+
+Because our deterministic run used a static 199°C input, sitting in the lower half of the SEC's 170°C to 250°C
+range, it maps closely to the P90 "Low Estimate", agreeing to within {{ det_agreement_pct }}%.
+
+#### Thermal structure of the accumulation
+
+The central temperature for the probabilistic run requires more care than the deterministic case. The
+midpoint of the 170°C to 250°C range is 210°C, but the accumulation is not thermally uniform, and a
+Monte Carlo centred on 210°C returns a mean Stored Heat approximately 13% below the reported mean HIIP.
+
+D&M's own figures show the structure. Their mean capacity per unit rock volume rises with depth, from
+66 MW/km³ in the Base interval to 77 and 78 MW/km³ in Benches 1 and 2. Taking each interval's volume as
+its mean capacity divided by its capacity per unit rock volume, and its temperature as the value that
+reproduces its reported Gross HIIP at the rock heat capacity adopted above:
+
+| Interval | Mean capacity (MW) | MW/km<sup>3</sup> | Volume (km<sup>3</sup>) | Gross HIIP (10<sup>15</sup> J) | Implied temperature |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Base (0–3,200 m) | 5,908 | 66 | 89.5 | 26,815 | 215°C |
+| Bench 1 (3,200–3,600 m) | 4,018 | 77 | 52.2 | 18,234 | 238°C |
+| Bench 2 (3,600–4,000 m) | 4,078 | 78 | 52.3 | 18,510 | 240°C |
+| **Total** | **14,005** | **73** | **194.0** | **63,559** | **228°C** |
+
+Three features support the reconstruction rather than merely fitting it. The interval HIIP values sum to
+the reported mean of 63,560. The implied temperatures increase monotonically with depth although nothing
+constrains them to. And all three fall inside the stated 170°C to 250°C window.
+
+The volume-weighted mean of 228°C, rather than the 210°C range midpoint, is therefore the appropriate
+central value for a lumped probabilistic run, and is what the Monte Carlo above uses.
+
+Two limitations are worth stating plainly. These are effective temperatures that reproduce the reported
+HIIP at the rock heat capacity adopted here; a different heat capacity would shift them. And because D&M
+publish neither areal extent nor net thickness, the volumes carry no geometric interpretation — the
+baseline's area and thickness are chosen so that their product reproduces the productive volume, not as
+claims about the resource's shape.
+
+**Stored Heat Distribution:**
+
+![](_images/fpc_hiip_mc_Stored_Heat_reservoir.png)
+
+### From Heat in Place to Recoverable Heat
+
+**SEC HIIP Claim:** The filing applies no heat recovery factor. It states that
+*"a heat recovery factor assessment is still required to evaluate recoverable heat"*, and converts
+thermal energy to electricity by applying a static 19.5% ORC plant efficiency and a 1.069 peak output
+correction factor to the raw HIIP over 30 years, yielding a Mean Estimate Electric Power Capacity of
+14,005 MW. That figure therefore describes the conversion of the entire in-place accumulation, not an
+estimate of what can be produced from it.
+
+**HIP-RA-X Evaluation:** That assessment is what HIP-RA-X performs. Running the same reservoir at the
+228°C volume-weighted mean with the tool's recovery factors applied, rather than overridden to 1.0 as
+in the baseline above, gives the following chain (10<sup>15</sup> Joules):
+
+| Quantity | Result | Basis |
+| :--- | ---: | :--- |
+| Gross HIIP (D&M, Mean Estimate) | 63,560 | Total thermal energy in place |
+| Stored Heat, recovery applied | {{ rec_stored_heat_15j }} | 75% recoverable heat from rock |
+| Available Heat | {{ rec_available_heat_15j }} | Second-law limit on the recovered heat |
+| Producible Heat | {{ rec_producible_heat_15j }} | Over the 30-year reservoir life cycle |
+
+The resulting Recovery Factor of {{ rec_recovery_factor }}% — the proportion of heat in place that
+reaches the surface as useful energy — is the quantity the filing identifies as missing.
+
+Carried through to generation:
+
+* **SEC HIIP Estimated Power Capacity (Mean):** 14,005 MW
+* **HIP-RA-X Producible Electricity, un-risked (MC Mean):** {{ mc_elec_mean_mw }} MW
+* **HIP-RA-X Producible Electricity, recovery applied:** {{ rec_elec_mw }} MW
+
+The filing's figure is {{ dm_elec_ratio }} times the HIP-RA-X estimate. This is not a disagreement
+about the resource: both describe the same rock at the same temperature, and the Gross HIIP estimates
+agree to within {{ mc_agreement_pct }}%. It is the difference between the energy present and the energy obtainable, which
+is the step the filing explicitly declines to take.
+
+**Producible Electricity Distribution (un-risked):**
+
+![](_images/fpc_hiip_mc_Producible_Electricity_reservoir.png)
+
+### Classification under GRMS
+
+**SEC HIIP Claim:** The report classifies the Project Cape Area accumulation as *discovered*, and
+states that *"application of any risk factor to HIIP does not equate HIIP with reserves or contingent
+resources"*. It applies no further classification: no reserves, contingent or prospective categories,
+no 1P/2P/3P or 1C/2C/3C designations, and no reporting standard cited by name.
+
+**HIP-RA-X Evaluation:** That caveat marks the boundary of what a volumetric in-place estimate can
+claim. Heat in place is the parent quantity, and classification applies to quantities that are
+recoverable — which requires the recovery assessment above. Having performed it, the estimate can be
+placed within the Geothermal Resource Management System, the geothermal adaptation of SPE-PRMS.
+
+HIP-RA-X reports the classification alongside the physical results:
+
+<pre>
+<b>      ***GRMS CLASSIFICATION***</b>
+      Resource Class:                {{ rec_resource_class }}
+      Estimate Scenario:             {{ rec_estimate_scenario }}
+      Cumulative Category:           {{ rec_cumulative_category }}
+</pre>
+
+Contingent Resources because the accumulation is discovered and this analysis establishes a
+recoverable quantity without determining commerciality; Reserves would require that determination.
+The cumulative category is derived from the resource class and estimate scenario rather than
+declared, so the Best Estimate of Contingent Resources is reported as 2C. The filing's Low, Best and
+High estimates correspond to the GRMS Low, Best and High estimate scenarios, and hence to 1C, 2C
+and 3C.
+
+Two designations are deliberately absent. Project maturity sub-class and economic status describe the
+project rather than the resource — whether development is pending, on hold or approved, and whether
+the economics have been demonstrated — and those are determinations for an evaluator with access to
+the project, not conclusions an independent analysis of a public filing can draw. HIP-RA-X reports
+only the designations declared, which keeps the boundary between the model's results and the
+evaluator's judgement visible in the output itself.
+
+### Economic Potential
+
+**SEC HIIP Claim:** The report does not address economics. Its scope is heat in place, and it
+states that a heat recovery factor assessment is still required even to reach recoverable heat.
+Cost, price and financing are outside it entirely.
+
+**HIP-RA-X Evaluation:** A volumetric assessment cannot supply them either. The recoverable
+estimate above describes an accumulation, and an accumulation has no levelised cost: cost attaches
+to a development, with a well count, a plant, a schedule and a financing structure. This is the
+same boundary the classification marks — Contingent Resources are recoverable but not demonstrated
+commercial, and the demonstration is a project, not a better resource estimate.
+
+GEOPHIRES models such a project. `Fervo_Project_Cape-5` in this repository is a full techno-economic
+simulation of a development at Cape Station:
+
+| | Modelled development | Accumulation (this analysis) |
+| :--- | ---: | ---: |
+| Net electricity | {{ fpc5_elec_mw }} MW | {{ rec_elec_mw }} MW recoverable |
+| Production wells | {{ fpc5_production_wells }} | — |
+| Total CAPEX | {{ fpc5_capex_musd }} MUSD | — |
+| Capital intensity | {{ fpc5_capex_per_kw }} USD/kW | — |
+| Electricity breakeven price | {{ fpc5_breakeven }} cents/kWh | — |
+| GRMS classification | project-specific | {{ rec_cumulative_category }} |
+
+The modelled development accounts for roughly {{ fpc5_fraction_pct }}% of the recoverable estimate.
+The remainder is not a smaller or riskier version of the same thing: it is resource with no
+development plan attached, and therefore no cost, no schedule and no commerciality determination.
+At the project's {{ fpc5_mw_per_well }} MW per production well it would take several hundred further
+wells, and the reservoir behaviour, drilling cost and offtake arrangements for those wells are
+precisely what has not been established.
+
+No extrapolation of the project's capital intensity across the full accumulation is offered here,
+and none should be inferred. Capital intensity does not scale linearly over a sixfold expansion:
+well interference, the temperature gradient across the accumulation, drilling learning curves and
+transmission capacity all bear on it, and none of them are modelled by multiplication.
+
+What the two figures jointly support, in standard terms, is this. The Project Cape Area holds a
+best-estimate recoverable resource classified as {{ rec_cumulative_category }}, of which a
+development modelled at {{ fpc5_elec_mw }} MW and {{ fpc5_breakeven }} cents/kWh demonstrates
+commercial viability for roughly {{ fpc5_fraction_pct }}%. Converting further {{ rec_cumulative_category }}
+volumes to Reserves requires development plans, not further resource assessment. That is a statement
+about economic potential that neither the filing nor a volumetric tool could make alone.
+
+**Comparability:** `Fervo_Project_Cape-5` models a specific stimulated volume with its own reservoir
+parameterisation, calibrated against published Cape Station performance. The analysis above models
+the whole accumulation from the filing's volumetric figures. The two are set side by side here on
+scale and maturity; they are not reconciled as models of the same object, and the difference between
+their capacity figures should not be read as a disagreement.
+
+---
+
+## References
+
+DeGolyer and MacNaughton. (2024, September 24). *Report as of June 30, 2024 on Heat Initially In Place associated with the Project Cape Area prepared for Fervo Energy*. Securities and Exchange Commission, Exhibit 99.1. [https://www.sec.gov/Archives/edgar/data/1853868/000162828026025821/exhibit991-sx1.htm](https://www.sec.gov/Archives/edgar/data/1853868/000162828026025821/exhibit991-sx1.htm)

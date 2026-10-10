@@ -36,6 +36,10 @@ class HipRaInputParameters:
     def output_file_path(self) -> Path:
         return self._output_file_path
 
+    def as_text(self):
+        with open(self.as_file_path(), encoding='UTF-8') as f:
+            return f.read()
+
 
 class HipRaResult:
     def __init__(self, output_file_path):
@@ -53,6 +57,23 @@ class HipRaResult:
                 key.strip(): {'value': float(value), 'unit': unit.strip() if unit else None}
                 for key, value, unit in matches
             }
+
+            # Second, additive pass for non-numeric field values (such as GRMS
+            # classification designations). Numeric fields are already captured
+            # above and are not revisited, so existing results are unchanged.
+            text_pattern = re.compile(r'^\s{6}(\S[^:\n]*?):\s+(\S[^\n]*?)\s*$', re.MULTILINE)
+            for key, value in re.findall(text_pattern, text):
+                key = key.strip()
+
+                if re.fullmatch(r'[0-9eE.+-]+(\s+\S+)?', value):
+                    # A number, optionally followed by a unit: already captured
+                    # by the numeric pass above.
+                    continue
+
+                # Anything else is a text value. This overrides the numeric pass,
+                # which splits values like '2P' into 2.0 with unit 'P' because it
+                # does not require whitespace between value and unit.
+                result[key] = {'value': value, 'unit': None}
 
             return result
 
