@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from geophires_docs import _FPC5_INPUT_FILE_PATH
-from geophires_docs import _FPC5_RESULT_FILE_PATH
+from geophires_docs import _FPC7_INPUT_FILE_PATH
+from geophires_docs import _FPC7_RESULT_FILE_PATH
 from geophires_docs import _PROJECT_ROOT
-from geophires_docs import generate_fervo_project_cape_5_md
-from geophires_docs.generate_fervo_project_cape_5_graphs import generate_fervo_project_cape_5_graphs
+from geophires_docs import generate_fervo_project_cape_7_md
+from geophires_docs.generate_fervo_project_cape_7_graphs import generate_fervo_project_cape_7_graphs
 from geophires_x_client import GeophiresInputParameters
 from geophires_x_client import GeophiresXClient
 from geophires_x_client import GeophiresXResult
@@ -20,6 +20,13 @@ _SINGH_ET_AL_BASE_SIMULATION_PARAMETERS: dict[str, Any] = {
     'Maximum Drawdown': '1, -- Redrilling not modeled in Singh et al. scenario. '
     '(The equivalent GEOPHIRES simulation allows drawdown to reach up to 100% without triggering redrilling)',
     'Plant Lifetime': 15,
+    'Reservoir Depth': '2.68, -- Approximate average depth between the upper and lower benches of the Phase I design '
+    'simulated by Singh et al. The case study base case is deeper, corresponding to the Fervo 3.0 well design.',
+    'Nonvertical Length per Multilateral Section': '5000 feet, -- Phase I lateral length (BLM, 2024). '
+    'The case study base case uses the longer lateral of the Fervo 3.0 well design.',
+    'Number of Fractures per Stimulated Well': '150, -- 12 stages for the 5,000 ft Phase I lateral at the case study '
+    'stage length, clusters per stage, and stimulation success rate. '
+    'The case study base case scales the stage count to the longer 3.0 design lateral.',
 }
 
 
@@ -28,7 +35,11 @@ def get_singh_et_al_base_simulation_result(base_input_params: GeophiresInputPara
         -> tuple[GeophiresInputParameters,GeophiresXResult]:
     singh_et_al_base_simulation_input_params = ImmutableGeophiresInputParameters(
         from_file_path=base_input_params.as_file_path(),
-        params=_SINGH_ET_AL_BASE_SIMULATION_PARAMETERS,
+        params={
+            **_SINGH_ET_AL_BASE_SIMULATION_PARAMETERS,
+            # Ensure debt tenor does not exceed plant lifetime
+            'Debt Tenor': _SINGH_ET_AL_BASE_SIMULATION_PARAMETERS['Plant Lifetime']
+        },
     )
     # fmt:on
 
@@ -39,21 +50,21 @@ def get_singh_et_al_base_simulation_result(base_input_params: GeophiresInputPara
     return singh_et_al_base_simulation_input_params, singh_et_al_base_simulation_result
 
 
-def generate_fervo_project_cape_5_docs():
+def generate_fervo_project_cape_7_docs():
     input_params: GeophiresInputParameters = ImmutableGeophiresInputParameters(
-        from_file_path=_FPC5_INPUT_FILE_PATH
+        from_file_path=_FPC7_INPUT_FILE_PATH
     )
-    result = GeophiresXResult(_FPC5_RESULT_FILE_PATH)
+    result = GeophiresXResult(_FPC7_RESULT_FILE_PATH)
 
     singh_et_al_base_simulation: tuple[GeophiresInputParameters,GeophiresXResult] = get_singh_et_al_base_simulation_result(input_params)
 
-    generate_fervo_project_cape_5_graphs(
+    generate_fervo_project_cape_7_graphs(
         (input_params, result),
         singh_et_al_base_simulation,
         _PROJECT_ROOT / 'docs/_images'
     )
 
-    generate_fervo_project_cape_5_md.generate_fervo_project_cape_5_md(
+    generate_fervo_project_cape_7_md.generate_fervo_project_cape_7_md(
         input_params,
         result,
         _SINGH_ET_AL_BASE_SIMULATION_PARAMETERS
@@ -61,4 +72,4 @@ def generate_fervo_project_cape_5_docs():
 
 
 if __name__ == '__main__':
-    generate_fervo_project_cape_5_docs()
+    generate_fervo_project_cape_7_docs()

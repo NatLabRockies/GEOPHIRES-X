@@ -1,19 +1,25 @@
 from __future__ import annotations
 
 from math import ceil
+from math import floor
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 from matplotlib import pyplot as plt
 
-from geophires_docs import _FPC5_INPUT_FILE_PATH
-from geophires_docs import _FPC5_RESULT_FILE_PATH
+from geophires_docs import _FPC7_INPUT_FILE_PATH
+from geophires_docs import _FPC7_ORC_UNIT_GROSS_CAPACITY_MW
+from geophires_docs import _FPC7_PPA_MINIMUM_NET_GENERATION_MW
+from geophires_docs import _FPC7_RESULT_FILE_PATH
 from geophires_docs import _PROJECT_ROOT
+from geophires_docs import _get_fpc7_orc_unit_count
 from geophires_docs import _get_full_production_temperature_profile
 from geophires_docs import _get_full_profile
 from geophires_docs import _get_input_parameters_dict
 from geophires_docs import _get_logger
+from geophires_docs.fervo_project_cape_7_scenarios import FlowRateParametricRow
+from geophires_docs.fervo_project_cape_7_scenarios import load_fpc7_flow_rate_parametric
 from geophires_x_client import GeophiresInputParameters
 from geophires_x_client import GeophiresXResult
 from geophires_x_client import ImmutableGeophiresInputParameters
@@ -84,7 +90,7 @@ def generate_power_production_graph(
     # result: GeophiresXResult,
     input_and_result: tuple[GeophiresInputParameters, GeophiresXResult],
     output_dir: Path,
-    filename: str = 'fervo_project_cape-5-power-production.png',
+    filename: str = 'fervo_project_cape-7-power-production.png',
 ) -> str:
     """
     Generate a graph of time vs net power production and save it to the output directory.
@@ -116,20 +122,35 @@ def generate_power_production_graph(
     ax.set_ylabel('Power Production (MW)', fontsize=12)
     ax.set_title('Power Production Over Project Lifetime', fontsize=14)
 
+    ppa_minimum_mw = _FPC7_PPA_MINIMUM_NET_GENERATION_MW
+    orc_unit_count = _get_fpc7_orc_unit_count(float(total_power.max()))
+    nameplate_mw = orc_unit_count * _FPC7_ORC_UNIT_GROSS_CAPACITY_MW
+
     # Set axis limits
     ax.set_xlim(years.min(), years.max())
-    ax.set_ylim(480, 630)
+    ax.set_ylim(
+        floor((min(float(net_power.min()), ppa_minimum_mw) - 20) / 10) * 10,
+        ceil((max(float(total_power.max()), nameplate_mw) + 30) / 10) * 10,
+    )
 
     # Add horizontal reference lines
     hline_x = 1.5
-    ax.axhline(y=500, color='#e69500', linestyle='--', linewidth=1.5, alpha=0.8)
-    ax.text(hline_x, 498, 'PPA Minimum Production Requirement', ha='left', va='top', fontsize=9, color='#e69500')
-
-    ax.axhline(y=600, color='#33a02c', linestyle='--', linewidth=1.5, alpha=0.8)
+    ax.axhline(y=ppa_minimum_mw, color='#e69500', linestyle='--', linewidth=1.5, alpha=0.8)
     ax.text(
         hline_x,
-        602,
-        'Nameplate capacity (combined capacity of individual ORCs)',
+        ppa_minimum_mw - 2,
+        'PPA Minimum Production Requirement',
+        ha='left',
+        va='top',
+        fontsize=9,
+        color='#e69500',
+    )
+
+    ax.axhline(y=nameplate_mw, color='#33a02c', linestyle='--', linewidth=1.5, alpha=0.8)
+    ax.text(
+        hline_x,
+        nameplate_mw + 2,
+        f'Nameplate capacity ({orc_unit_count}×{_FPC7_ORC_UNIT_GROSS_CAPACITY_MW:.0f} MWe ORC units)',
         ha='left',
         va='bottom',
         fontsize=9,
@@ -157,7 +178,7 @@ def generate_power_production_graph(
 def generate_production_temperature_and_drawdown_graph(
     input_and_result: tuple[GeophiresInputParameters, GeophiresXResult],
     output_dir: Path,
-    filename: str = 'fervo_project_cape-5-production-temperature.png',
+    filename: str = 'fervo_project_cape-7-production-temperature.png',
 ) -> str:
     """
     Generate a graph of time vs production temperature with a horizontal line
@@ -198,7 +219,10 @@ def generate_production_temperature_and_drawdown_graph(
     ax.set_xlabel(_YOE_LABEL, fontsize=12)
     ax.set_ylabel('Production Temperature (°C)', fontsize=12)
     ax.set_xlim(years.min(), years.max())
-    ax.set_ylim(200, 205)
+    ax.set_ylim(
+        floor(min(float(temperatures_celsius.min()), max_drawdown_temp) - 1),
+        ceil(float(temperatures_celsius.max()) + 1),
+    )
 
     # Enable minor ticks on x-axis
     ax.minorticks_on()
@@ -210,12 +234,13 @@ def generate_production_temperature_and_drawdown_graph(
         ax.axvline(x=redrill_year, color=COLOR_REDRILLING, linestyle=':', linewidth=1.5, alpha=0.7)
         # Only add label for the first redrilling event to avoid legend clutter
         if i == 0:
+            y_min, y_max = ax.get_ylim()
             ax.text(
                 redrill_year + 0.3,
-                ax.get_ylim()[0] + 0.75,
+                y_min + 0.05 * (y_max - y_min),
                 f'Redrilling Events (n={len(redrilling_years)})',
                 ha='left',
-                va='top',
+                va='bottom',
                 fontsize=9,
                 color=COLOR_REDRILLING,
             )
@@ -258,7 +283,7 @@ def generate_production_temperature_and_drawdown_graph(
 
 
 def generate_production_temperature_graph(
-    result: GeophiresXResult, output_dir: Path, filename: str = 'fervo_project_cape-5-production-temperature.png'
+    result: GeophiresXResult, output_dir: Path, filename: str = 'fervo_project_cape-7-production-temperature.png'
 ) -> str:
     """
     Generate a graph of time vs production temperature and save it to the output directory.
@@ -315,7 +340,86 @@ def generate_production_temperature_graph(
     return filename
 
 
-def generate_fervo_project_cape_5_graphs(
+def generate_flow_rate_parametric_graph(
+    rows: list[FlowRateParametricRow],
+    base_flow_rate_kg_per_s: float,
+    output_dir: Path,
+    filename: str = 'fervo_project_cape-7-sensitivity-analysis-flow-rate.png',
+) -> None:
+    """
+    Generate the production flow rate parametric graph, with flow rates that do not meet the PPA minimum net
+    generation shaded and the base case flow rate marked.
+    """
+    _log.info('Generating flow rate parametric graph...')
+
+    color_mark = '#3366cc'
+    color_ink_muted = '#555555'
+    color_grid = '#dddddd'
+    color_infeasible = '#f2f2f2'
+
+    flow_rates = [it.flow_kg_per_s for it in rows]
+    panels: list[tuple[str, str, str]] = [
+        ('Average Net Electricity Production (MW)', 'avg_net_mw', 'MW'),
+        ('Number of times redrilling (count)', 'redrills', 'count'),
+        ('Electricity breakeven price (cents/kWh)', 'lcoe_cents_per_kwh', 'cents/kWh'),
+        ('After-tax IRR (%)', 'irr_pct', '%'),
+        ('Project NPV (MUSD)', 'npv_musd', 'MUSD'),
+    ]
+
+    infeasible_flow_rates = [it.flow_kg_per_s for it in rows if it.min_net_mw < _FPC7_PPA_MINIMUM_NET_GENERATION_MW]
+    infeasible_max_flow_rate = max(infeasible_flow_rates) if len(infeasible_flow_rates) > 0 else None
+
+    fig, axes = plt.subplots(len(panels), 1, figsize=(7, 13.5))
+    for ax, (title, field_name, unit) in zip(axes, panels):
+        values = [getattr(it, field_name) for it in rows]
+        if infeasible_max_flow_rate is not None:
+            ax.axvspan(
+                min(flow_rates) - 1, infeasible_max_flow_rate + 0.5, color=color_infeasible, zorder=0, linewidth=0
+            )
+        ax.axvline(base_flow_rate_kg_per_s, color=color_ink_muted, linestyle='--', linewidth=1, zorder=1)
+        ax.scatter(flow_rates, values, s=36, color=color_mark, zorder=3, linewidths=0)
+
+        ax.set_title(title, loc='left', fontsize=13)
+        ax.set_ylabel(unit, fontsize=10, fontstyle='italic', color=color_ink_muted)
+        ax.set_xlabel('Production Flow Rate per Well (kg/s)', fontsize=10, fontstyle='italic', color=color_ink_muted)
+        ax.set_xlim(min(flow_rates) - 1, max(flow_rates) + 1)
+        ax.grid(True, color=color_grid, linewidth=0.8, zorder=0)
+        for spine in ('top', 'right'):
+            ax.spines[spine].set_visible(False)
+        ax.tick_params(colors=color_ink_muted, labelsize=9)
+
+        if field_name == 'redrills':
+            ax.set_ylim(0, max(values) + 1)
+            ax.set_yticks(range(int(max(values)) + 2))
+
+    top_ax = axes[0]
+    y_top = top_ax.get_ylim()[1]
+    top_ax.text(
+        base_flow_rate_kg_per_s + 0.6,
+        y_top,
+        f'Base case ({base_flow_rate_kg_per_s:g} kg/s)',
+        fontsize=9,
+        color=color_ink_muted,
+        va='top',
+    )
+    if infeasible_max_flow_rate is not None:
+        top_ax.text(
+            min(flow_rates) - 0.4,
+            y_top,
+            f'Minimum net generation\nbelow {_FPC7_PPA_MINIMUM_NET_GENERATION_MW:g} MW',
+            fontsize=9,
+            color=color_ink_muted,
+            va='top',
+        )
+
+    fig.tight_layout(h_pad=2.0)
+    save_path = output_dir / filename
+    fig.savefig(save_path, dpi=150)
+    plt.close(fig)
+    _log.info(f'Saved {save_path}')
+
+
+def generate_fervo_project_cape_7_graphs(
     base_case: tuple[GeophiresInputParameters, GeophiresXResult],
     singh_et_al_base_simulation: tuple[GeophiresInputParameters, GeophiresXResult],
     output_dir: Path,
@@ -325,6 +429,11 @@ def generate_fervo_project_cape_5_graphs(
 
     generate_power_production_graph(base_case, output_dir)
     generate_production_temperature_and_drawdown_graph(base_case, output_dir)
+    generate_flow_rate_parametric_graph(
+        load_fpc7_flow_rate_parametric(),
+        float(_get_input_parameters_dict(base_case[0])['Production Flow Rate per Well']),
+        output_dir,
+    )
 
     if singh_et_al_base_simulation is not None:
         singh_et_al_base_simulation_result: GeophiresXResult = singh_et_al_base_simulation[1]
@@ -337,7 +446,7 @@ def generate_fervo_project_cape_5_graphs(
         generate_production_temperature_graph(
             singh_et_al_base_simulation_result,
             output_dir,
-            filename='singh_et_al_base_simulation-production-temperature.png',
+            filename='fervo_project_cape-7-singh-et-al-base-simulation-production-temperature.png',
         )
 
 
@@ -345,10 +454,10 @@ if __name__ == '__main__':
     docs_dir = _PROJECT_ROOT / 'docs'
     images_dir = docs_dir / '_images'
 
-    input_params_: GeophiresInputParameters = ImmutableGeophiresInputParameters(from_file_path=_FPC5_INPUT_FILE_PATH)
+    input_params_: GeophiresInputParameters = ImmutableGeophiresInputParameters(from_file_path=_FPC7_INPUT_FILE_PATH)
 
-    result_ = GeophiresXResult(_FPC5_RESULT_FILE_PATH)
+    result_ = GeophiresXResult(_FPC7_RESULT_FILE_PATH)
 
-    generate_fervo_project_cape_5_graphs(
+    generate_fervo_project_cape_7_graphs(
         (input_params_, result_), None, images_dir  # TODO configure (for local development)
     )

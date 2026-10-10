@@ -2,11 +2,17 @@ from __future__ import annotations
 
 import math
 import re
+from pathlib import Path
 from typing import Any
 
 from pint.facets.plain import PlainQuantity
 
 from base_test_case import BaseTestCase
+from geophires_docs import generate_fervo_project_cape_7_md
+from geophires_docs.fervo_project_cape_7_scenarios import FlowRateParametricRow
+from geophires_docs.fervo_project_cape_7_scenarios import get_fpc7_flow_rate_parametric_row
+from geophires_docs.fervo_project_cape_7_scenarios import get_fpc7_flow_rate_parametric_summary
+from geophires_docs.fervo_project_cape_7_scenarios import load_fpc7_flow_rate_parametric
 from geophires_x.GeoPHIRESUtils import quantity
 from geophires_x.GeoPHIRESUtils import sig_figs
 from geophires_x.Parameter import HasQuantity
@@ -17,41 +23,41 @@ from geophires_x_client import GeophiresXResult
 from geophires_x_client import ImmutableGeophiresInputParameters
 
 
-class FervoProjectCape5TestCase(BaseTestCase):
+class FervoProjectCape7TestCase(BaseTestCase):
 
     def test_internal_consistency(self):
 
-        fpc5_result: GeophiresXResult = GeophiresXResult(
-            self._get_test_file_path('../examples/Fervo_Project_Cape-5.out')
+        fpc7_result: GeophiresXResult = GeophiresXResult(
+            self._get_test_file_path('../examples/Fervo_Project_Cape-7.out')
         )
-        fpc5_input_params: GeophiresInputParameters = ImmutableGeophiresInputParameters(
-            from_file_path=self._get_test_file_path('../examples/Fervo_Project_Cape-5.txt')
+        fpc7_input_params: GeophiresInputParameters = ImmutableGeophiresInputParameters(
+            from_file_path=self._get_test_file_path('../examples/Fervo_Project_Cape-7.txt')
         )
-        fpc5_input_params_dict: dict[str, Any] = self._get_input_parameters(fpc5_input_params)
+        fpc7_input_params_dict: dict[str, Any] = self._get_input_parameters(fpc7_input_params)
 
         def _q(dict_val: str) -> PlainQuantity:
             spl = dict_val.split(' ')
             return quantity(float(spl[0]), spl[1])
 
-        lateral_length_q = _q(fpc5_input_params_dict['Nonvertical Length per Multilateral Section'])
-        frac_sep_q = quantity(float(fpc5_input_params_dict['Fracture Separation']), 'meter')
-        number_of_fracs_per_well = int(fpc5_input_params_dict['Number of Fractures per Stimulated Well'])
+        lateral_length_q = _q(fpc7_input_params_dict['Nonvertical Length per Multilateral Section'])
+        frac_sep_q = quantity(float(fpc7_input_params_dict['Fracture Separation']), 'meter')
+        number_of_fracs_per_well = int(fpc7_input_params_dict['Number of Fractures per Stimulated Well'])
 
         self.assertLess(number_of_fracs_per_well * frac_sep_q, lateral_length_q)
 
-        result_number_of_wells: int = self._number_of_wells(fpc5_result)
-        number_of_fracs = int(fpc5_result.result['RESERVOIR PARAMETERS']['Number of fractures']['value'])
+        result_number_of_wells: int = self._number_of_wells(fpc7_result)
+        number_of_fracs = int(fpc7_result.result['RESERVOIR PARAMETERS']['Number of fractures']['value'])
         self.assertEqual(number_of_fracs, result_number_of_wells * number_of_fracs_per_well)
 
-        input_num_production_wells: int = int(fpc5_input_params_dict['Number of Production Wells'])
+        input_num_production_wells: int = int(fpc7_input_params_dict['Number of Production Wells'])
         input_num_injection_wells: int = math.ceil(
-            float(fpc5_input_params_dict['Number of Injection Wells per Production Well']) * input_num_production_wells
+            float(fpc7_input_params_dict['Number of Injection Wells per Production Well']) * input_num_production_wells
         )
-        fpc5_input_params_number_of_wells = input_num_production_wells + input_num_injection_wells
-        self.assertEqual(result_number_of_wells, fpc5_input_params_number_of_wells)
+        fpc7_input_params_number_of_wells = input_num_production_wells + input_num_injection_wells
+        self.assertEqual(result_number_of_wells, fpc7_input_params_number_of_wells)
 
-        num_redrills = fpc5_result.result['ENGINEERING PARAMETERS']['Number of times redrilling']['value']
-        total_wells_over_project_lifetime = (1 + num_redrills) * fpc5_input_params_number_of_wells
+        num_redrills = fpc7_result.result['ENGINEERING PARAMETERS']['Number of times redrilling']['value']
+        total_wells_over_project_lifetime = (1 + num_redrills) * fpc7_input_params_number_of_wells
 
         additional_future_permitted_wells_factor = (
             1.25  # speculative - see documentation reference source for assumptions
@@ -102,45 +108,47 @@ class FervoProjectCape5TestCase(BaseTestCase):
 
         return number_of_wells
 
-    def test_fervo_project_cape_5_results_against_reference_values(self):
+    def test_fervo_project_cape_7_results_against_reference_values(self):
         """
         Asserts that the results conform to some of the key reference values claimed in
-        docs/Fervo_Project_Cape-5.md{.jinja}.
+        docs/Fervo_Project_Cape-7.md{.jinja}.
         """
 
         r = GeophiresXClient().get_geophires_result(
-            GeophiresInputParameters(from_file_path=self._get_test_file_path('../examples/Fervo_Project_Cape-5.txt'))
+            GeophiresInputParameters(from_file_path=self._get_test_file_path('../examples/Fervo_Project_Cape-7.txt'))
         )
 
         min_net_gen = r.result['SURFACE EQUIPMENT SIMULATION RESULTS']['Minimum Net Electricity Generation']['value']
-        self.assertGreater(min_net_gen, 499)
-        self.assertLess(min_net_gen, 505)
+        self.assertGreater(min_net_gen, 500)
+        self.assertLess(min_net_gen, 520)
 
         max_total_gen = r.result['SURFACE EQUIPMENT SIMULATION RESULTS']['Maximum Total Electricity Generation'][
             'value'
         ]
-        self.assertGreater(max_total_gen, 550)
-        self.assertLess(max_total_gen, 600)
+        self.assertGreater(max_total_gen, 600)
+        self.assertLess(max_total_gen, 660)  # Exceeding 660 MW would require a 12th 60 MWe Gen 2 ORC unit
 
         lcoe = r.result['SUMMARY OF RESULTS']['Electricity breakeven price']['value']
-        self.assertGreater(lcoe, 7.5)
-        self.assertLess(lcoe, 8.75)
+        self.assertGreater(lcoe, 9.5)
+        self.assertLess(lcoe, 11.5)
 
         redrills = r.result['ENGINEERING PARAMETERS']['Number of times redrilling']['value']
         self.assertGreater(redrills, 1)
         self.assertLess(redrills, 6)
         max_phase_2_permitted_wells = 320
-        self.assertLess(self._number_of_wells(r) * redrills, max_phase_2_permitted_wells)
-        self.assertGreater(self._number_of_wells(r) * redrills, max_phase_2_permitted_wells * 0.75)
+        total_wells_over_project_lifetime = self._number_of_wells(r) * (1 + redrills)
+        self.assertLessEqual(total_wells_over_project_lifetime, max_phase_2_permitted_wells)
+        self.assertGreater(total_wells_over_project_lifetime, max_phase_2_permitted_wells * 0.75)
 
-        well_cost = r.result['CAPITAL COSTS (M$)']['Drilling and completion costs per well']['value']
-        self.assertLess(well_cost, 5.0)
-        self.assertGreater(well_cost, 4.0)
+        # Between Fervo's best demonstrated Phase I well (adjustment factor 0.58) and the unadjusted ATB baseline (0.9)
+        well_cost = r.result['CAPITAL COSTS (M$)']['Drilling and completion costs']['value'] / self._number_of_wells(r)
+        self.assertLess(well_cost, 10.6)
+        self.assertGreater(well_cost, 6.8)
 
         pumping_power_pct = r.result['SURFACE EQUIPMENT SIMULATION RESULTS'][
             'Initial pumping power/net installed power'
         ]['value']
-        self.assertGreater(pumping_power_pct, 14.5)
+        self.assertGreater(pumping_power_pct, 20)
         self.assertLess(pumping_power_pct, 30)
 
         num_prod_wells = r.result['SUMMARY OF RESULTS']['Number of production wells']['value']
@@ -154,19 +162,25 @@ class FervoProjectCape5TestCase(BaseTestCase):
         Useful for catching when minor updates are made to the case study which need to be manually synced to the
         documentation.
 
-        docs/Fervo_Project_Cape-5.md is a static copy of the documentation generated for the February 2026 Update of
-        the case study, which Fervo_Project_Cape-7 supersedes.
+        Note that the relevant Markdown is largely generated from input and result in
+        src/geophires_docs/generate_fervo_project_cape_7_md.py, meaning this test is somewhat redundant,
+        but it still serves as a useful sanity check for the generated documentation.
         """
 
+        def generate_documentation_markdown() -> None:
+            generate_fervo_project_cape_7_md.main(project_root=Path(self._get_test_file_path('../../')).absolute())
+
+        generate_documentation_markdown()  # Ensure we're testing the latest version of the generated doc
+
         documentation_file_content = '\n'.join(
-            self._get_test_file_content('../../docs/Fervo_Project_Cape-5.md', encoding='utf-8')
+            self._get_test_file_content('../../docs/Fervo_Project_Cape-7.md', encoding='utf-8')
         )
         inputs_in_markdown = self.parse_markdown_inputs_structured(documentation_file_content)
         results_in_markdown = self.parse_markdown_results_structured(documentation_file_content)
 
-        example_result = GeophiresXResult(self._get_test_file_path('../examples/Fervo_Project_Cape-5.out'))
+        example_result = GeophiresXResult(self._get_test_file_path('../examples/Fervo_Project_Cape-7.out'))
 
-        expected_drilling_cost_MUSD_per_well = 4.46
+        expected_drilling_cost_MUSD_per_well = 8.48
         # number_of_doublets = inputs_in_markdown['Number of Doublets']['value']
         number_of_wells = self._number_of_wells(example_result)
         self.assertAlmostEqualWithinPercentage(
@@ -176,8 +190,8 @@ class FervoProjectCape5TestCase(BaseTestCase):
         )
         self.assertEqual('MUSD', results_in_markdown['Well Drilling and Completion Costs']['unit'])
 
-        expected_base_stim_cost_MUSD_per_well = 4.0
-        expected_all_in_stim_cost_MUSD_per_well = 4.83
+        expected_base_stim_cost_USD_per_m2 = 0.875
+        expected_all_in_stim_cost_MUSD_per_well = 7.25
         self.assertAlmostEqualWithinSigFigs(
             expected_all_in_stim_cost_MUSD_per_well * number_of_wells,
             results_in_markdown['Stimulation Costs']['value'],
@@ -186,10 +200,15 @@ class FervoProjectCape5TestCase(BaseTestCase):
         self.assertEqual('MUSD', results_in_markdown['Stimulation Costs']['unit'])
 
         self.assertEqual(
-            expected_base_stim_cost_MUSD_per_well,
-            inputs_in_markdown['Reservoir Stimulation Capital Cost per Production Well']['value'],
+            expected_base_stim_cost_USD_per_m2,
+            inputs_in_markdown['Reservoir Stimulation Capital Cost per Fracture Surface Area']['value'],
         )
-        self.assertEqual('MUSD', inputs_in_markdown['Reservoir Stimulation Capital Cost per Production Well']['unit'])
+        self.assertEqual(
+            'USD/m**2', inputs_in_markdown['Reservoir Stimulation Capital Cost per Fracture Surface Area']['unit']
+        )
+        self.assertEqual(
+            'Stimulated', inputs_in_markdown['Reservoir Stimulation Capital Cost per Production Well']['value']
+        )
 
         class _Q(HasQuantity):
             def __init__(self, vu: dict[str, Any]):
@@ -277,6 +296,201 @@ class FervoProjectCape5TestCase(BaseTestCase):
             expected_stim_cost_total_MUSD,
             example_result.result['CAPITAL COSTS (M$)']['Stimulation costs']['value'],
             num_sig_figs=3,
+        )
+
+    def test_flow_rate_parametric_data_matches_example_result(self) -> None:
+        """
+        The flow rate parametric data is regenerated manually (see geophires_docs.fervo_project_cape_7_scenarios), so
+        this test fails when Fervo_Project_Cape-7 changes without the data being regenerated.
+        """
+        input_params = ImmutableGeophiresInputParameters(
+            from_file_path=self._get_test_file_path('../examples/Fervo_Project_Cape-7.txt')
+        )
+        result = GeophiresXResult(self._get_test_file_path('../examples/Fervo_Project_Cape-7.out'))
+        base_flow_rate = float(self._get_input_parameters(input_params)['Production Flow Rate per Well'])
+
+        base_row = get_fpc7_flow_rate_parametric_row(load_fpc7_flow_rate_parametric(), base_flow_rate)
+        expected_base_row = FlowRateParametricRow.from_result(base_flow_rate, result)
+        self.assertEqual(expected_base_row.redrills, base_row.redrills)
+        for field_name in ['avg_net_mw', 'min_net_mw', 'lcoe_cents_per_kwh', 'irr_pct', 'npv_musd']:
+            with self.subTest(field_name=field_name):
+                self.assertAlmostEqual(getattr(expected_base_row, field_name), getattr(base_row, field_name), places=2)
+
+    def test_get_fpc7_flow_rate_parametric_summary(self) -> None:
+        def _row(flow: float, min_net_mw: float, redrills: int, irr_pct: float) -> FlowRateParametricRow:
+            return FlowRateParametricRow(
+                flow_kg_per_s=flow,
+                avg_net_mw=min_net_mw + 10,
+                min_net_mw=min_net_mw,
+                redrills=redrills,
+                lcoe_cents_per_kwh=10.0,
+                irr_pct=irr_pct,
+                npv_musd=300.0,
+            )
+
+        rows = [
+            _row(90, 480, 1, 25.0),
+            _row(91, 490, 2, 22.0),
+            _row(92, 500, 2, 23.0),
+            _row(93, 510, 2, 23.3),
+            _row(94, 520, 2, 23.1),
+            _row(95, 530, 3, 21.0),
+        ]
+        summary = get_fpc7_flow_rate_parametric_summary(rows, 92, 500)
+        self.assertEqual(
+            [(90, 91, 1, 2), (94, 95, 2, 3)],
+            [
+                (it.flow_below_kg_per_s, it.flow_at_kg_per_s, it.redrills_below, it.redrills_at)
+                for it in summary.redrilling_steps
+            ],
+        )
+        self.assertEqual(92, summary.minimum_ppa_feasible_flow_rate_kg_per_s)
+        self.assertEqual(2, summary.base_redrills)
+        self.assertAlmostEqual(0.3, summary.max_irr_change_above_base_within_band_pct_pts, places=6)
+
+        with self.assertRaises(ValueError):
+            # A flow rate with fewer redrilling events than the base case meets the PPA minimum.
+            get_fpc7_flow_rate_parametric_summary([_row(90, 500, 1, 25.0), *rows[1:]], 92, 500)
+
+        with self.assertRaises(ValueError):
+            # Base case flow rate is not in the parametric data.
+            get_fpc7_flow_rate_parametric_summary(rows, 107, 500)
+
+    def test_scenario_input_parameters(self) -> None:
+        input_params = ImmutableGeophiresInputParameters(
+            from_file_path=self._get_test_file_path('../examples/Fervo_Project_Cape-7.txt')
+        )
+        result = GeophiresXResult(self._get_test_file_path('../examples/Fervo_Project_Cape-7.out'))
+        # noinspection PyProtectedMember
+        previous_input_params, _ = generate_fervo_project_cape_7_md._get_fpc7_previous_version(
+            Path(self._get_test_file_path('../../')).absolute()
+        )
+        scenario_params = generate_fervo_project_cape_7_md.get_fpc7_scenario_input_parameters(
+            input_params, result, previous_input_params
+        )
+
+        # Rates and utilization factors stated in the Investment Tax Credit Rate and Utilization Factor discussions and
+        # used in the sensitivity analysis, the reduced redrilling scenario's fracture height (+20%), and the February
+        # 2026 Update's PPA terms stated in the Modeling Overview.
+        self.assertEqual(
+            [
+                {'Investment Tax Credit Rate': 0.2768},
+                {'Utilization Factor': 0.867},
+                {'Utilization Factor': 0.822},
+                {'Fracture Height': 120.0},
+                {
+                    'Starting Electricity Sale Price': 0.095,
+                    'Electricity Escalation Rate Per Year': 0.00057,
+                    'Ending Electricity Sale Price': 1,
+                    'Electricity Escalation Start Year': 1,
+                },
+            ],
+            list(scenario_params.values()),
+        )
+
+    def test_result_values(self) -> None:
+        result = GeophiresXResult(self._get_test_file_path('../examples/Fervo_Project_Cape-7.out'))
+        values = generate_fervo_project_cape_7_md.get_result_values(result)
+
+        self.assertEqual(round(result.result['ECONOMIC PARAMETERS']['Project NPV']['value'], 1), values['npv_musd'])
+
+        # The SAM Single Owner PPA template's salvage percentage
+        self.assertEqual('50', values['salvage_value_pct_of_total_capex'])
+
+        self.assertGreaterEqual(values['min_dscr_year'], 1)
+        self.assertGreater(float(values['min_dscr']), 1.0)
+        self.assertGreaterEqual(values['debt_tenor_yr'], values['min_dscr_year'])
+        self.assertLessEqual(values['debt_tenor_yr'], values['project_lifetime_yr'])
+
+        # The base case redrills, and the remaining reservoir heat content in the annual profile is not reset by
+        # redrilling (see the Redrilling Assumptions discussion in the case study documentation).
+        self.assertGreater(values['number_of_times_redrilling'], 0)
+        self.assertIsNotNone(values['reservoir_heat_content_negative_from_year'])
+        self.assertGreater(float(values['final_year_pct_total_heat_mined']), 100.0)
+
+    def test_signed_musd_display(self) -> None:
+        # noinspection PyProtectedMember
+        display = generate_fervo_project_cape_7_md._get_signed_musd_display
+
+        self.assertEqual('-$13M', display(-12.6))
+        self.assertEqual('$337M', display(337.31))
+        self.assertEqual('$1,234M', display(1234.4))
+        self.assertEqual('$0M', display(-0.4))
+
+    def test_previous_version_comparison_tables(self) -> None:
+        # noinspection PyProtectedMember
+        previous_input_params, previous_result = generate_fervo_project_cape_7_md._get_fpc7_previous_version(
+            Path(self._get_test_file_path('../../')).absolute()
+        )
+        input_params = ImmutableGeophiresInputParameters(
+            from_file_path=self._get_test_file_path('../examples/Fervo_Project_Cape-7.txt')
+        )
+        result = GeophiresXResult(self._get_test_file_path('../examples/Fervo_Project_Cape-7.out'))
+
+        input_changes_md = generate_fervo_project_cape_7_md.generate_fpc7_previous_version_input_changes_table_md(
+            previous_input_params, input_params
+        )
+        self.assertIn('| Reservoir Depth | 2.68 km | 3.06 km | Depth at which the reservoir reaches', input_changes_md)
+        self.assertIn('| Number of Multilateral Sections | 0 | Not set |', input_changes_md)
+        self.assertNotIn('| Fracture Separation |', input_changes_md)  # Unchanged
+
+        # Grouped parameters are consecutive: the removed parameter immediately follows its replacement rather than
+        # being appended after this version's parameters.
+        table_param_names = [it.split('|')[1].strip() for it in input_changes_md.split('\n')[2:]]
+        self.assertEqual(
+            table_param_names.index('Number of Multilateral Sections per Vertical Section') + 1,
+            table_param_names.index('Number of Multilateral Sections'),
+        )
+        self.assertEqual(
+            table_param_names.index('Injectivity Index') + 1,
+            table_param_names.index('Productivity Index'),
+        )
+
+        with self.assertRaises(ValueError):
+            # Changed parameters without a rationale are not silently omitted.
+            generate_fervo_project_cape_7_md.generate_fpc7_previous_version_input_changes_table_md(
+                previous_input_params,
+                ImmutableGeophiresInputParameters(
+                    from_file_path=self._get_test_file_path('../examples/Fervo_Project_Cape-7.txt'),
+                    params={'Fracture Separation': 12},
+                ),
+            )
+
+        result_changes_md = generate_fervo_project_cape_7_md.generate_fpc7_previous_version_result_changes_table_md(
+            previous_result, result
+        )
+        self.assertIn('| LCOE ($/MWh) | 85.0 |', result_changes_md)
+        self.assertIn('| Redrilling events | 3 |', result_changes_md)
+
+        # Previous and this version compared to themselves
+        self.assertEqual(
+            '| Parameter | February 2026 Update | October 2026 Update | Rationale |\n|---|---|---|---|',
+            generate_fervo_project_cape_7_md.generate_fpc7_previous_version_input_changes_table_md(
+                input_params, input_params
+            ),
+        )
+        self.assertNotIn(
+            'pts',
+            generate_fervo_project_cape_7_md.generate_fpc7_previous_version_result_changes_table_md(result, result),
+        )
+
+    def test_grouped_param_names(self) -> None:
+        # noinspection PyProtectedMember
+        grouped = generate_fervo_project_cape_7_md._get_grouped_param_names
+
+        self.assertEqual(['a', 'b', 'c', 'd'], grouped(['a', 'b', 'c', 'd'], []))
+
+        # Group is placed at the position of its first present member, in the listed order
+        self.assertEqual(['a', 'd', 'b', 'c', 'e'], grouped(['a', 'b', 'c', 'd', 'e'], [['d', 'b']]))
+        self.assertEqual(['a', 'b', 'd', 'c'], grouped(['a', 'b', 'c', 'd'], [['b', 'd']]))
+
+        # Members not present are ignored; groups with fewer than two present members have no effect
+        self.assertEqual(['a', 'c', 'b'], grouped(['a', 'b', 'c'], [['x', 'c', 'b', 'y']]))
+        self.assertEqual(['a', 'b', 'c'], grouped(['a', 'b', 'c'], [['x', 'c']]))
+
+        # Multiple groups
+        self.assertEqual(
+            ['b', 'a', 'e', 'c', 'd', 'f'], grouped(['a', 'b', 'c', 'd', 'e', 'f'], [['b', 'a'], ['e', 'c', 'd']])
         )
 
     def parse_markdown_results_structured(self, markdown_text: str) -> dict:
@@ -438,6 +652,12 @@ class FervoProjectCape5TestCase(BaseTestCase):
             value = float(match.group(1))
             return {'value': value, 'unit': 'USD/kW'}
 
+        # Dollar per square meter format, optionally followed by additional display data ($X/m² ... -> USD/m**2)
+        match = re.match(r'^\$(\d+\.?\d*)/m²', clean_str)
+        if match:
+            value = float(match.group(1))
+            return {'value': value, 'unit': 'USD/m**2'}
+
         # Percentage format (X.X%)
         match = re.search(r'(\d+\.?\d*)%$', clean_str)
         if match:
@@ -478,26 +698,3 @@ class FervoProjectCape5TestCase(BaseTestCase):
 
         # Fallback for text-only values
         return {'value': clean_str, 'unit': 'text'}
-
-    def test_fervo_project_cape_6(self) -> None:
-        """
-        Fervo_Project_Cape-6 is derived from Fervo_Project_Cape-5 - see tests/regenerate-example-result.sh
-        """
-
-        fpc5_result: GeophiresXResult = GeophiresXResult(
-            self._get_test_file_path('../examples/Fervo_Project_Cape-6.out')
-        )
-
-        min_net_gen_dict = fpc5_result.result['SURFACE EQUIPMENT SIMULATION RESULTS'][
-            'Minimum Net Electricity Generation'
-        ]
-        fpc5_min_net_gen_mwe = quantity(min_net_gen_dict['value'], min_net_gen_dict['unit']).to('MW').magnitude
-        self.assertGreater(fpc5_min_net_gen_mwe, 100)
-
-        max_total_gen_dict = fpc5_result.result['SURFACE EQUIPMENT SIMULATION RESULTS'][
-            'Maximum Total Electricity Generation'
-        ]
-        fpc5_max_total_net_gen_mwe = (
-            quantity(max_total_gen_dict['value'], max_total_gen_dict['unit']).to('MW').magnitude
-        )
-        self.assertLess(fpc5_max_total_net_gen_mwe, 120)

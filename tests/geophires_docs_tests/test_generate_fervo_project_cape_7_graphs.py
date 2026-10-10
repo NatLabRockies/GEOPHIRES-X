@@ -1,17 +1,18 @@
 from __future__ import annotations
 
 from base_test_case import BaseTestCase
-from geophires_docs.generate_fervo_project_cape_5_graphs import _get_redrilling_event_indexes
+from geophires_docs.generate_fervo_project_cape_7_graphs import _get_redrilling_event_indexes
 from geophires_x_client import GeophiresInputParameters
 from geophires_x_client import GeophiresXClient
 from geophires_x_client import GeophiresXResult
 from geophires_x_client import ImmutableGeophiresInputParameters
 
 
-class FervoProjectCape5GraphsTestCase(BaseTestCase):
+class FervoProjectCape7GraphsTestCase(BaseTestCase):
 
     def test_get_redrilling_event_indexes(self) -> None:
         for example_id in [
+            'Fervo_Project_Cape-7',
             'Fervo_Project_Cape-5',
             # 'Fervo_Project_Cape-6'  # TODO (requires tuning)
         ]:

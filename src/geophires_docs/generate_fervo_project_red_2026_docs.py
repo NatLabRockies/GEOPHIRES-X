@@ -55,8 +55,10 @@ _GRAPH_DPI = 300
 _SAVEFIG_ARGS = {
     'dpi': _GRAPH_DPI,
     'metadata': {
-        # TODO: intended to prevent spurious image diffs after graph/doc regeneration, but does not work as intended.
-        'Date': None
+        # Prevent spurious image diffs after graph/doc regeneration: Matplotlib writes its version to PNG metadata
+        # (Software), so otherwise pixel-identical images differ whenever the Matplotlib version changes.
+        'Date': None,
+        'Software': None,
     },
 }
 

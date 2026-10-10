@@ -22,7 +22,7 @@ from geophires_x.EconomicsUtils import BuildPricingModel, end_price_or_max, wacc
 from geophires_x.ParameterUtils import expand_schedule_dsl, CALCULATED_PARAMETER_PLACEHOLDER_VALUE
 from geophires_x.GeoPHIRESUtils import quantity
 from geophires_x.OptionList import Configuration, WellDrillingCostCorrelation, EconomicModel, EndUseOptions, PlantType, \
-    _WellDrillingCostCorrelationCitation
+    _WellDrillingCostCorrelationCitation, DepreciationSchedule
 from geophires_x.Parameter import intParameter, floatParameter, OutputParameter, ReadParameter, boolParameter, \
     coerce_int_params_to_enum_values, listParameter, Parameter
 from geophires_x.SurfacePlantUtils import MAX_CONSTRUCTION_YEARS
@@ -1192,6 +1192,21 @@ class Economics:
                         f"as term debt at COD and repaid in level annual payments over this tenor. "
                         f"Defaults to {model.surfaceplant.plant_lifetime.Name} if not provided, "
                         f"and may not exceed it. SAM Single Owner PPA economic model only."
+        )
+        self.depreciation_schedule = self.ParameterDict[self.depreciation_schedule.Name] = intParameter(
+            "Depreciation Schedule",
+            DefaultValue=DepreciationSchedule.STRAIGHT_LINE_20_YEAR.int_value,
+            AllowableRange=[it.int_value for it in DepreciationSchedule],
+            ValuesEnum=DepreciationSchedule,
+            UnitType=Units.NONE,
+            ToolTipText="Tax depreciation schedule for the depreciable basis (total installed cost, reduced by half of "
+                        "the federal investment tax credit): " +
+                        '; '.join([f'{it.int_value}: {it.value}' for it in DepreciationSchedule]) +
+                        ". 5-year MACRS is the statutory class for facilities that claim the technology-neutral "
+                        "clean electricity credits (IRC sections 48E and 45Y). It front-loads deductions, and the "
+                        "resulting tax losses are counted as tax benefits in the years they occur, which assumes the "
+                        "owner can use them (for example, against other taxable income or through a tax equity "
+                        "partner). SAM Single Owner PPA economic model only."
         )
         self.EIR = self.ParameterDict[self.EIR.Name] = floatParameter(
             "Inflated Equity Interest Rate",
@@ -2649,6 +2664,9 @@ class Economics:
                     elif ParameterToModify.Name == "Well Drilling Cost Correlation":
                         ParameterToModify.value = WellDrillingCostCorrelation.from_input_string(ParameterReadIn.sValue)
 
+                    elif ParameterToModify.Name == "Depreciation Schedule":
+                        ParameterToModify.value = DepreciationSchedule.from_input_string(ParameterReadIn.sValue)
+
                     elif ParameterToModify.Name == "Reservoir Stimulation Capital Cost Adjustment Factor":
                         if self.ccstimfixed.Valid and ParameterToModify.Valid:
                             _warn("Provided reservoir stimulation cost adjustment factor not considered" +
@@ -3407,9 +3425,9 @@ class Economics:
 
             def _check_temperature_for_ORC(temperature: float) -> None:
                 if temperature > 200.:
-                    msg = ('The simulated production temperature exceeds 200 degrees Celsius.  The built-in ORC utilization '
-                           'efficiency correlations may not be valid above this temperature.  Consider using a single or double '
-                           'flash plant, or providing a custom correlation via a surface plant module.  For more information, '
+                    msg = ('The simulated production temperature exceeds 200 degrees Celsius. The built-in ORC utilization '
+                           'efficiency correlations may not be valid above this temperature. Consider using a single or double '
+                           'flash plant, or providing a custom correlation via a surface plant module. For more information, '
                            'see: https://natlabrockies.github.io/GEOPHIRES-X/Theoretical-Basis-for-GEOPHIRES.html#surface-plant')
                     print(f'Warning: {msg}')
                     model.logger.warning(msg)

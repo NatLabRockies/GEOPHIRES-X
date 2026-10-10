@@ -7,7 +7,7 @@ or in the [web interface](https://gtp.scientificwebservices.com/geophires) under
 
 ## Case Study: 500 MW EGS Project Modeled on Fervo Cape Station
 
-See documentation: [Case Study: 500 MWe EGS Project Modeled on Fervo Cape Station](Fervo_Project_Cape-5.html).
+See documentation: [Case Study: 500 MWe EGS Project Modeled on Fervo Cape Station](Fervo_Project_Cape-7.html).
 
 ## Fervo Project Red: Evaluating the Gringarten Model against Empirical EGS Data
 

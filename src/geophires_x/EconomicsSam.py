@@ -49,7 +49,7 @@ from geophires_x.EconomicsSamPreRevenue import (
     adjust_phased_schedule_to_new_length,
 )
 from geophires_x.GeoPHIRESUtils import is_float, is_int, sig_figs, quantity
-from geophires_x.OptionList import EconomicModel, EndUseOptions, PlantType
+from geophires_x.OptionList import DepreciationSchedule, EconomicModel, EndUseOptions, PlantType
 from geophires_x.Parameter import Parameter, OutputParameter, floatParameter, listParameter
 from geophires_x.Units import convertible_unit
 
@@ -730,9 +730,25 @@ def _get_single_owner_parameters(model: Model) -> dict[str, Any]:
 
     ret['ibi_oth_amount'] = (econ.OtherIncentives.quantity() + econ.TotalGrant.quantity()).to('USD').magnitude
 
+    ret = {**ret, **_get_depreciation_parameters(model)}
+
     ret = {**ret, **_get_capacity_payment_parameters(model)}
 
     return ret
+
+
+def _get_depreciation_parameters(model: Model) -> dict[str, float]:
+    """
+    :return: SAM depreciation allocations for the Depreciation Schedule, which allocates the entire depreciable basis
+        to one depreciation class. Empty for the default (20-year straight line), which the SAM template specifies.
+    """
+    if model.economics.depreciation_schedule.value == DepreciationSchedule.MACRS_5_YEAR:
+        return {
+            'depr_alloc_macrs_5_percent': 100.0,
+            'depr_alloc_sl_20_percent': 0.0,
+        }
+
+    return {}
 
 
 def _debt_tenor(model: Model) -> int:

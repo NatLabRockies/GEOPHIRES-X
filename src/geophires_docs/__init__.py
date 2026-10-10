@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 from pathlib import Path
@@ -24,21 +25,33 @@ def _get_project_root() -> Path:
     return _get_file_path('../..')
 
 
-def _get_fpc5_input_file_path(project_root: Path | None = None) -> Path:
+def _get_fpc7_input_file_path(project_root: Path | None = None) -> Path:
     if project_root is None:
         project_root = _get_project_root()
-    return project_root / 'tests/examples/Fervo_Project_Cape-5.txt'
+    return project_root / 'tests/examples/Fervo_Project_Cape-7.txt'
 
 
-def _get_fpc5_result_file_path(project_root: Path | None = None) -> Path:
+def _get_fpc7_result_file_path(project_root: Path | None = None) -> Path:
     if project_root is None:
         project_root = _get_project_root()
-    return project_root / 'tests/examples/Fervo_Project_Cape-5.out'
+    return project_root / 'tests/examples/Fervo_Project_Cape-7.out'
 
 
 _PROJECT_ROOT: Path = _get_project_root()
-_FPC5_INPUT_FILE_PATH: Path = _get_fpc5_input_file_path()
-_FPC5_RESULT_FILE_PATH: Path = _get_fpc5_result_file_path()
+_FPC7_INPUT_FILE_PATH: Path = _get_fpc7_input_file_path()
+_FPC7_RESULT_FILE_PATH: Path = _get_fpc7_result_file_path()
+
+_FPC7_PPA_MINIMUM_NET_GENERATION_MW: float = 500.0
+
+# Gross capacity of each Gen 2 ORC unit announced for Cape Station Phase II (Turboden, 2025; Jacobs, 2025).
+_FPC7_ORC_UNIT_GROSS_CAPACITY_MW: float = 60.0
+
+
+def _get_fpc7_orc_unit_count(max_total_generation_mw: float) -> int:
+    """
+    :return: Number of Gen 2 ORC units required for nameplate capacity to cover the maximum total (gross) generation.
+    """
+    return math.ceil(max_total_generation_mw / _FPC7_ORC_UNIT_GROSS_CAPACITY_MW)
 
 
 def _get_logger(_name_: str) -> Any:
@@ -63,7 +76,7 @@ def _get_logger(_name_: str) -> Any:
     return _PrintLogger()
 
 
-def _get_input_parameters_dict(  # TODO consolidate with FervoProjectCape5TestCase._get_input_parameters
+def _get_input_parameters_dict(  # TODO consolidate with FervoProjectCape7TestCase._get_input_parameters
     _params: GeophiresInputParameters, include_parameter_comments: bool = False, include_line_comments: bool = False
 ) -> dict[str, Any]:
     comment_idx = 0

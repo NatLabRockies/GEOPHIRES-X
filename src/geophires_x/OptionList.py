@@ -393,3 +393,22 @@ class InjectionTemperatureModel(GeophiresInputEnum):
                 return member
 
         raise ValueError(f'Unknown Injection Temperature Model input value: {input_string}')
+
+
+class DepreciationSchedule(GeophiresInputEnum):
+    STRAIGHT_LINE_20_YEAR = 1, "20-year straight line"
+    MACRS_5_YEAR = 2, "5-year MACRS"
+
+    @staticmethod
+    def from_int(int_val):
+        for member in __class__:
+            if member.int_value == int_val:
+                return member
+
+    @staticmethod
+    def from_input_string(input_string: str):
+        for member in __class__:
+            if input_string == str(member.int_value):
+                return member
+
+        raise ValueError(f'Unknown Depreciation Schedule input value: {input_string}')

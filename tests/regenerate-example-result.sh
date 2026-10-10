@@ -58,9 +58,12 @@ fi
 
 if [[ $1 == "Fervo_Project_Cape-5" ]]
 then
-    python ../src/geophires_docs/generate_fervo_project_cape_5_docs.py
-
     ./regenerate-example-result.sh Fervo_Project_Cape-6
+fi
+
+if [[ $1 == "Fervo_Project_Cape-7" ]]
+then
+    python ../src/geophires_docs/generate_fervo_project_cape_7_docs.py
 
     if [ ! -f regenerate-example-result.env ] && [ -f regenerate-example-result.env.template ]; then
         echo "Creating regenerate-example-result.env from template..."

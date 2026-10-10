@@ -537,6 +537,37 @@ class EconomicsSamTestCase(BaseTestCase):
         with self.assertRaises(RuntimeError):
             self._get_result({'Plant Lifetime': 13, 'Debt Tenor': 25})
 
+    def test_depreciation_schedule(self):
+        def _federal_depreciation(r: GeophiresXResult) -> list[float]:
+            return self._get_cash_flow_row(r.result['SAM CASH FLOW PROFILE'], 'Total federal tax depreciation ($)')
+
+        def _irr(r: GeophiresXResult) -> float:
+            return r.result['ECONOMIC PARAMETERS']['After-tax IRR']['value']
+
+        macrs_result = self._get_result({'Depreciation Schedule': 2})
+        macrs_depreciation = _federal_depreciation(macrs_result)
+
+        # 5-year MACRS (200% declining balance, half-year convention) depreciates the entire basis in years 1-6.
+        basis = sum(macrs_depreciation)
+        self.assertGreater(basis, 0)
+        for year, macrs_pct in enumerate([20, 32, 19.2, 11.52, 11.52, 5.76], start=1):
+            self.assertAlmostEqual(basis * macrs_pct / 100, macrs_depreciation[year], delta=2)
+        self.assertTrue(all(it == 0 for it in macrs_depreciation[7:]))
+
+        # 20-year straight line with half-year convention on the same basis
+        default_result = self._get_result({})
+        default_depreciation = _federal_depreciation(default_result)
+        self.assertAlmostEqual(basis * 0.025, default_depreciation[1], delta=2)
+        self.assertAlmostEqual(basis * 0.05, default_depreciation[2], delta=2)
+
+        straight_line_result = self._get_result({'Depreciation Schedule': 1})
+        self.assertEqual(default_depreciation, _federal_depreciation(straight_line_result))
+
+        self.assertGreater(_irr(macrs_result), _irr(default_result))
+
+        with self.assertRaises(RuntimeError):
+            self._get_result({'Depreciation Schedule': 3})
+
     def test_ppa_pricing_model(self):
         self.assertListEqual(
             [

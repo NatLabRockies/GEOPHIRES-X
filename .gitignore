@@ -94,6 +94,8 @@ nosetests.xml
 .vscode
 
 ai.md
+Claude outputs/
+.claude
 
 # Complexity
 output/*.html
@@ -105,7 +107,7 @@ docs/temp.txt
 docs/tmp
 docs/reference/geophires-request.json
 docs/reference/parameters.rst
-docs/Fervo_Project_Cape-5.md
+docs/Fervo_Project_Cape-7.md
 docs/Fervo_Project_Red.md
 docs/_images/*.bak.png
 docs/_images/singh-et-al-2025_fig-7_well-and-bench-spacing.xcf

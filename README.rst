@@ -58,9 +58,9 @@ Free software: `MIT license <LICENSE>`__
     :alt: Supported implementations
     :target: https://pypi.org/project/geophires-x
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/softwareengineerprogrammer/GEOPHIRES-X/v3.18.3.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/softwareengineerprogrammer/GEOPHIRES-X/v3.19.0.svg
     :alt: Commits since latest release
-    :target: https://github.com/softwareengineerprogrammer/GEOPHIRES-X/compare/v3.18.3...main
+    :target: https://github.com/softwareengineerprogrammer/GEOPHIRES-X/compare/v3.19.0...main
 
 .. |docs| image:: https://readthedocs.org/projects/GEOPHIRES-X/badge/?style=flat
     :target: https://softwareengineerprogrammer.github.io/GEOPHIRES
@@ -168,14 +168,18 @@ Example-specific web interface deeplinks are listed in the Link column.
      - Input file
      - Case report file
      - Link
-   * - Case Study: 500 MW EGS Modeled on Fervo Cape Station (2026 Update) (`documentation <https://softwareengineerprogrammer.github.io/GEOPHIRES/Fervo_Project_Cape-5.html>`__)
+   * - Case Study: 500 MW EGS Modeled on Fervo Cape Station (February 2026 Update) (`documentation <https://softwareengineerprogrammer.github.io/GEOPHIRES/Fervo_Project_Cape-5.html>`__)
      - `Fervo_Project_Cape-5.txt <tests/examples/Fervo_Project_Cape-5.txt>`__
      - `.out <tests/examples/Fervo_Project_Cape-5.out>`__
      - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-5>`__
-   * - 100 MW EGS Modeled on Fervo Cape Station
+   * - 100 MW EGS Modeled on Fervo Cape Station (February 2026 Update)
      - `Fervo_Project_Cape-6.txt <tests/examples/Fervo_Project_Cape-6.txt>`__
      - `.out <tests/examples/Fervo_Project_Cape-6.out>`__
      - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-6>`__
+   * - [Preview] Case Study: 500 MW EGS Modeled on Fervo Cape Station (October 2026 Update) (`documentation <https://softwareengineerprogrammer.github.io/GEOPHIRES/Fervo_Project_Cape-7.html>`__)
+     - `Fervo_Project_Cape-7.txt <tests/examples/Fervo_Project_Cape-7.txt>`__
+     - `.out <tests/examples/Fervo_Project_Cape-7.out>`__
+     - `link <https://gtp.scientificwebservices.com/geophires?geophires-example-id=Fervo_Project_Cape-7>`__
    * -  
      -  
      -  
