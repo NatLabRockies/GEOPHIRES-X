@@ -105,6 +105,8 @@ Capital Cost for Power Plant for Electricity Generation, 2280
 
 Total O&M Cost, 6.5
 
+Salvage Value Rate, 0.2
+
 # ******************** OTHER ********************
 Time steps per year, 12
 

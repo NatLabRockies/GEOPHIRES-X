@@ -568,6 +568,36 @@ class EconomicsSamTestCase(BaseTestCase):
         with self.assertRaises(RuntimeError):
             self._get_result({'Depreciation Schedule': 3})
 
+    def test_salvage_value_rate(self):
+        def _final_year_salvage_usd(r: GeophiresXResult) -> float:
+            return self._get_cash_flow_row(r.result['SAM CASH FLOW PROFILE'], 'Salvage value ($)')[-1]
+
+        def _npv(r: GeophiresXResult) -> float:
+            return r.result['ECONOMIC PARAMETERS']['Project NPV']['value']
+
+        default_result = self._get_result({})
+        total_capex_usd = default_result.result['SUMMARY OF RESULTS']['Total CAPEX']['value'] * 1e6
+
+        # Default salvage value is 10% of total installed cost, credited in the final year
+        self.assertAlmostEqual(
+            0.1 * total_capex_usd, _final_year_salvage_usd(default_result), delta=0.001 * total_capex_usd
+        )
+
+        rate_50_pct_result = self._get_result({'Salvage Value Rate': 0.5})
+        self.assertAlmostEqual(
+            0.5 * total_capex_usd, _final_year_salvage_usd(rate_50_pct_result), delta=0.001 * total_capex_usd
+        )
+
+        no_salvage_result = self._get_result({'Salvage Value Rate': 0})
+        self.assertEqual(0, _final_year_salvage_usd(no_salvage_result))
+
+        self.assertLess(_npv(no_salvage_result), _npv(default_result))
+        self.assertLess(_npv(default_result), _npv(rate_50_pct_result))
+
+        with self.assertRaises(RuntimeError):
+            # Salvage Value Rate is only supported for SAM Economic Models
+            self._get_result({'Economic Model': 3, 'Salvage Value Rate': 0.2})
+
     def test_ppa_pricing_model(self):
         self.assertListEqual(
             [

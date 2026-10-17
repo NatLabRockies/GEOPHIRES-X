@@ -5,6 +5,11 @@ Changelog
 GEOPHIRES v3 (2023-2026)
 ------------------------
 
+3.20
+^^^^
+
+3.20: `Fervo_Project_Cape-7 (500 MW EGS) and Fervo_Project_Cape-8 (100 MW) public release; Redrilling Learning Rate; Salvage Value Rate <https://github.com/NREL/GEOPHIRES-X/pull/535>`__ | `release <https://github.com/NREL/GEOPHIRES-X/releases/tag/v3.20.1>`__ | **Changed:** SAM Economic Models default salvage value rate has been updated from 0.5 to 0.1.
+
 3.19
 ^^^^
 

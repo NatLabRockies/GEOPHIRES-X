@@ -316,6 +316,77 @@ class FervoProjectCape7TestCase(BaseTestCase):
             with self.subTest(field_name=field_name):
                 self.assertAlmostEqual(getattr(expected_base_row, field_name), getattr(base_row, field_name), places=2)
 
+    def test_fervo_project_cape_8(self) -> None:
+        """
+        Fervo_Project_Cape-8 (100 MWe) is derived from Fervo_Project_Cape-7 - see tests/regenerate-example-result.sh
+        """
+        fpc8_result = GeophiresXResult(self._get_test_file_path('../examples/Fervo_Project_Cape-8.out'))
+        fpc8_input_params_dict = self._get_input_parameters(
+            ImmutableGeophiresInputParameters(
+                from_file_path=self._get_test_file_path('../examples/Fervo_Project_Cape-8.txt')
+            )
+        )
+
+        ppa_minimum_net_generation_mwe = 100
+        min_net_gen_dict = fpc8_result.result['SURFACE EQUIPMENT SIMULATION RESULTS'][
+            'Minimum Net Electricity Generation'
+        ]
+        min_net_gen_mwe = quantity(min_net_gen_dict['value'], min_net_gen_dict['unit']).to('MW').magnitude
+        self.assertGreater(min_net_gen_mwe, ppa_minimum_net_generation_mwe)
+
+        # Fewest production wells that meet the PPA minimum, approximating net generation as proportional to the number
+        # of production wells
+        num_production_wells = int(fpc8_input_params_dict['Number of Production Wells'])
+        self.assertLess(
+            min_net_gen_mwe * (num_production_wells - 1) / num_production_wells, ppa_minimum_net_generation_mwe
+        )
+
+        _, min_dscr = generate_fervo_project_cape_7_md._get_min_dscr(fpc8_result)
+        self.assertGreaterEqual(min_dscr, 1.35)
+
+    def test_fervo_project_cape_8_matches_fervo_project_cape_7(self) -> None:
+        """
+        Fails when Fervo_Project_Cape-7 changes without Fervo_Project_Cape-8 being regenerated, or when Fervo_Project_Cape-7
+        changes a value that the Fervo_Project_Cape-8 derivation in tests/regenerate-example-result.sh hard-codes.
+        """
+
+        def _input_params_dict(example_name: str) -> dict[str, Any]:
+            return self._get_input_parameters(
+                ImmutableGeophiresInputParameters(
+                    from_file_path=self._get_test_file_path(f'../examples/{example_name}.txt')
+                )
+            )
+
+        fpc7_input_params_dict = _input_params_dict('Fervo_Project_Cape-7')
+        fpc8_input_params_dict = _input_params_dict('Fervo_Project_Cape-8')
+
+        params_derived_for_100_mwe = {
+            'Fraction of Investment in Bonds',
+            'Bond Financing Start Year',
+            'Construction Years',
+            'Construction CAPEX Schedule',
+            'One-time Flat License Fees Etc',
+            'Annual License Fees Etc',
+            'Number of Production Wells',
+        }
+
+        def _without_params_derived_for_100_mwe(input_params_dict: dict[str, Any]) -> dict[str, Any]:
+            return {k: v for k, v in input_params_dict.items() if k not in params_derived_for_100_mwe}
+
+        self.assertDictEqual(
+            _without_params_derived_for_100_mwe(fpc7_input_params_dict),
+            _without_params_derived_for_100_mwe(fpc8_input_params_dict),
+        )
+
+        capacity_ratio = 100 / 500
+        for scaled_param_name in ['One-time Flat License Fees Etc', 'Annual License Fees Etc']:
+            with self.subTest(param_name=scaled_param_name):
+                self.assertAlmostEqual(
+                    float(fpc7_input_params_dict[scaled_param_name]) * capacity_ratio,
+                    float(fpc8_input_params_dict[scaled_param_name]),
+                    places=6,
+                )
+
     def test_get_fpc7_flow_rate_parametric_summary(self) -> None:
         def _row(flow: float, min_net_mw: float, redrills: int, irr_pct: float) -> FlowRateParametricRow:
             return FlowRateParametricRow(
@@ -394,8 +465,8 @@ class FervoProjectCape7TestCase(BaseTestCase):
 
         self.assertEqual(round(result.result['ECONOMIC PARAMETERS']['Project NPV']['value'], 1), values['npv_musd'])
 
-        # The SAM Single Owner PPA template's salvage percentage
-        self.assertEqual('50', values['salvage_value_pct_of_total_capex'])
+        # The default Salvage Value Rate
+        self.assertEqual('10', values['salvage_value_pct_of_total_capex'])
 
         self.assertGreaterEqual(values['min_dscr_year'], 1)
         self.assertGreater(float(values['min_dscr']), 1.0)

@@ -16,15 +16,7 @@
         }
     </style>
 
-# \[Preview\] GEOPHIRES Case Study: 500 MW EGS Modeled on Fervo Cape Station (October 2026 Update)
-
-.. raw:: html
-
-    <p style="font-style: italic; font-weight: bold;">ℹ️️ This is a preview version of the case study.
-    <a href="Fervo_Project_Cape-5.html">Click here</a> to view the February 2026 Update (<tt>Fervo_Project_Cape-5</tt>).
-    </p>
-
----
+# GEOPHIRES Case Study: 500 MW EGS Modeled on Fervo Cape Station (October 2026 Update)
 
 ## Introduction
 
@@ -38,7 +30,7 @@ Key results include **LCOE =** **{{ '$' ~ lcoe_usd_per_mwh ~ '/MWh' }}**, **IRR 
 The October 2026 Update aligns the case study's subsurface design with the Fervo 3.0 well design disclosed for
 Cape Station Phase II, models lateral drilling, grid interconnection, and transmission service costs explicitly, and
 updates PPA pricing to Fervo's reported range for contracts under negotiation (Fervo Energy, 2026f).
-See the [Previous Versions section](#previous-versions-section) for a summary of changes from the February 2026 Update.
+See the [Previous Versions section](#previous-versions) for a summary of changes from the February 2026 Update.
 
 [Click here](https://gtp.scientificwebservices.com/geophires/?geophires-example-id=Fervo_Project_Cape-7) to
 interactively explore the case study example in the GEOPHIRES web interface.
@@ -504,9 +496,21 @@ rate.
 
 ## Variants
 
+<a id="Fervo_Project_Cape-8-section"></a>
+
 ### 100 MWe Model (Phase I)
 
-The 100 MWe model, with equivalent capacity to Phase I, has not yet been updated for the October 2026 Update.
+The case study also includes a 100 MWe model, `Fervo_Project_Cape-8`, with equivalent capacity to Phase I.
+Like the 500 MWe model, `Fervo_Project_Cape-8` represents a SOAK project and not the real-world Phase I implementation
+as built by Fervo. It is derived from `Fervo_Project_Cape-7` by reducing the number of production wells, shortening
+the construction period, scaling interconnection and transmission costs to 100 MWe, and resizing the debt fraction
+to meet the same minimum DSCR target.
+[Click here](https://gtp.scientificwebservices.com/geophires/?geophires-example-id=Fervo_Project_Cape-8) to view the
+100 MWe model in the GEOPHIRES web interface.
+
+Source code: [Fervo_Project_Cape-8.txt](https://github.com/softwareengineerprogrammer/GEOPHIRES/blob/main/tests/examples/Fervo_Project_Cape-8.txt)
+and [Fervo_Project_Cape-8.out](https://github.com/softwareengineerprogrammer/GEOPHIRES/blob/main/tests/examples/Fervo_Project_Cape-8.out).
+
 The February 2026 Update's 100 MWe model, `Fervo_Project_Cape-6`, is documented in the
 [February 2026 Update of the case study](Fervo_Project_Cape-5.html#Fervo_Project_Cape-6-section).
 
@@ -672,6 +676,10 @@ Report as of June 30, 2024 on Heat Initially In Place associated with the Projec
 Securities and Exchange Commission, Exhibit 99.1.
 https://www.sec.gov/Archives/edgar/data/1853868/000162828026025821/exhibit991-sx1.htm
 
+El-Sadi, K., Gierke, B., Howard, E., & Gradl, C. (2024). Review of drilling performance in a horizontal EGS development.
+Proceedings of the 49th Workshop on Geothermal Reservoir Engineering, Stanford University, Stanford, CA.
+https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2024/Elsadi.pdf
+
 Fercho, S., Matson, G., McConville, E., Rhodes, G., Jordan, R., Norbeck, J.. (2024, February 12).
 Geology, Temperature, Geophysics, Stress Orientations, and Natural Fracturing in the Milford
 Valley, UT Informed by the Drilling Results of the First Horizontal Wells at the Cape Modern
@@ -752,6 +760,9 @@ Jacobs, Trent. (2025, September 5). Baker Hughes Nabs Award for Next Phase of Fe
 Utah.
 https://jpt.spe.org/baker-hughes-nabs-award-for-next-phase-of-fervo-energygeothermal-power-plant-in-utah
 
+Kellogg, R. (2009). Learning by drilling: Inter-firm learning and relationship persistence in the Texas oilpatch (NBER
+Working Paper No. 15060). National Bureau of Economic Research. https://www.nber.org/papers/w15060
+
 Ko, S., Ghassemi, A., & Uddenberg, M. (2023). Selection and Testing of Proppants for EGS.
 Proceedings, 48th Workshop on Geothermal Reservoir Engineering, Stanford University, Stanford, California.
 https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2023/Ko.pdf
@@ -761,6 +772,10 @@ Interviewer). https://www.volts.wtf/p/catching-up-with-enhanced-geothermal
 
 Lazard. (2026, July). Lazard's Levelized Cost of Energy+ (LCOE+): Levelized Cost of Energy Comparison—Version 19.0
 (p. 7). https://www.lazard.com/media/kcfconhf/lazards-lcoeplus_vf.pdf
+
+Lowry, T. S., Finger, J. T., Carrigan, C. R., Foris, A., Kennedy, M. B., Corbet, T. F., Doughty, C. A., Pye, S., &
+Sonnenthal, E. L. (2017). GeoVision analysis: Reservoir maintenance and development task force report (SAND2017-9977).
+Sandia National Laboratories. https://doi.org/10.2172/1394062
 
 Matson, M. (2024, September 11). Fervo Energy Technology Day 2024: Entering "the Geothermal Decade" with Next-Generation
 Geothermal

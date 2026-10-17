@@ -14,6 +14,8 @@ from __future__ import annotations
 
 import csv
 import dataclasses
+import os
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -76,27 +78,54 @@ class FlowRateParametricSummary:
     max_irr_change_above_base_within_band_pct_pts: float
 
 
+def _simulate_flow_rate_parametric_row(base_input_file_path: Path, flow_rate: float) -> FlowRateParametricRow:
+    """
+    Top-level (picklable) worker function for running a single flow rate parametric simulation in a worker process.
+    """
+    _log.info(f'Simulating {_FLOW_RATE_PARAM_NAME} = {flow_rate:g} kg/s...')
+    result = GeophiresXClient().get_geophires_result(
+        ImmutableGeophiresInputParameters(
+            from_file_path=base_input_file_path, params={_FLOW_RATE_PARAM_NAME: flow_rate}
+        )
+    )
+    return FlowRateParametricRow.from_result(flow_rate, result)
+
+
 def generate_fpc7_flow_rate_parametric_csv(
     input_params: GeophiresInputParameters | None = None,
     flow_rates_kg_per_s: list[float] | None = None,
     output_path: Path = FPC7_FLOW_RATE_PARAMETRIC_CSV_PATH,
+    max_workers: int | None = None,
 ) -> list[FlowRateParametricRow]:
+    """
+    :param max_workers: Maximum number of worker processes used to run simulations in parallel; defaults to the number
+        of CPUs (capped at the number of flow rates).
+    """
     if input_params is None:
         input_params = ImmutableGeophiresInputParameters(from_file_path=_get_fpc7_input_file_path())
 
     if flow_rates_kg_per_s is None:
         flow_rates_kg_per_s = [float(it) for it in range(80, 131)]
 
-    client = GeophiresXClient()
-    rows = []
-    for flow_rate in flow_rates_kg_per_s:
-        _log.info(f'Simulating {_FLOW_RATE_PARAM_NAME} = {flow_rate:g} kg/s...')
-        result = client.get_geophires_result(
-            ImmutableGeophiresInputParameters(
-                from_file_path=input_params.as_file_path(), params={_FLOW_RATE_PARAM_NAME: flow_rate}
+    base_input_file_path = Path(input_params.as_file_path())
+    if max_workers is None:
+        max_workers = max(1, min(len(flow_rates_kg_per_s), os.cpu_count() or 1))
+
+    _log.info(
+        f'Simulating {len(flow_rates_kg_per_s)} {_FLOW_RATE_PARAM_NAME} values '
+        f'with {max_workers} worker process(es)...'
+    )
+
+    # GEOPHIRES manipulates process-global state (sys.argv, cwd, module-level state), so simulations must be run in
+    # separate processes rather than threads.
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        rows = list(
+            executor.map(
+                _simulate_flow_rate_parametric_row,
+                [base_input_file_path] * len(flow_rates_kg_per_s),
+                flow_rates_kg_per_s,
             )
         )
-        rows.append(FlowRateParametricRow.from_result(flow_rate, result))
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, 'w', encoding='utf-8', newline='') as f:

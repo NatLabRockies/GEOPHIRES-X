@@ -4,10 +4,10 @@
 
 Simulation Metadata
 ----------------------
- GEOPHIRES Version: 3.14.0
- Simulation Date: 2026-06-11
- Simulation Time:  12:32
- Calculation Time:      1.831 sec
+ GEOPHIRES Version: 3.19.3
+ Simulation Date: 2026-10-17
+ Simulation Time:  09:38
+ Calculation Time:      1.769 sec
 
                            ***SUMMARY OF RESULTS***
 
@@ -121,6 +121,7 @@ Simulation Metadata
 
 
                            ***SURFACE EQUIPMENT SIMULATION RESULTS***
+
       Initial geofluid availability:                          0.19 MW/(kg/s)
       Maximum Total Electricity Generation:                 614.60 MW
       Average Total Electricity Generation:                 610.21 MW

@@ -87,6 +87,8 @@ Construction CAPEX Schedule, 0.014,0.027,0.139,0.431,0.389
 
 Well Drilling Cost Correlation, 10, -- per the drill cost paper - works out to $400/ft
 
+Salvage Value Rate, 0.5, -- GEOPHIRES legacy default value
+
 # *** SIMULATION PARAMETERS ***
 # *****************************
 Print Output to Console, 1

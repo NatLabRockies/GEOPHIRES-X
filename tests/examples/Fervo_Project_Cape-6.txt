@@ -1,4 +1,4 @@
-# Case Study: 100 MWe EGS Project Modeled on Fervo Cape Station Phase I
+# [Deprecated] Case Study: 100 MWe EGS Project Modeled on Fervo Cape Station Phase I
 # See documentation: https://softwareengineerprogrammer.github.io/GEOPHIRES/Fervo_Project_Cape-5.html#Fervo_Project_Cape-6-section
 
 # *** ECONOMIC/FINANCIAL PARAMETERS ***
@@ -45,6 +45,7 @@ Royalty Rate Escalation Start Year, 11, -- After the first 10 years of productio
 Royalty Rate Escalation, 0.0175, -- Escalation at Year 11 from 1.75% to 3.5%.
 Royalty Rate Maximum, 0.035, -- No further escalation beyond 3.5%.
 
+Salvage Value Rate, 0.5, -- GEOPHIRES legacy default value
 
 # *** SURFACE & SUBSURFACE TECHNICAL PARAMETERS ***
 # *************************************************

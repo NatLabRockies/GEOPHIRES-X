@@ -1613,6 +1613,15 @@
       "minimum": 0,
       "maximum": 10
     },
+    "Redrilling Learning Rate": {
+      "description": "Learning rate of redrilling at the site (Wright's law): each doubling of the number of wellfields drilled at the site lowers the cost of the next by this fraction. Redrilling event k (k = 1, 2, ...) drills the site's (k + 1)th wellfield, at (k + 1)^log2(1 - Redrilling Learning Rate) times the drilling and completion cost plus the stimulation cost of the original wellfield. For example, at 0.15 the first redrilling costs 85% of the original wellfield and the third 72%. At 0 (the default), every redrilling event costs as much as the original wellfield.",
+      "type": "number",
+      "units": "",
+      "category": "Economics",
+      "default": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.99
+    },
     "Surface Plant Capital Cost": {
       "description": "Total surface plant capital cost",
       "type": "number",
@@ -1867,6 +1876,15 @@
           "int_value": 2
         }
       ]
+    },
+    "Salvage Value Rate": {
+      "description": "Net pre-tax salvage value at the end of the plant lifetime, as a fraction of total installed cost, credited as revenue in the final year. Decommissioning costs (such as well plugging and abandonment and site restoration) are not modeled separately, so this value should be net of them. SAM Single Owner PPA economic model only.",
+      "type": "number",
+      "units": "",
+      "category": "Economics",
+      "default": 0.1,
+      "minimum": 0.0,
+      "maximum": 1.0
     },
     "Inflated Equity Interest Rate": {
       "description": "Inflated equity interest rate (see docs)",

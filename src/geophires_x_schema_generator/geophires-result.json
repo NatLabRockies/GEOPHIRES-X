@@ -608,7 +608,7 @@
         "Average annual pumping cost": {},
         "Redrilling costs": {
           "type": "number",
-          "description": "Total redrilling costs over the Plant Lifetime are calculated as (Drilling and completion costs + Stimulation costs) \u00d7 Number of times redrilling. The total is then divided over Plant Lifetime years to calculate Redrilling costs per year.",
+          "description": "Total redrilling costs over the Plant Lifetime are calculated as (Drilling and completion costs + Stimulation costs) \u00d7 Number of times redrilling, reduced by Redrilling Learning Rate if provided. The total is then divided over Plant Lifetime years to calculate Redrilling costs per year.",
           "units": "MUSD/yr"
         },
         "Annual License Fees Etc": {},

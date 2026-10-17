@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+
 from geophires_x.Parameter import OutputParameter
 from geophires_x.Units import (
     Units,
@@ -25,6 +27,19 @@ def end_price_or_max(end_price_parameter) -> float:
     https://github.com/NatLabRockies/GEOPHIRES-X/issues/449.
     """
     return end_price_parameter.value if end_price_parameter.Provided else end_price_parameter.Max
+
+
+def redrilling_cost_multipliers(number_of_redrilling_events: int, learning_rate: float) -> list[float]:
+    """
+    The cost of each redrilling event relative to the original wellfield, under Wright's law at the site: event k
+    (k = 1, 2, ...) drills the site's (k + 1)th wellfield and costs (k + 1)^log2(1 - learning_rate), so that each
+    doubling of the number of wellfields drilled lowers the cost by the learning rate. All 1 at a learning rate of 0.
+    """
+    if not 0 <= learning_rate < 1:
+        raise ValueError(f'Learning rate must be at least 0 and less than 1 (got {learning_rate})')
+
+    exponent = math.log2(1.0 - learning_rate)
+    return [(event + 1) ** exponent for event in range(1, number_of_redrilling_events + 1)]
 
 
 def BuildPricingModel(

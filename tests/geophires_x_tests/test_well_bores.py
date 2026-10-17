@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+
 from base_test_case import BaseTestCase
 
 # ruff: noqa: I001  # Successful module initialization is dependent on this specific import order.
@@ -256,6 +258,42 @@ class WellBoresTestCase(BaseTestCase):
         # We use a difference > 0.005 to filter out minor natural year-over-year increases.
         resets = sum(1 for i in range(len(drawdowns) - 1) if drawdowns[i + 1] - drawdowns[i] > 0.005)
         self.assertEqual(redrill_events, resets)
+
+    def test_redrilling_learning_rate(self):
+        """
+        Redrilling Learning Rate lowers the cost of successive redrilling events (Wright's law at the site), without
+        changing when or how often redrilling happens or the upfront capital cost.
+        """
+        params = {
+            'Reservoir Model': 4,
+            'Drawdown Parameter': 0.01,
+            'Plant Lifetime': 30,
+            'Maximum Drawdown': 0.90,
+            'Well Integrity Maximum Lifetime': 7.0,
+        }
+        default_result = self._get_result(params)
+        explicit_default_result = self._get_result({**params, 'Redrilling Learning Rate': 0})
+        learning_result = self._get_result({**params, 'Redrilling Learning Rate': 0.15})
+
+        def _redrilling(r: GeophiresXResult) -> tuple[int, float, float, float]:
+            return (
+                int(r.result['ENGINEERING PARAMETERS']['Number of times redrilling']['value']),
+                r.result['OPERATING AND MAINTENANCE COSTS (M$/yr)']['Redrilling costs']['value'],
+                r.result['SUMMARY OF RESULTS']['Electricity breakeven price']['value'],
+                r.result['CAPITAL COSTS (M$)']['Total capital costs']['value'],
+            )
+
+        events, annual_cost, lcoe, capex = _redrilling(default_result)
+        self.assertEqual(4, events)
+        self.assertEqual(_redrilling(default_result), _redrilling(explicit_default_result))
+
+        learning_events, learning_annual_cost, learning_lcoe, learning_capex = _redrilling(learning_result)
+        self.assertEqual(events, learning_events)
+        # Events 1-4 cost 0.85, 0.85^log2(3), 0.85^2 and 0.85^log2(5) of the original wellfield
+        expected_factor = (0.85 + 3 ** math.log2(0.85) + 0.85**2 + 5 ** math.log2(0.85)) / 4
+        self.assertAlmostEqual(expected_factor * annual_cost, learning_annual_cost, delta=0.02)
+        self.assertLess(learning_lcoe, lcoe)
+        self.assertEqual(capex, learning_capex)
 
     def test_redrilling_no_triggers(self):
         """

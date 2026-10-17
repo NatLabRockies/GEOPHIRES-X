@@ -45,6 +45,13 @@ def get_file_states(directory) -> dict[str, Any]:
 def main():
     parser = argparse.ArgumentParser(description='Automatically rebuilds docs locally when changes are detected.')
     parser.add_argument('--no-say', action='store_true', help='Disable audio notifications via the say command')
+    parser.add_argument(
+        '--debounce-seconds',
+        type=float,
+        default=15,
+        help='Seconds without further changes to wait before starting the docs build, so that a series of changes '
+        '(e.g. from regeneration scripts) triggers a single build (default: %(default)s)',
+    )
     args = parser.parse_args()
 
     # Determine paths relative to this script
@@ -68,6 +75,7 @@ def main():
     _log.info(f"Watching '{watch_dirs}' for changes...")
     _log.info(f"Project root determined as: '{project_root}'")
     _log.info(f"Command to run: {' '.join(command)}")
+    _log.info(f'Debounce: {args.debounce_seconds:g}s')
     _log.info('Press Ctrl+C to stop.')
 
     def _get_file_states() -> dict:
@@ -86,8 +94,23 @@ def main():
             current_states = _get_file_states()
 
             if current_states != last_states:
-                _log.info('[Change Detected] Running docs build...')
-                time.sleep(1)
+                _log.info(
+                    f'[Change Detected] Waiting until no further changes are detected for '
+                    f'{args.debounce_seconds:g}s before running docs build...'
+                )
+
+                # Debounce: keep waiting while changes are still being made
+                last_states = current_states
+                last_change_time = time.monotonic()
+                while (remaining := args.debounce_seconds - (time.monotonic() - last_change_time)) > 0:
+                    time.sleep(min(poll_interval, remaining))
+                    current_states = _get_file_states()
+                    if current_states != last_states:
+                        _log.info('[Change Detected] Still changing, resetting debounce timer...')
+                        last_states = current_states
+                        last_change_time = time.monotonic()
+
+                _log.info('Running docs build...')
 
                 try:
                     # Run tox from the project root so it finds tox.ini

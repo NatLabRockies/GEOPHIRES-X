@@ -1,0 +1,482 @@
+                               *****************
+                               ***CASE REPORT***
+                               *****************
+
+Simulation Metadata
+----------------------
+ GEOPHIRES Version: 3.20.0
+ Simulation Date: 2026-10-17
+ Simulation Time:  11:09
+ Calculation Time:      1.842 sec
+
+                           ***SUMMARY OF RESULTS***
+
+      End-Use Option: Electricity
+      Average Net Electricity Production:                   105.52 MW
+      Electricity breakeven price:                           11.23 cents/kWh
+      Total CAPEX:                                          769.02 MUSD
+      Total CAPEX ($/kW):                                     7257 USD/kW
+      Number of production wells:                            10
+      Number of injection wells:                              7
+      Flowrate per production well:                         107.0 kg/sec
+      Well depth:                                             3.1 kilometer
+      Segment 1   Geothermal gradient:                            74 degC/km
+      Segment 1   Thickness:                         2.5 kilometer
+      Segment 2   Geothermal gradient:                            41 degC/km
+      Segment 2   Thickness:                         0.5 kilometer
+      Segment 3   Geothermal gradient:                          39.1 degC/km
+
+
+                           ***ECONOMIC PARAMETERS***
+
+      Economic Model = SAM Single Owner PPA
+      Real Discount Rate:                                   12.00 %
+      Nominal Discount Rate:                                15.36 %
+      WACC:                                                  9.33 %
+      Investment Tax Credit:                               230.71 MUSD
+      Project lifetime:                                      30 yr
+      Capacity factor:                                       91.3 %
+      Project NPV:                                          51.90 MUSD
+      After-tax IRR:                                        20.40 %
+      Project VIR=PI=PIR:                                    1.20
+      Project MOIC:                                          3.77
+      Project Payback Period:                                       4.59 yr
+      Estimated Jobs Created:                                 269
+
+                          ***ENGINEERING PARAMETERS***
+
+      Number of Production Wells:                            10
+      Number of Injection Wells:                              7
+      Well depth:                                             3.1 kilometer
+      Water loss rate:                                        1.0 %
+      Pump efficiency:                                       80.0 %
+      Injection temperature:                                 56.6 degC
+      Production Wellbore heat transmission calculated with Ramey's model
+      Average production well temperature drop:               1.0 degC
+      Flowrate per production well:                         107.0 kg/sec
+      Injection well casing ID:                               7.825 in
+      Production well casing ID:                              7.825 in
+      Number of times redrilling:                             2
+      Power plant type:                                       Supercritical ORC
+
+
+                         ***RESOURCE CHARACTERISTICS***
+
+      Maximum reservoir temperature:                        500.0 degC
+      Number of segments:                                     3
+      Segment 1   Geothermal gradient:                            74 degC/km
+      Segment 1   Thickness:                         2.5 kilometer
+      Segment 2   Geothermal gradient:                            41 degC/km
+      Segment 2   Thickness:                         0.5 kilometer
+      Segment 3   Geothermal gradient:                          39.1 degC/km
+      Project location:                                     38.506196, -112.918155
+
+
+                           ***RESERVOIR PARAMETERS***
+
+      Reservoir Model = Multiple Parallel Fractures Model (Gringarten)
+      Bottom-hole temperature:                              220.85 degC
+      Fracture model = Rectangular
+      Well separation: fracture height:                     100.00 meter
+      Fracture width:                                                 305.00 meter
+      Fracture area:                                      30500.00 m**2
+      Reservoir volume calculated with fracture separation and number of fractures as input
+      Number of fractures:                                    3825
+      Fracture separation:                                    9.83 meter
+      Reservoir volume:                              1145967716 m**3
+      Reservoir hydrostatic pressure:                         28782.99 kPa
+      Plant outlet pressure:                              13789.51 kPa
+      Production wellhead pressure:                        2702.05 kPa
+      Productivity Index:                                     0.98 kg/sec/bar
+      Injectivity Index:                                      1.20 kg/sec/bar
+      Reservoir density:                                   2800.00 kg/m**3
+      Reservoir thermal conductivity:                         3.05 W/m/K
+      Reservoir heat capacity:                              790.00 J/kg/K
+
+
+                           ***RESERVOIR SIMULATION RESULTS***
+
+      Maximum Production Temperature:                       218.4 degC
+      Average Production Temperature:                       218.1 degC
+      Minimum Production Temperature:                       216.3 degC
+      Initial Production Temperature:                       216.7 degC
+      Average Reservoir Heat Extraction:                    723.32 MW
+      Production Wellbore Heat Transmission Model = Ramey Model
+      Average Production Well Temperature Drop:               1.0 degC
+      Average Injection Well Pump Pressure Drop:           1159.3 kPa
+      Average Production Well Pump Pressure Drop:         12497.6 kPa
+
+
+                          ***CAPITAL COSTS (M$)***
+
+         Exploration costs:                                  56.00 MUSD
+         Drilling and completion costs:                     144.09 MUSD
+             Drilling and completion costs per vertical production well:         4.40 MUSD
+             Drilling and completion costs per vertical injection well:          4.40 MUSD
+             Drilling and completion costs per non-vertical section:             4.08 MUSD
+         Stimulation costs:                                 123.27 MUSD
+             Stimulation costs per well:                      7.25 MUSD
+         Surface power plant costs:                         310.61 MUSD
+         Field gathering system costs:                        9.99 MUSD
+         Total surface equipment costs:                     320.60 MUSD
+         One-time Flat License Fees Etc:                     50.00 MUSD
+         Overnight Capital Cost:                            693.96 MUSD
+         Inflation costs during construction:                49.49 MUSD
+         Interest during construction:                       25.57 MUSD
+      Total CAPEX:                                          769.02 MUSD
+
+
+                ***OPERATING AND MAINTENANCE COSTS (M$/yr)***
+
+         Wellfield maintenance costs:                         2.24 MUSD/yr
+         Power plant maintenance costs:                       6.76 MUSD/yr
+         Water costs:                                         0.57 MUSD/yr
+         Redrilling costs:                                   15.56 MUSD/yr
+         Annual License Fees Etc:                             5.40 MUSD
+         Average Annual Royalty Cost:                         3.36 MUSD/yr
+      Total operating and maintenance costs:                 33.89 MUSD/yr
+
+
+                           ***SURFACE EQUIPMENT SIMULATION RESULTS***
+
+      Initial geofluid availability:                          0.22 MW/(kg/s)
+      Maximum Total Electricity Generation:                 126.92 MW
+      Average Total Electricity Generation:                 126.48 MW
+      Minimum Total Electricity Generation:                 124.09 MW
+      Initial Total Electricity Generation:                 124.61 MW
+      Maximum Net Electricity Generation:                   105.98 MW
+      Average Net Electricity Generation:                   105.52 MW
+      Minimum Net Electricity Generation:                   103.07 MW
+      Initial Net Electricity Generation:                   103.63 MW
+      Average Annual Total Electricity Generation:         1011.59 GWh
+      Average Annual Net Electricity Generation:            843.93 GWh
+      Initial pumping power/net installed power:             20.24 %
+      Average Pumping Power:                                 20.96 MW
+      Heat to Power Conversion Efficiency:                   14.59 %
+
+                            ************************************************************
+                            *  HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE  *
+                            ************************************************************
+  YEAR       THERMAL               GEOFLUID               PUMP               NET               FIRST LAW
+             DRAWDOWN             TEMPERATURE             POWER             POWER              EFFICIENCY
+                                     (degC)               (MW)              (MW)                  (%)
+   1           1.0000                216.67              20.9801          103.6333               14.4536
+   2           1.0053                217.82              20.9731          105.1647               14.5625
+   3           1.0063                218.04              20.9718          105.4522               14.5827
+   4           1.0068                218.15              20.9711          105.6021               14.5933
+   5           1.0072                218.23              20.9707          105.7014               14.6003
+   6           1.0074                218.28              20.9704          105.7747               14.6054
+   7           1.0076                218.33              20.9701          105.8324               14.6095
+   8           1.0078                218.36              20.9699          105.8793               14.6128
+   9           1.0079                218.39              20.9697          105.9202               14.6156
+  10           1.0080                218.41              20.9696          105.9487               14.6176
+  11           1.0080                218.41              20.9701          105.9480               14.6176
+  12           1.0074                218.28              20.9737          105.7699               14.6049
+  13           1.0041                217.56              20.9916          104.8011               14.5356
+  14           1.0028                217.27              20.9686          104.4411               14.5117
+  15           1.0057                217.90              20.9677          105.2669               14.5700
+  16           1.0065                218.07              20.9661          105.5025               14.5867
+  17           1.0069                218.17              20.9637          105.6377               14.5963
+  18           1.0072                218.24              20.9605          105.7317               14.6031
+  19           1.0075                218.29              20.9571          105.8035               14.6083
+  20           1.0077                218.34              20.9539          105.8611               14.6126
+  21           1.0078                218.37              20.9514          105.9084               14.6161
+  22           1.0080                218.40              20.9495          105.9493               14.6190
+  23           1.0080                218.42              20.9485          105.9736               14.6208
+  24           1.0080                218.40              20.9487          105.9553               14.6195
+  25           1.0070                218.19              20.9543          105.6622               14.5986
+  26           1.0024                217.19              20.9793          104.3155               14.5021
+  27           1.0042                217.57              20.9472          104.8569               14.5426
+  28           1.0059                217.95              20.9472          105.3632               14.5782
+  29           1.0066                218.10              20.9472          105.5605               14.5920
+  30           1.0070                218.19              20.9472          105.6797               14.6004
+
+
+                              *******************************************************************
+                              *  ANNUAL HEATING, COOLING AND/OR ELECTRICITY PRODUCTION PROFILE  *
+                              *******************************************************************
+  YEAR             ELECTRICITY                   HEAT                RESERVOIR            PERCENTAGE OF
+                    PROVIDED                   EXTRACTED            HEAT CONTENT        TOTAL HEAT MINED
+                   (GWh/year)                  (GWh/year)            (10^15 J)                 (%)
+   1                 837.1                      5762.2                395.60                   4.98
+   2                 842.4                      5780.2                374.79                   9.98
+   3                 844.0                      5785.7                353.96                  14.98
+   4                 845.0                      5789.0                333.12                  19.99
+   5                 845.7                      5791.2                312.27                  25.00
+   6                 846.2                      5793.0                291.42                  30.01
+   7                 846.6                      5794.4                270.56                  35.02
+   8                 847.0                      5795.6                249.70                  40.03
+   9                 847.3                      5796.5                228.83                  45.04
+  10                 847.4                      5797.0                207.96                  50.05
+  11                 846.9                      5795.3                187.10                  55.06
+  12                 842.9                      5782.2                166.28                  60.06
+  13                 831.5                      5743.8                145.60                  65.03
+  14                 839.6                      5770.7                124.83                  70.02
+  15                 843.0                      5781.9                104.01                  75.02
+  16                 844.4                      5786.6                 83.18                  80.02
+  17                 845.3                      5789.6                 62.34                  85.03
+  18                 845.9                      5791.7                 41.49                  90.04
+  19                 846.4                      5793.4                 20.63                  95.04
+  20                 846.9                      5794.7                 -0.23                 100.05
+  21                 847.2                      5795.8                -21.09                 105.07
+  22                 847.5                      5796.7                -41.96                 110.08
+  23                 847.5                      5796.9                -62.83                 115.09
+  24                 846.6                      5793.8                -83.69                 120.10
+  25                 840.8                      5774.5               -104.48                 125.09
+  26                 831.8                      5744.3               -125.16                 130.06
+  27                 841.1                      5775.1               -145.95                 135.05
+  28                 843.6                      5783.4               -166.77                 140.06
+  29                 844.8                      5787.5               -187.60                 145.06
+  30                 845.5                      5790.1               -208.45                 150.07
+
+                            ***************************
+                            *  SAM CASH FLOW PROFILE  *
+                            ***************************
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                 	Year -2      	Year -1     	Year 0      	Year 1      	Year 2      	Year 3     	Year 4     	Year 5     	Year 6     	Year 7     	Year 8     	Year 9     	Year 10    	Year 11    	Year 12    	Year 13    	Year 14    	Year 15    	Year 16     	Year 17     	Year 18     	Year 19    	Year 20    	Year 21    	Year 22    	Year 23    	Year 24    	Year 25    	Year 26    	Year 27    	Year 28    	Year 29    	Year 30
+CONSTRUCTION
+Capital expenditure schedule [construction] (%)  	7.50         	52.50       	40.0
+Overnight capital expenditure [construction] ($) 	-52,047,093  	-364,329,648	-277,584,494
+plus:
+Inflation cost [construction] ($)                	-1,561,413   	-22,187,676 	-25,739,577
+plus:
+Royalty supplemental payments [construction] ($) 	0            	0           	0
+equals:
+Nominal capital expenditure [construction] ($)   	-53,608,505  	-386,517,324	-303,324,071
+
+Issuance of equity [construction] ($)            	53,608,505   	143,011,410 	112,229,906
+Issuance of debt [construction] ($)              	0            	243,505,914 	191,094,165
+Debt balance [construction] ($)                  	0            	243,505,914 	460,168,200
+Debt interest payment [construction] ($)         	0            	0           	25,568,121
+
+Installed cost [construction] ($)                	-53,608,505  	-386,517,324	-328,892,192
+After-tax net cash flow [construction] ($)       	-53,608,505  	-143,011,410	-112,229,906
+
+ENERGY
+Electricity to grid (kWh)                        	             	            	0.0         	837,073,402 	842,417,040 	844,055,642	845,026,469	845,706,938	846,226,078	846,642,371	846,990,878	847,278,347	847,409,160	846,906,038	842,944,097	831,472,231	839,660,699	842,977,128	844,388,923 	845,286,302 	845,941,966 	846,455,941	846,872,912	847,226,068	847,495,746	847,562,879	846,615,321	840,816,982	831,853,596	841,112,691	843,565,108	844,782,469	845,553,544
+Electricity from grid (kWh)                      	             	            	0.0         	0.0         	0.0         	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0         	0.0         	0.0         	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0
+Electricity to grid net (kWh)                    	             	            	0.0         	837,073,402 	842,417,040 	844,055,642	845,026,469	845,706,938	846,226,078	846,642,371	846,990,878	847,278,347	847,409,160	846,906,038	842,944,097	831,472,231	839,660,699	842,977,128	844,388,923 	845,286,302 	845,941,966 	846,455,941	846,872,912	847,226,068	847,495,746	847,562,879	846,615,321	840,816,982	831,853,596	841,112,691	843,565,108	844,782,469	845,553,544
+
+REVENUE
+PPA price (cents/kWh)                            	             	            	0.0         	11.50       	11.68       	11.87      	12.05      	12.23      	12.42      	12.60      	12.78      	12.96      	13.15      	13.33      	13.51      	13.70      	13.88      	14.06      	14.06       	14.06       	14.06       	14.06      	14.06      	14.06      	14.06      	14.06      	14.06      	14.06      	14.06      	14.06      	14.06      	14.06      	14.06
+PPA revenue ($)                                  	             	            	0           	96,263,441  	98,419,583  	100,155,642	101,817,239	103,446,873	105,058,968	106,660,006	108,253,904	109,841,165	111,408,882	112,892,575	113,907,036	113,878,437	116,536,508	118,522,584	118,721,083 	118,847,254 	118,939,440 	119,011,705	119,070,331	119,119,985	119,157,902	119,167,341	119,034,114	118,218,868	116,958,616	118,260,444	118,605,254	118,776,415	118,884,828
+Curtailment payment revenue ($)                  	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Capacity payment revenue ($)                     	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Salvage value ($)                                	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	76,901,802
+Total revenue ($)                                	             	            	0           	96,263,441  	98,419,583  	100,155,642	101,817,239	103,446,873	105,058,968	106,660,006	108,253,904	109,841,165	111,408,882	112,892,575	113,907,036	113,878,437	116,536,508	118,522,584	118,721,083 	118,847,254 	118,939,440 	119,011,705	119,070,331	119,119,985	119,157,902	119,167,341	119,034,114	118,218,868	116,958,616	118,260,444	118,605,254	118,776,415	195,786,630
+
+Property tax net assessed value ($)              	             	            	0           	769,018,021 	769,018,021 	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021 	769,018,021 	769,018,021 	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021	769,018,021
+
+OPERATING EXPENSES
+O&M fixed expense ($)                            	             	            	0           	30,536,019  	30,536,019  	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019  	30,536,019  	30,536,019  	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019 	30,536,019
+Royalty rate (%)                                 	             	            	            	1.75        	1.75        	1.75       	1.75       	1.75       	1.75       	1.75       	1.75       	1.75       	1.75       	3.50       	3.50       	3.50       	3.50       	3.50       	3.50        	3.50        	3.50        	3.50       	3.50       	3.50       	3.50       	3.50       	3.50       	3.50       	3.50       	3.50       	3.50       	3.50       	3.50
+O&M production-based expense ($)                 	             	            	0           	1,684,610   	1,722,343   	1,752,724  	1,781,802  	1,810,320  	1,838,532  	1,866,550  	1,894,443  	1,922,220  	1,949,655  	3,951,240  	3,986,746  	3,985,745  	4,078,778  	4,148,290  	4,155,238   	4,159,654   	4,162,880   	4,165,410  	4,167,462  	4,169,199  	4,170,527  	4,170,857  	4,166,194  	4,137,660  	4,093,552  	4,139,116  	4,151,184  	4,157,175  	4,160,969
+O&M capacity-based expense ($)                   	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Fuel expense ($)                                 	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Electricity purchase ($)                         	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Property tax expense ($)                         	             	            	0           	1,691,840   	1,691,840   	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840   	1,691,840   	1,691,840   	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840  	1,691,840
+Insurance expense ($)                            	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Total operating expenses ($)                     	             	            	0           	33,912,469  	33,950,202  	33,980,583 	34,009,661 	34,038,179 	34,066,391 	34,094,409 	34,122,302 	34,150,079 	34,177,514 	36,179,099 	36,214,605 	36,213,604 	36,306,637 	36,376,149 	36,383,097  	36,387,513  	36,390,739  	36,393,269 	36,395,320 	36,397,058 	36,398,385 	36,398,716 	36,394,053 	36,365,519 	36,321,410 	36,366,974 	36,379,043 	36,385,033 	36,388,828
+
+EBITDA ($)                                       	             	            	0           	62,350,972  	64,469,381  	66,175,060 	67,807,579 	69,408,693 	70,992,577 	72,565,597 	74,131,602 	75,691,086 	77,231,368 	76,713,476 	77,692,431 	77,664,833 	80,229,872 	82,146,435 	82,337,986  	82,459,741  	82,548,701  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+
+OPERATING ACTIVITIES
+EBITDA ($)                                       	             	            	0           	62,350,972  	64,469,381  	66,175,060 	67,807,579 	69,408,693 	70,992,577 	72,565,597 	74,131,602 	75,691,086 	77,231,368 	76,713,476 	77,692,431 	77,664,833 	80,229,872 	82,146,435 	82,337,986  	82,459,741  	82,548,701  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+Interest earned on reserves ($)                  	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+plus PBI if not available for debt service:
+Federal PBI income ($)                           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State PBI income ($)                             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Utility PBI income ($)                           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Other PBI income ($)                             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Debt interest payment ($)                        	             	            	0           	32,211,774  	31,264,342  	30,250,590 	29,165,875 	28,005,230 	26,763,339 	25,434,517 	24,012,677 	22,491,308 	20,863,443 	19,121,628 	17,257,886 	15,263,681 	13,129,883 	10,846,718 	8,403,732   	5,789,737   	2,992,763   	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Cash flow from operating activities ($)          	             	            	0           	30,139,198  	33,205,039  	35,924,470 	38,641,704 	41,403,464 	44,229,237 	47,131,080 	50,118,925 	53,199,778 	56,367,925 	57,591,848 	60,434,545 	62,401,151 	67,099,989 	71,299,716 	73,934,253  	76,670,004  	79,555,938  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+
+INVESTING ACTIVITIES
+Total installed cost ($)                         	             	            	-769,018,021
+Debt closing costs ($)                           	             	            	0
+Debt up-front fee ($)                            	             	            	0
+minus:
+Total IBI income ($)                             	             	            	0
+Total CBI income ($)                             	             	            	0
+equals:
+Purchase of property ($)                         	             	            	-769,018,021
+plus:
+Reserve (increase)/decrease debt service ($)     	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserve (increase)/decrease working capital ($)  	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserve (increase)/decrease receivables ($)      	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserve (increase)/decrease major equipment 1 ($)	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserve (increase)/decrease major equipment 2 ($)	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserve (increase)/decrease major equipment 3 ($)	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserve capital spending major equipment 1 ($)   	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserve capital spending major equipment 2 ($)   	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserve capital spending major equipment 3 ($)   	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+equals:
+Cash flow from investing activities ($)          	             	            	-769,018,021	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+FINANCING ACTIVITIES
+Issuance of equity ($)                           	             	            	308,849,822
+Size of debt ($)                                 	             	            	460,168,200
+minus:
+Debt principal payment ($)                       	             	            	0           	13,534,744  	14,482,176  	15,495,928 	16,580,643 	17,741,288 	18,983,179 	20,312,001 	21,733,841 	23,255,210 	24,883,075 	26,624,890 	28,488,632 	30,482,837 	32,616,635 	34,899,800 	37,342,785  	39,956,780  	42,753,755  	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+equals:
+Cash flow from financing activities ($)          	             	            	769,018,021 	-13,534,744 	-14,482,176 	-15,495,928	-16,580,643	-17,741,288	-18,983,179	-20,312,001	-21,733,841	-23,255,210	-24,883,075	-26,624,890	-28,488,632	-30,482,837	-32,616,635	-34,899,800	-37,342,785 	-39,956,780 	-42,753,755 	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+PROJECT RETURNS
+Pre-tax Cash Flow:
+Cash flow from operating activities ($)          	             	            	0           	30,139,198  	33,205,039  	35,924,470 	38,641,704 	41,403,464 	44,229,237 	47,131,080 	50,118,925 	53,199,778 	56,367,925 	57,591,848 	60,434,545 	62,401,151 	67,099,989 	71,299,716 	73,934,253  	76,670,004  	79,555,938  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+Cash flow from investing activities ($)          	             	            	-769,018,021	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Cash flow from financing activities ($)          	             	            	769,018,021 	-13,534,744 	-14,482,176 	-15,495,928	-16,580,643	-17,741,288	-18,983,179	-20,312,001	-21,733,841	-23,255,210	-24,883,075	-26,624,890	-28,488,632	-30,482,837	-32,616,635	-34,899,800	-37,342,785 	-39,956,780 	-42,753,755 	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Total pre-tax cash flow ($)                      	             	            	0           	16,604,454  	18,722,863  	20,428,542 	22,061,061 	23,662,176 	25,246,059 	26,819,079 	28,385,084 	29,944,568 	31,484,850 	30,966,958 	31,945,913 	31,918,315 	34,483,354 	36,399,917 	36,591,468  	36,713,223  	36,802,183  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+
+Pre-tax Returns:
+Issuance of equity ($)                           	             	            	308,849,822
+Total pre-tax cash flow ($)                      	             	            	0           	16,604,454  	18,722,863  	20,428,542 	22,061,061 	23,662,176 	25,246,059 	26,819,079 	28,385,084 	29,944,568 	31,484,850 	30,966,958 	31,945,913 	31,918,315 	34,483,354 	36,399,917 	36,591,468  	36,713,223  	36,802,183  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+Total pre-tax returns ($)                        	             	            	-308,849,822	16,604,454  	18,722,863  	20,428,542 	22,061,061 	23,662,176 	25,246,059 	26,819,079 	28,385,084 	29,944,568 	31,484,850 	30,966,958 	31,945,913 	31,918,315 	34,483,354 	36,399,917 	36,591,468  	36,713,223  	36,802,183  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+
+After-tax Returns:
+Total pre-tax returns ($)                        	             	            	-308,849,822	16,604,454  	18,722,863  	20,428,542 	22,061,061 	23,662,176 	25,246,059 	26,819,079 	28,385,084 	29,944,568 	31,484,850 	30,966,958 	31,945,913 	31,918,315 	34,483,354 	36,399,917 	36,591,468  	36,713,223  	36,802,183  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+Federal ITC total income ($)                     	             	            	0           	230,705,406 	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Federal PTC income ($)                           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Federal tax benefit (liability) ($)              	             	            	0           	20,163,537  	35,271,878  	17,955,717 	7,348,422  	6,794,841  	-1,318,550 	-9,447,189 	-10,046,088	-10,663,629	-11,298,669	-11,543,998	-12,113,802	-12,507,999	-13,449,857	-14,291,672	-14,819,751 	-15,368,119 	-15,946,590 	-16,560,453	-16,571,793	-16,581,397	-16,588,731	-16,590,557	-16,564,787	-16,407,094	-16,163,325	-16,415,137	-16,481,833	-16,514,941	-31,950,493
+State ITC total income ($)                       	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State PTC income ($)                             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State tax benefit (liability) ($)                	             	            	0           	4,577,021   	8,006,538   	4,075,857  	1,668,055  	1,542,395  	-299,304   	-2,144,464 	-2,280,411 	-2,420,590 	-2,564,741 	-2,620,429 	-2,749,772 	-2,839,252 	-3,053,049 	-3,244,137 	-3,364,009  	-3,488,485  	-3,619,795  	-3,759,139 	-3,761,713 	-3,763,893 	-3,765,558 	-3,765,972 	-3,760,123 	-3,724,327 	-3,668,993 	-3,726,153 	-3,741,293 	-3,748,808 	-7,252,600
+Total after-tax returns ($)                      	             	            	-308,849,822	272,050,419 	62,001,279  	42,460,116 	31,077,537 	31,999,411 	23,628,204 	15,227,425 	16,058,585 	16,860,348 	17,621,441 	16,802,531 	17,082,339 	16,571,063 	17,980,447 	18,864,108 	18,407,708  	17,856,619  	17,235,798  	62,298,845 	62,341,505 	62,377,637 	62,405,227 	62,412,096 	62,315,151 	61,721,927 	60,804,888 	61,752,180 	62,003,086 	62,127,633 	120,194,710
+
+After-tax net cash flow ($)                      	-53,608,505  	-143,011,410	-112,229,906	272,050,419 	62,001,279  	42,460,116 	31,077,537 	31,999,411 	23,628,204 	15,227,425 	16,058,585 	16,860,348 	17,621,441 	16,802,531 	17,082,339 	16,571,063 	17,980,447 	18,864,108 	18,407,708  	17,856,619  	17,235,798  	62,298,845 	62,341,505 	62,377,637 	62,405,227 	62,412,096 	62,315,151 	61,721,927 	60,804,888 	61,752,180 	62,003,086 	62,127,633 	120,194,710
+After-tax cumulative IRR (%)                     	NaN          	NaN         	NaN         	-6.83       	3.99        	9.41       	12.37      	14.66      	15.96      	16.61      	17.17      	17.64      	18.03      	18.33      	18.58      	18.78      	18.95      	19.09      	19.21       	19.30       	19.38       	19.59      	19.76      	19.89      	20.00      	20.09      	20.16      	20.22      	20.26      	20.30      	20.33      	20.36      	20.40
+After-tax cumulative NPV ($)                     	-53,608,505  	-177,578,174	-261,911,282	-84,703,146 	-49,694,149 	-28,911,307	-15,725,245	-3,955,820 	3,577,540  	7,786,058  	11,633,347 	15,134,885 	18,307,216 	20,929,359 	23,240,221 	25,183,439 	27,011,188 	28,673,441 	30,079,506  	31,261,865  	32,251,161  	35,350,862 	38,039,683 	40,371,843 	42,394,373 	44,147,799 	45,665,399 	46,968,409 	48,081,144 	49,060,747 	49,913,367 	50,653,948 	51,895,936
+
+AFTER-TAX LCOE AND PPA PRICE
+Annual costs ($)                                 	-53,608,505  	-143,011,410	-112,229,906	175,786,978 	-36,418,304 	-57,695,527	-70,739,702	-71,447,461	-81,430,763	-91,432,580	-92,195,319	-92,980,817	-93,787,442	-96,090,044	-96,824,697	-97,307,373	-98,556,061	-99,658,476	-100,313,375	-100,990,635	-101,703,642	-56,712,860	-56,728,826	-56,742,349	-56,752,675	-56,755,245	-56,718,963	-56,496,941	-56,153,728	-56,508,264	-56,602,168	-56,648,782	1,309,882
+PPA revenue ($)                                  	0            	0           	0           	96,263,441  	98,419,583  	100,155,642	101,817,239	103,446,873	105,058,968	106,660,006	108,253,904	109,841,165	111,408,882	112,892,575	113,907,036	113,878,437	116,536,508	118,522,584	118,721,083 	118,847,254 	118,939,440 	119,011,705	119,070,331	119,119,985	119,157,902	119,167,341	119,034,114	118,218,868	116,958,616	118,260,444	118,605,254	118,776,415	118,884,828
+Electricity to grid (kWh)                        	0            	0           	0           	837,073,402 	842,417,040 	844,055,642	845,026,469	845,706,938	846,226,078	846,642,371	846,990,878	847,278,347	847,409,160	846,906,038	842,944,097	831,472,231	839,660,699	842,977,128	844,388,923 	845,286,302 	845,941,966 	846,455,941	846,872,912	847,226,068	847,495,746	847,562,879	846,615,321	840,816,982	831,853,596	841,112,691	843,565,108	844,782,469	845,553,544
+
+Present value of annual costs ($)                	457,272,177
+
+Present value of annual energy costs ($)         	457,272,177
+Present value of annual energy nominal (kWh)     	4,070,182,856
+LCOE Levelized cost of energy nominal (cents/kWh)	11.23
+
+Present value of PPA revenue ($)                 	509,168,114
+Present value of annual energy nominal (kWh)     	4,070,182,856
+LPPA Levelized PPA price nominal (cents/kWh)     	12.51
+
+PROJECT STATE INCOME TAXES
+EBITDA ($)                                       	             	            	0           	62,350,972  	64,469,381  	66,175,060 	67,807,579 	69,408,693 	70,992,577 	72,565,597 	74,131,602 	75,691,086 	77,231,368 	76,713,476 	77,692,431 	77,664,833 	80,229,872 	82,146,435 	82,337,986  	82,459,741  	82,548,701  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+State taxable PBI income ($)                     	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Interest earned on reserves ($)                  	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State taxable IBI income ($)                     	             	            	0
+State taxable CBI income ($)                     	             	            	0
+minus:
+Debt interest payment ($)                        	             	            	0           	32,211,774  	31,264,342  	30,250,590 	29,165,875 	28,005,230 	26,763,339 	25,434,517 	24,012,677 	22,491,308 	20,863,443 	19,121,628 	17,257,886 	15,263,681 	13,129,883 	10,846,718 	8,403,732   	5,789,737   	2,992,763   	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Total state tax depreciation ($)                 	             	            	0           	130,733,064 	209,172,902 	125,503,741	75,302,245 	75,302,245 	37,651,122 	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+equals:
+State taxable income ($)                         	             	            	0           	-100,593,865	-175,967,863	-89,579,271	-36,660,541	-33,898,781	6,578,115  	47,131,080 	50,118,925 	53,199,778 	56,367,925 	57,591,848 	60,434,545 	62,401,151 	67,099,989 	71,299,716 	73,934,253  	76,670,004  	79,555,938  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+
+State income tax rate (frac)                     	             	            	0.0         	0.05        	0.05        	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05        	0.05        	0.05        	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05       	0.05
+State tax benefit (liability) ($)                	             	            	0           	4,577,021   	8,006,538   	4,075,857  	1,668,055  	1,542,395  	-299,304   	-2,144,464 	-2,280,411 	-2,420,590 	-2,564,741 	-2,620,429 	-2,749,772 	-2,839,252 	-3,053,049 	-3,244,137 	-3,364,009  	-3,488,485  	-3,619,795  	-3,759,139 	-3,761,713 	-3,763,893 	-3,765,558 	-3,765,972 	-3,760,123 	-3,724,327 	-3,668,993 	-3,726,153 	-3,741,293 	-3,748,808 	-7,252,600
+
+PROJECT FEDERAL INCOME TAXES
+EBITDA ($)                                       	             	            	0           	62,350,972  	64,469,381  	66,175,060 	67,807,579 	69,408,693 	70,992,577 	72,565,597 	74,131,602 	75,691,086 	77,231,368 	76,713,476 	77,692,431 	77,664,833 	80,229,872 	82,146,435 	82,337,986  	82,459,741  	82,548,701  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+Interest earned on reserves ($)                  	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State tax benefit (liability) ($)                	             	            	0           	4,577,021   	8,006,538   	4,075,857  	1,668,055  	1,542,395  	-299,304   	-2,144,464 	-2,280,411 	-2,420,590 	-2,564,741 	-2,620,429 	-2,749,772 	-2,839,252 	-3,053,049 	-3,244,137 	-3,364,009  	-3,488,485  	-3,619,795  	-3,759,139 	-3,761,713 	-3,763,893 	-3,765,558 	-3,765,972 	-3,760,123 	-3,724,327 	-3,668,993 	-3,726,153 	-3,741,293 	-3,748,808 	-7,252,600
+State ITC total income ($)                       	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State PTC income ($)                             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Federal taxable IBI income ($)                   	             	            	0
+Federal taxable CBI income ($)                   	             	            	0
+Federal taxable PBI income ($)                   	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+minus:
+Debt interest payment ($)                        	             	            	0           	32,211,774  	31,264,342  	30,250,590 	29,165,875 	28,005,230 	26,763,339 	25,434,517 	24,012,677 	22,491,308 	20,863,443 	19,121,628 	17,257,886 	15,263,681 	13,129,883 	10,846,718 	8,403,732   	5,789,737   	2,992,763   	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Total federal tax depreciation ($)               	             	            	0           	130,733,064 	209,172,902 	125,503,741	75,302,245 	75,302,245 	37,651,122 	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+equals:
+Federal taxable income ($)                       	             	            	0           	-96,016,845 	-167,961,325	-85,503,414	-34,992,486	-32,356,386	6,278,811  	44,986,616 	47,838,514 	50,779,188 	53,803,184 	54,971,419 	57,684,773 	59,561,899 	64,046,939 	68,055,579 	70,570,245  	73,181,519  	75,936,143  	78,859,298 	78,913,298 	78,959,034 	78,993,958 	79,002,653 	78,879,938 	78,129,021 	76,968,212 	78,167,317 	78,484,919 	78,642,574 	152,145,203
+
+Federal income tax rate (frac)                   	             	            	0.0         	0.21        	0.21        	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21        	0.21        	0.21        	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21       	0.21
+Federal tax benefit (liability) ($)              	             	            	0           	20,163,537  	35,271,878  	17,955,717 	7,348,422  	6,794,841  	-1,318,550 	-9,447,189 	-10,046,088	-10,663,629	-11,298,669	-11,543,998	-12,113,802	-12,507,999	-13,449,857	-14,291,672	-14,819,751 	-15,368,119 	-15,946,590 	-16,560,453	-16,571,793	-16,581,397	-16,588,731	-16,590,557	-16,564,787	-16,407,094	-16,163,325	-16,415,137	-16,481,833	-16,514,941	-31,950,493
+
+CASH INCENTIVES
+Federal IBI income ($)                           	             	            	0
+State IBI income ($)                             	             	            	0
+Utility IBI income ($)                           	             	            	0
+Other IBI income ($)                             	             	            	0
+Total IBI income ($)                             	             	            	0
+
+Federal CBI income ($)                           	             	            	0
+State CBI income ($)                             	             	            	0
+Utility CBI income ($)                           	             	            	0
+Other CBI income ($)                             	             	            	0
+Total CBI income ($)                             	             	            	0
+
+Federal PBI income ($)                           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State PBI income ($)                             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Utility PBI income ($)                           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Other PBI income ($)                             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Total PBI income ($)                             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+TAX CREDITS
+Federal PTC income ($)                           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State PTC income ($)                             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+Federal ITC amount income ($)                    	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Federal ITC percent income ($)                   	             	            	0           	230,705,406 	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Federal ITC total income ($)                     	             	            	0           	230,705,406 	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+State ITC amount income ($)                      	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State ITC percent income ($)                     	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+State ITC total income ($)                       	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+DEBT REPAYMENT
+Debt balance ($)                                 	             	            	460,168,200 	446,633,456 	432,151,280 	416,655,352	400,074,708	382,333,420	363,350,241	343,038,240	321,304,399	298,049,189	273,166,114	246,541,224	218,052,592	187,569,756	154,953,121	120,053,321	82,710,536  	42,753,755  	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Debt interest payment ($)                        	             	            	0           	32,211,774  	31,264,342  	30,250,590 	29,165,875 	28,005,230 	26,763,339 	25,434,517 	24,012,677 	22,491,308 	20,863,443 	19,121,628 	17,257,886 	15,263,681 	13,129,883 	10,846,718 	8,403,732   	5,789,737   	2,992,763   	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Debt principal payment ($)                       	             	            	0           	13,534,744  	14,482,176  	15,495,928 	16,580,643 	17,741,288 	18,983,179 	20,312,001 	21,733,841 	23,255,210 	24,883,075 	26,624,890 	28,488,632 	30,482,837 	32,616,635 	34,899,800 	37,342,785  	39,956,780  	42,753,755  	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Debt total payment ($)                           	             	            	0           	45,746,518  	45,746,518  	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518  	45,746,518  	45,746,518  	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+DSCR (DEBT FRACTION)
+EBITDA ($)                                       	             	            	0           	62,350,972  	64,469,381  	66,175,060 	67,807,579 	69,408,693 	70,992,577 	72,565,597 	74,131,602 	75,691,086 	77,231,368 	76,713,476 	77,692,431 	77,664,833 	80,229,872 	82,146,435 	82,337,986  	82,459,741  	82,548,701  	82,618,437 	82,675,011 	82,722,927 	82,759,516 	82,768,625 	82,640,061 	81,853,348 	80,637,205 	81,893,470 	82,226,211 	82,391,382 	159,397,803
+minus:
+Reserves major equipment 1 funding ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves major equipment 2 funding ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves major equipment 3 funding ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves receivables funding ($)                 	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+equals:
+Cash available for debt service (CAFDS) ($)      	             	            	0           	62,350,972  	64,469,381  	66,175,060 	67,807,579 	69,408,693 	70,992,577 	72,565,597 	74,131,602 	75,691,086 	77,231,368 	76,713,476 	77,692,431 	77,664,833 	80,229,872 	82,146,435 	82,337,986  	82,459,741  	82,548,701  	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Debt total payment ($)                           	             	            	0           	45,746,518  	45,746,518  	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518 	45,746,518  	45,746,518  	45,746,518  	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+DSCR (pre-tax)                                   	             	            	0.0         	1.36        	1.41        	1.45       	1.48       	1.52       	1.55       	1.59       	1.62       	1.65       	1.69       	1.68       	1.70       	1.70       	1.75       	1.80       	1.80        	1.80        	1.80        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0        	0.0
+
+RESERVES
+Reserves working capital funding ($)             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves working capital disbursement ($)        	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves working capital balance ($)             	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+Reserves debt service funding ($)                	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves debt service disbursement ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves debt service balance ($)                	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+Reserves receivables funding ($)                 	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves receivables disbursement ($)            	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves receivables balance ($)                 	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+Reserves major equipment 1 funding ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves major equipment 1 disbursement ($)      	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves major equipment 1 balance ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+Reserves major equipment 2 funding ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves major equipment 2 disbursement ($)      	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves major equipment 2 balance ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+Reserves major equipment 3 funding ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves major equipment 3 disbursement ($)      	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Reserves major equipment 3 balance ($)           	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+
+Reserves total reserves balance ($)              	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+Interest on reserves (%/year)                    	             	            	1.75
+Interest earned on reserves ($)                  	             	            	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0           	0           	0           	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0          	0
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+                                ***EXTENDED ECONOMICS***
+
+      Royalty Holder NPV:                                   41.21 MUSD
+      Royalty Holder Average Annual Revenue:                 3.05 MUSD/yr
+      Royalty Holder Total Revenue:                        100.70 MUSD

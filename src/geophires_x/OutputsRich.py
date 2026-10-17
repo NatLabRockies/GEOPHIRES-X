@@ -496,14 +496,18 @@ def print_outputs_rich(
         CAPEX.append(OutputTableItem('Exploration costs', '{0:10.2f}'.format(model.economics.Cexpl.value),
                                      model.economics.Cexpl.CurrentUnits.value))
     if model.economics.totalcapcost.Valid and model.wellbores.redrill.value > 0:
+        # Per redrilling event, on average (see Redrilling Learning Rate)
+        redrill_well_cost = model.economics.average_redrilling_event_cost(model.economics.Cwell, model)
         CAPEX.append(OutputTableItem('Drilling and completion costs (for redrilling)',
-                                     '{0:10.2f}'.format(model.economics.Cwell.value),
+                                     '{0:10.2f}'.format(redrill_well_cost),
                                      model.economics.Cwell.CurrentUnits.value))
         CAPEX.append(OutputTableItem('Drilling and completion costs per redrilled well', '{0:10.2f}'.format(
-            model.economics.Cwell.value / (model.wellbores.nprod.value + model.wellbores.ninj.value)),
+            redrill_well_cost / (model.wellbores.nprod.value + model.wellbores.ninj.value)),
                                      model.economics.Cwell.CurrentUnits.value))
         CAPEX.append(
-            OutputTableItem('Stimulation costs (for redrilling)', '{0:10.2f}'.format(model.economics.Cstim.value),
+            OutputTableItem('Stimulation costs (for redrilling)',
+                            '{0:10.2f}'.format(
+                                model.economics.average_redrilling_event_cost(model.economics.Cstim, model)),
                             model.economics.Cstim.CurrentUnits.value))
     if model.economics.RITC.Provided:
         CAPEX.append(

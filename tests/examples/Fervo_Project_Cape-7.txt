@@ -1,5 +1,6 @@
 # Case Study: 500 MWe EGS Project Modeled on Fervo Cape Station Phase II (October 2026 Update)
 # See documentation: https://softwareengineerprogrammer.github.io/GEOPHIRES/Fervo_Project_Cape-7.html
+#
 # October 2026 Update: subsurface design aligned with the Fervo 3.0 well design disclosed for Cape Station Phase II
 # (Fervo Energy Q2 2026 earnings call, 2026-08-12). The case study remains a second-of-a-kind (SOAK) analog;
 # the wellfield is re-sized for the 3.0 design rather than matched to Fervo's as-built well count, and
@@ -130,6 +131,7 @@ Injection Temperature, 53.6, -- Calibrated with GEOPHIRES model-calculated reinj
 Injection Wellbore Temperature Gain, 3, -- Empirical estimate for high-flow rate wells where rapid fluid velocity minimizes heat uptake during descent (Ramey, 1962).
 
 Maximum Drawdown, 0.0025, -- This value represents the fractional drop in production temperature compared to the initial temperature that is allowed before the wellfield is redrilled. It is calibrated to maintain the PPA minimum net electricity generation requirement. It is a very small percentage because it is relative to the initial production temperature; the temperature quickly rises higher due to thermal conditioning and plateaus until breakthrough, so any drawdown relative to the initial value signals that the temperature has already declined from its stabilized peak.
+Redrilling Learning Rate, 0.1, -- Each doubling of the number of wellfields drilled at the site cuts the cost of the next by 10%, so the first redrill costs 90% of the original wellfield and the eighth 72%. At Cape Station, the first six horizontal wells improved by 15% (drilling days) to 20% (cost) per doubling, but there and in other fields the gains level off after the first wells, and geothermal well costs flatten at 70 to 75% of the first well’s (El-Sadi et al., 2024, as tabulated by Akindipe and Witter, 2025, Lowry et al., 2017, Kellogg, 2009).
 
 # *** SIMULATION PARAMETERS ***
 # *****************************

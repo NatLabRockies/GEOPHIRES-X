@@ -16,14 +16,11 @@
         }
     </style>
 
-# GEOPHIRES Case Study: 500 MW EGS Modeled on Fervo Cape Station (February 2026 Update)
+# \[Deprecated\] GEOPHIRES Case Study: 500 MW EGS Modeled on Fervo Cape Station (February 2026 Update)
 
 .. raw:: html
 
-    <p style="font-style: italic; font-weight: bold;">
-    <!-- ⚠️️ This is a deprecated version of the case study. -->
-    ℹ️️ <a href="Fervo_Project_Cape-7.html">Click here</a> to view the October 2026 Update preview version (<tt>Fervo_Project_Cape-7</tt>).
-    </p>
+    <p style="font-style: italic; font-weight: bold;">⚠️️ This is a deprecated version of the case study. <a href="Fervo_Project_Cape-7.html">Click here</a> to view an updated version (<tt>Fervo_Project_Cape-7</tt>).</p>
 
 ---
 
@@ -555,6 +552,8 @@ See [Redrilling Assumptions](#technical-operational-considerations) below for fu
 
 The case study also includes a 100 MWe model, `Fervo_Project_Cape-6`, with equivalent capacity to Phase I.
 Note that like the 500 MWe model, `Fervo_Project_Cape-6` represents a SOAK project and not the real-world Phase I implementation as built by Fervo.
+`Fervo_Project_Cape-6` is deprecated in favor of the October 2026 Update's
+[100 MWe model](Fervo_Project_Cape-7.html#Fervo_Project_Cape-8-section) (`Fervo_Project_Cape-8`).
 [Click here](https://gtp.scientificwebservices.com/geophires/?geophires-example-id=Fervo_Project_Cape-6) to view the
 100 MWe model in the GEOPHIRES web interface.
 

@@ -732,6 +732,8 @@ def _get_single_owner_parameters(model: Model) -> dict[str, Any]:
 
     ret = {**ret, **_get_depreciation_parameters(model)}
 
+    ret['salvage_percentage'] = _pct(econ.salvage_value_rate)
+
     ret = {**ret, **_get_capacity_payment_parameters(model)}
 
     return ret
