@@ -21,6 +21,7 @@ class PreRevenueCostsAndCashflow:
     construction_financing_cost_usd: float
     debt_balance_usd: float
     inflation_cost_usd: float = 0.0
+    upfront_fee_usd: float = 0.0
 
     pre_revenue_cash_flow_profile: list[list[float | str]] = field(default_factory=list)
 
@@ -68,6 +69,12 @@ def calculate_pre_revenue_costs_and_cashflow(model: 'Model') -> PreRevenueCostsA
         pre_revenue_bond_interest_rate_param = econ.bond_interest_rate_during_construction
     pre_revenue_bond_interest_rate = pre_revenue_bond_interest_rate_param.quantity().to('dimensionless').magnitude
 
+    construction_loan_upfront_fee = (
+        econ.construction_loan_upfront_fee.quantity().to('dimensionless').magnitude
+        if hasattr(econ, 'construction_loan_upfront_fee') and econ.construction_loan_upfront_fee.Provided
+        else 0.0
+    )
+
     construction_years: int = model.surfaceplant.construction_years.value
 
     # Translate from negative year index input value to start-year-0-indexed calculation value
@@ -88,6 +95,7 @@ def calculate_pre_revenue_costs_and_cashflow(model: 'Model') -> PreRevenueCostsA
         pre_revenue_years_count=construction_years,
         phased_capex_schedule=econ.construction_capex_schedule.value,
         pre_revenue_bond_interest_rate=pre_revenue_bond_interest_rate,
+        construction_loan_upfront_fee=construction_loan_upfront_fee,
         inflation_rate=pre_revenue_inflation_rate,
         debt_fraction=econ.FIB.quantity().to('dimensionless').magnitude,
         debt_financing_start_year=debt_financing_start_year,
@@ -108,6 +116,7 @@ def _calculate_pre_revenue_costs_and_cashflow(
     debt_fraction: float,
     debt_financing_start_year: int,
     logger: logging.Logger,
+    construction_loan_upfront_fee: float = 0.0,
     additional_payments_schedule_usd: list[float] | None = None,
 ) -> PreRevenueCostsAndCashflow:
     """
@@ -136,6 +145,8 @@ def _calculate_pre_revenue_costs_and_cashflow(
     total_capitalized_cost_usd = 0.0
     total_interest_accrued_usd = 0.0
     total_inflation_cost_usd = 0.0
+    total_upfront_fee_usd = 0.0
+    debt_upfront_fee_vec: list[float] = []
 
     inflation_cost_vec: list[float] = []
     base_capex_vec: list[float] = []
@@ -174,14 +185,18 @@ def _calculate_pre_revenue_costs_and_cashflow(
         debt_draw_vec.append(new_debt_draw_usd)
         interest_accrued_vec.append(interest_this_year_usd)
 
-        total_capitalized_cost_usd += capex_this_year_usd + interest_this_year_usd
+        upfront_fee_this_year_usd = new_debt_draw_usd * construction_loan_upfront_fee
+        debt_upfront_fee_vec.append(upfront_fee_this_year_usd)
+        total_upfront_fee_usd += upfront_fee_this_year_usd
+
+        total_capitalized_cost_usd += capex_this_year_usd + interest_this_year_usd + upfront_fee_this_year_usd
         total_interest_accrued_usd += interest_this_year_usd
         total_inflation_cost_usd += inflation_cost_this_year_usd
 
         current_debt_balance_usd += new_debt_draw_usd + interest_this_year_usd
         debt_balance_usd_vec.append(current_debt_balance_usd)
 
-        total_installed_cost_vec.append(-capex_this_year_usd + -interest_this_year_usd)
+        total_installed_cost_vec.append(-capex_this_year_usd - interest_this_year_usd - upfront_fee_this_year_usd)
 
     logger.info(
         f"Phased CAPEX calculation complete: "
@@ -235,6 +250,12 @@ def _calculate_pre_revenue_costs_and_cashflow(
         debt_draw_vec,
     )
 
+    if total_upfront_fee_usd > 0:
+        _append_row(
+            f'Debt up-front fee ($)',
+            [-x for x in debt_upfront_fee_vec],
+        )
+
     _append_row(
         f'Debt balance ($)'
         # 'Size of debt ($)'
@@ -254,9 +275,10 @@ def _calculate_pre_revenue_costs_and_cashflow(
 
     return PreRevenueCostsAndCashflow(
         total_installed_cost_usd=total_capitalized_cost_usd,
-        construction_financing_cost_usd=total_interest_accrued_usd,
+        construction_financing_cost_usd=total_interest_accrued_usd + total_upfront_fee_usd,
         debt_balance_usd=current_debt_balance_usd,
         inflation_cost_usd=total_inflation_cost_usd,
+        upfront_fee_usd=total_upfront_fee_usd,
         pre_revenue_cash_flow_profile=pre_revenue_cf_profile,
     )
 

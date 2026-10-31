@@ -1847,6 +1847,15 @@
       "minimum": 0.0,
       "maximum": 1.0
     },
+    "Construction Loan Up-Front Fee": {
+      "description": "Up-front fee charged as a percentage of construction debt drawn (for debt/loans)",
+      "type": "number",
+      "units": "",
+      "category": "Economics",
+      "default": 0.0,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
     "Debt Tenor": {
       "description": "Number of years over which debt is repaid (for debt/loans), counted from the Commercial Operation Date (COD; Year 1). Construction years are not counted: debt drawn during construction, including capitalized interest during construction, is effectively refinanced as term debt at COD and repaid in level annual payments over this tenor. Defaults to Plant Lifetime if not provided, and may not exceed it. SAM Single Owner PPA economic model only.",
       "type": "integer",

@@ -1197,6 +1197,17 @@ class Economics:
             CurrentUnits=PercentUnit.TENTH,
             ToolTipText='Inflated bond interest rate during construction (for debt/loans)'
         )
+
+        self.construction_loan_upfront_fee = self.ParameterDict[self.construction_loan_upfront_fee.Name] = floatParameter(
+            'Construction Loan Up-Front Fee',
+            DefaultValue=0.0,
+            Min=0.0,
+            Max=1.0,
+            UnitType=Units.PERCENT,
+            PreferredUnits=PercentUnit.TENTH,
+            CurrentUnits=PercentUnit.TENTH,
+            ToolTipText='Up-front fee charged as a percentage of construction debt drawn (for debt/loans)'
+        )
         self.debt_tenor = self.ParameterDict[self.debt_tenor.Name] = intParameter(
             "Debt Tenor",
             DefaultValue=CALCULATED_PARAMETER_PLACEHOLDER_VALUE,
@@ -2922,6 +2933,7 @@ class Economics:
                     self.ritc_state_amount,
                     self.debt_tenor,
                     self.salvage_value_rate,
+                    self.construction_loan_upfront_fee,
                 ]
                 for sam_em_only_param in sam_em_only_params:
                     if sam_em_only_param.Provided:
