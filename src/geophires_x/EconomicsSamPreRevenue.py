@@ -11,7 +11,7 @@ from scipy.interpolate import interp1d
 from geophires_x.Units import convertible_unit
 
 _AFTER_TAX_NET_CASH_FLOW_ROW_NAME = 'After-tax net cash flow ($)'
-_IDC_CASH_FLOW_ROW_NAME = 'Debt interest payment ($)'
+_IDC_CASH_FLOW_ROW_NAME = 'Capitalized interest ($)'
 _INSTALLED_COST_CASH_FLOW_ROW_NAME = 'Installed cost ($)'
 
 

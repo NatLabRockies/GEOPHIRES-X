@@ -383,7 +383,7 @@ class EconomicsSamTestCase(BaseTestCase):
         def _sum(cf_row_name: str, abs_val: bool = False) -> float:
             return sum([abs(it) if abs_val else it for it in _floats(self._get_cash_flow_row(cy4_cf, cf_row_name))])
 
-        idc_sum = _sum('Debt interest payment [construction] ($)')
+        idc_sum = _sum('Capitalized interest [construction] ($)')
 
         cy4_idc = construction_years_4.result['CAPITAL COSTS (M$)']['Interest during construction']
         self.assertAlmostEqualWithinSigFigs(
