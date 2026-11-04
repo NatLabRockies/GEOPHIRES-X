@@ -4,10 +4,10 @@
 
 Simulation Metadata
 ----------------------
- GEOPHIRES Version: 3.20.0
- Simulation Date: 2026-10-17
- Simulation Time:  11:09
- Calculation Time:      1.848 sec
+ GEOPHIRES Version: 3.20.1
+ Simulation Date: 2026-11-04
+ Simulation Time:  15:00
+ Calculation Time:      6.598 sec
 
                            ***SUMMARY OF RESULTS***
 
@@ -247,7 +247,7 @@ Nominal capital expenditure [construction] ($)   	-136,414,822  	-476,353,903	-1
 Issuance of equity [construction] ($)            	136,414,822   	181,014,483 	578,113,378   	537,430,829
 Issuance of debt [construction] ($)              	0             	295,339,420 	943,237,617   	876,860,826
 Debt balance [construction] ($)                  	0             	295,339,420 	1,269,587,676 	2,279,755,207
-Debt interest payment [construction] ($)         	0             	0           	31,010,639    	133,306,706
+Capitalized interest [construction] ($)          	0             	0           	31,010,639    	133,306,706
 
 Installed cost [construction] ($)                	-136,414,822  	-476,353,903	-1,552,361,633	-1,547,598,360
 After-tax net cash flow [construction] ($)       	-136,414,822  	-181,014,483	-578,113,378  	-537,430,829
