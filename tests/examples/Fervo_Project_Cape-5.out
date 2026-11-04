@@ -243,7 +243,7 @@ Nominal capital expenditure [construction] ($)   	-35,041,575   	-69,404,845	-36
 Issuance of equity [construction] ($)            	35,041,575    	69,404,845 	110,086,109 	350,562,484   	324,943,768
 Issuance of debt [construction] ($)              	0             	0          	256,867,589 	817,979,128   	758,202,125
 Debt balance [construction] ($)                  	0             	0          	256,867,589 	1,101,817,814 	1,975,710,809
-Debt interest payment [construction] ($)         	0             	0          	0           	26,971,097    	115,690,870
+Capitalized interest [construction] ($)          	0             	0          	0           	26,971,097    	115,690,870
 
 Installed cost [construction] ($)                	-35,041,575   	-69,404,845	-366,953,698	-1,195,512,709	-1,198,836,763
 After-tax net cash flow [construction] ($)       	-35,041,575   	-69,404,845	-110,086,109	-350,562,484  	-324,943,768
