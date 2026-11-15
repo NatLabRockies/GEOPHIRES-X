@@ -1206,7 +1206,11 @@ class Economics:
             UnitType=Units.PERCENT,
             PreferredUnits=PercentUnit.TENTH,
             CurrentUnits=PercentUnit.TENTH,
-            ToolTipText='Up-front fee charged as a percentage of construction debt drawn (for debt/loans)'
+            ToolTipText="Construction loan up-front fee as a fraction of each construction year's debt draw "
+                        "(Issuance of debt [construction]). The fee is charged on each year's construction debt draw, "
+                        "paid by equity in that year, and capitalized into installed cost. This is a simplification: "
+                        "real up-front fees are typically charged on the full loan commitment at financial close. "
+                        "SAM Economic Models only."
         )
         self.debt_tenor = self.ParameterDict[self.debt_tenor.Name] = intParameter(
             "Debt Tenor",

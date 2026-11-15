@@ -1848,7 +1848,7 @@
       "maximum": 1.0
     },
     "Construction Loan Up-Front Fee": {
-      "description": "Up-front fee charged as a percentage of construction debt drawn (for debt/loans)",
+      "description": "Construction loan up-front fee as a fraction of each construction year's debt draw (Issuance of debt [construction]). The fee is charged on each year's construction debt draw, paid by equity in that year, and capitalized into installed cost. This is a simplification: real up-front fees are typically charged on the full loan commitment at financial close. SAM Economic Models only.",
       "type": "number",
       "units": "",
       "category": "Economics",

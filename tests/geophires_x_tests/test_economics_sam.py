@@ -517,6 +517,27 @@ class EconomicsSamTestCase(BaseTestCase):
         with self.assertRaises(RuntimeError):
             _get_result_(1)  # Bond financing start year is negative year indexed, so value must be less than 0
 
+    def test_construction_loan_upfront_fee_reduces_npv_and_irr(self):
+        def _get_result_(_params: dict[str, Any]) -> GeophiresXResult:
+            return GeophiresXClient().get_geophires_result(
+                ImmutableGeophiresInputParameters(
+                    from_file_path=self._get_test_file_path('../examples/example_SAM-single-owner-PPA-5.txt'),
+                    params=_params,
+                )
+            )
+
+        def _npv(_r: GeophiresXResult) -> float:
+            return _r.result['ECONOMIC PARAMETERS']['Project NPV']['value']
+
+        def _irr(_r: GeophiresXResult) -> float:
+            return _r.result['ECONOMIC PARAMETERS']['After-tax IRR']['value']
+
+        r_no_fee = _get_result_({})
+        r_fee = _get_result_({'Construction Loan Up-Front Fee': 0.05})
+
+        self.assertLess(_npv(r_fee), _npv(r_no_fee))
+        self.assertLess(_irr(r_fee), _irr(r_no_fee))
+
     def test_debt_tenor(self):
         def _debt_balance(params: dict) -> list[float]:
             r = self._get_result(params)
