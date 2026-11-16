@@ -5,6 +5,11 @@ Changelog
 GEOPHIRES v3 (2023-2026)
 ------------------------
 
+3.21
+^^^^
+
+3.21: `Rename Debt interest payment [construction] cash flow row to Capitalized interest [construction] <https://github.com/NatLabRockies/GEOPHIRES-X/pull/542>`__; `Construction Loan Up-Front Fee <https://github.com/NatLabRockies/GEOPHIRES-X/pull/540>`__ | `release <https://github.com/NREL/GEOPHIRES-X/releases/tag/v3.21.0>`__ | **Changed:** The SAM Economic Models construction cash flow row ``Debt interest payment [construction] ($)`` has been renamed ``Capitalized interest [construction] ($)``, since it is interest capitalized into the debt balance and installed cost, not a cash payment. Code that reads cash flow rows by name must use the new name. See `the tracking issue <https://github.com/NatLabRockies/GEOPHIRES-X/issues/529>`__ for details. The new ``Construction Loan Up-Front Fee`` parameter's fee is paid by equity during construction (``Construction loan up-front fee [construction] ($)``) and capitalized into installed cost.
+
 3.20
 ^^^^
 

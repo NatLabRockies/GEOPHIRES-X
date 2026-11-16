@@ -95,10 +95,41 @@ class EconomicsSamPreRevenueTestCase(BaseTestCase):
             return next(row for row in profile if row[0] == row_name)[1:]
 
         upfront_fee_row = _get_row(
-            pre_rev_with_fee.pre_revenue_cash_flow_profile, 'Debt up-front fee [construction] ($)'
+            pre_rev_with_fee.pre_revenue_cash_flow_profile, 'Construction loan up-front fee [construction] ($)'
         )
         # Year 0 has 0 debt draw, Year 1 and 2 draw debt and incur fee
         self.assertEqual(upfront_fee_row[0], 0.0)
         self.assertLess(upfront_fee_row[1], 0.0)
         self.assertLess(upfront_fee_row[2], 0.0)
         self.assertAlmostEqual(sum([-x for x in upfront_fee_row]), pre_rev_with_fee.upfront_fee_usd, delta=1.0)
+
+    def test_construction_loan_upfront_fee_sources_equal_uses(self) -> None:
+        _log = _get_logger()
+        pre_rev: PreRevenueCostsAndCashflow = _calculate_pre_revenue_costs_and_cashflow(
+            100_000_000.0, 3, [0.25, 0.25, 0.5], 0.1, 0.05, 0.5, 1, _log, construction_loan_upfront_fee=0.02
+        )
+
+        def _get_row(row_name: str) -> list[float]:
+            return next(row for row in pre_rev.pre_revenue_cash_flow_profile if row[0] == row_name)[1:]
+
+        upfront_fee = _get_row('Construction loan up-front fee [construction] ($)')
+        equity = _get_row('Issuance of equity [construction] ($)')
+        debt = _get_row('Issuance of debt [construction] ($)')
+        capitalized_interest = _get_row('Capitalized interest [construction] ($)')
+        installed_cost = _get_row('Installed cost [construction] ($)')
+        after_tax_net_cash_flow = _get_row('After-tax net cash flow [construction] ($)')
+
+        self.assertListEqual([0, -275625, -578813], upfront_fee)
+        self.assertListEqual([26250000, 14056875, 29519438], equity)
+        self.assertListEqual([0, 13781250, 28940625], debt)
+        self.assertListEqual([0, 0, 1378125], capitalized_interest)
+        self.assertListEqual([-26250000, -27838125, -59838188], installed_cost)
+        self.assertListEqual([-it for it in equity], after_tax_net_cash_flow)
+
+        # Sources (equity + debt + capitalized interest) equal uses (installed cost) in each construction year
+        for year_index in range(3):
+            self.assertAlmostEqual(
+                equity[year_index] + debt[year_index] + capitalized_interest[year_index],
+                -installed_cost[year_index],
+                delta=1.0,
+            )
