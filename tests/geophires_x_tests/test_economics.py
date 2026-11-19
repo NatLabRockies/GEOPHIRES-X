@@ -298,3 +298,13 @@ class EconomicsTestCase(BaseTestCase):
 
         self.assertEqual(prices_explicit_max, prices_unprovided)
         self.assertGreater(prices_unprovided[-1], prices_unprovided[0])
+
+    def test_calendar_year_not_supported_for_non_sam_models(self):
+        with self.assertRaises(RuntimeError) as cm:
+            GeophiresXClient().get_geophires_result(
+                ImmutableGeophiresInputParameters(
+                    from_file_path=self._get_test_file_path('../examples/example1.txt'),
+                    params={'Calendar Year': 2026},
+                )
+            )
+        self.assertIsInstance(cm.exception.__cause__, NotImplementedError)

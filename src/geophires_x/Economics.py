@@ -1254,6 +1254,16 @@ class Economics:
                         "abandonment and site restoration) are not modeled separately, so this value should be net of "
                         "them. SAM Single Owner PPA economic model only."
         )
+        self.calendar_year = self.ParameterDict[self.calendar_year.Name] = intParameter(
+            "Calendar Year",
+            DefaultValue=None,
+            AllowableRange=list(range(1900, 3001)),
+            UnitType=Units.NONE,
+            ToolTipText="Optional starting calendar year for the project cash flow profile (corresponding to the "
+                        "first year in the cash flow table, i.e., the first construction year). When provided, a "
+                        "row displaying calendar years is added directly below the Year row in the SAM cash flow "
+                        "profile. SAM Single Owner PPA economic model only."
+        )
         self.EIR = self.ParameterDict[self.EIR.Name] = floatParameter(
             "Inflated Equity Interest Rate",
             DefaultValue=0.1,
@@ -2938,6 +2948,7 @@ class Economics:
                     self.debt_tenor,
                     self.salvage_value_rate,
                     self.construction_loan_upfront_fee,
+                    self.calendar_year,
                 ]
                 for sam_em_only_param in sam_em_only_params:
                     if sam_em_only_param.Provided:
