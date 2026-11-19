@@ -177,15 +177,16 @@ def _calculate_pre_revenue_costs_and_cashflow(
         debt_fraction_this_year = debt_fraction if year_index >= debt_financing_start_year else 0
         new_debt_draw_usd = capex_this_year_usd * debt_fraction_this_year
 
-        # Equity spend is the cash portion of CAPEX not funded by new debt
-        equity_spent_this_year_usd = capex_this_year_usd - new_debt_draw_usd
+        upfront_fee_this_year_usd = new_debt_draw_usd * construction_loan_upfront_fee
+
+        # Equity spend is the cash portion of CAPEX not funded by new debt, plus the construction loan up-front fee
+        equity_spent_this_year_usd = capex_this_year_usd - new_debt_draw_usd + upfront_fee_this_year_usd
 
         capex_spend_vec.append(capex_this_year_usd)
         equity_spend_vec.append(equity_spent_this_year_usd)
         debt_draw_vec.append(new_debt_draw_usd)
         interest_accrued_vec.append(interest_this_year_usd)
 
-        upfront_fee_this_year_usd = new_debt_draw_usd * construction_loan_upfront_fee
         debt_upfront_fee_vec.append(upfront_fee_this_year_usd)
         total_upfront_fee_usd += upfront_fee_this_year_usd
 
@@ -250,12 +251,6 @@ def _calculate_pre_revenue_costs_and_cashflow(
         debt_draw_vec,
     )
 
-    if total_upfront_fee_usd > 0:
-        _append_row(
-            f'Debt up-front fee ($)',
-            [-x for x in debt_upfront_fee_vec],
-        )
-
     _append_row(
         f'Debt balance ($)'
         # 'Size of debt ($)'
@@ -264,6 +259,12 @@ def _calculate_pre_revenue_costs_and_cashflow(
     )
 
     _append_row(_IDC_CASH_FLOW_ROW_NAME, interest_accrued_vec)
+
+    if total_upfront_fee_usd > 0:
+        _append_row(
+            f'Construction loan up-front fee ($)',
+            [-x for x in debt_upfront_fee_vec],
+        )
 
     pre_revenue_cf_profile.append(blank_row.copy())
 

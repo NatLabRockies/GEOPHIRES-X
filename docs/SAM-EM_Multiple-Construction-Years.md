@@ -41,11 +41,16 @@ For each construction year, the `CONSTRUCTION` cash flow is calculated as follow
    Debt
    financing can be delayed by specifying `Bond Financing Start Year`. Years prior to this threshold are financed 100%
    by equity.
-1. **IDC (Interest During Construction)**: `Capitalized interest [construction]` on the accumulated debt balance is calculated using
-   `Inflated Bond Interest Rate During Construction`. This interest is capitalized (added to
+1. **IDC (Interest During Construction)**: Interest on the accumulated debt balance (`Capitalized interest [construction]`)
+   is calculated using `Inflated Bond Interest Rate During Construction`. This interest is capitalized (added to
    `Debt balance [construction]`) rather than paid out as cash.
+1. **Construction Loan Up-Front Fee**: If `Construction Loan Up-Front Fee` is provided, a fee equal to that fraction of
+   each year's `Issuance of debt [construction]` is paid by equity in that year (included in
+   `Issuance of equity [construction]` and `After-tax net cash flow [construction]`) and shown as
+   `Construction loan up-front fee [construction]`.
 1. **Annual Installed Cost**: The annual `Installed cost [construction]` is the sum of
-   `Nominal capital expenditure [construction]` and `Capitalized interest [construction]` (capitalized IDC).
+   `Nominal capital expenditure [construction]`, `Capitalized interest [construction]` (capitalized IDC), and
+   `Construction loan up-front fee [construction]` (if any).
 
 ![](_images/sam-em-mcy-design-diagram.png)
 
