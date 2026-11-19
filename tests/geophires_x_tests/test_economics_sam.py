@@ -1564,6 +1564,39 @@ class EconomicsSamTestCase(BaseTestCase):
             )
         )
 
+    def test_calendar_year_cash_flow_profile(self):
+        # Default (no Calendar Year provided): row 1 is CONSTRUCTION
+        m_default = self._new_model(Path(self._egs_test_file_path()))
+        cf_default = m_default.economics.sam_economics_calculations.sam_cash_flow_profile
+        self.assertIsNone(cf_default[0][0])
+        self.assertEqual(cf_default[0][1], 'Year 0')
+        self.assertEqual(cf_default[1][0], 'CONSTRUCTION')
+
+        # Single construction year with Calendar Year = 2026
+        m_single = self._new_model(Path(self._egs_test_file_path()), additional_params={'Calendar Year': 2026})
+        cf_single = m_single.economics.sam_economics_calculations.sam_cash_flow_profile
+        self.assertIsNone(cf_single[0][0])
+        self.assertEqual(cf_single[0][1], 'Year 0')
+        self.assertIsNone(cf_single[1][0])
+        self.assertEqual(len(cf_single[1]), len(cf_single[0]))
+        self.assertEqual(cf_single[1][1:4], ['2026', '2027', '2028'])
+        self.assertEqual(cf_single[1][-1], str(2026 + len(cf_single[0]) - 2))
+        self.assertEqual(cf_single[2][0], 'CONSTRUCTION')
+
+        tabulated_output = get_sam_cash_flow_profile_tabulated_output(m_single)
+        self.assertIn('2026', tabulated_output)
+        self.assertNotIn('2,026', tabulated_output)
+
+        # Multi-year construction (3 years: Year -2, Year -1, Year 0) with Calendar Year = 2026
+        m_multi = self._new_model(
+            Path(self._egs_test_file_path()),
+            additional_params={'Construction Years': 3, 'Calendar Year': 2026},
+        )
+        cf_multi = m_multi.economics.sam_economics_calculations.sam_cash_flow_profile
+        self.assertEqual(cf_multi[0][1:5], ['Year -2', 'Year -1', 'Year 0', 'Year 1'])
+        self.assertEqual(cf_multi[1][1:5], ['2026', '2027', '2028', '2029'])
+        self.assertEqual(cf_multi[2][0], 'CONSTRUCTION')
+
     @staticmethod
     def _new_model(
         input_file: Path,

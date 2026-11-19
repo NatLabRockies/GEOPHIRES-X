@@ -84,6 +84,8 @@ class SamEconomicsCalculations:
 
     capacity_payment_revenue_sources: list[CapacityPaymentRevenueSource] = field(default_factory=list)
 
+    calendar_year: int | None = None
+
     @property
     def _pre_revenue_years_count(self) -> int:
         return len(
@@ -94,8 +96,6 @@ class SamEconomicsCalculations:
     def sam_cash_flow_profile(self) -> list[list[Any]]:
         ret: list[list[Any]] = self._sam_cash_flow_profile_operational_years.copy()
         col_count = len(self._sam_cash_flow_profile_operational_years[0])
-
-        # TODO support/insert calendar year line item https://github.com/NREL/GEOPHIRES-X/issues/439
 
         pre_revenue_years_to_insert = self._pre_revenue_years_count - 1
 
@@ -125,6 +125,10 @@ class SamEconomicsCalculations:
         construction_rows.append([''] * len(self._sam_cash_flow_profile_operational_years[0]))
         for construction_row in reversed(construction_rows):
             ret.insert(1, construction_row)
+
+        if self.calendar_year is not None:
+            calendar_years = [str(self.calendar_year + i) for i in range(len(ret[0]) - 1)]
+            ret.insert(1, [None, *calendar_years])
 
         def _get_row_index(row_name_: str) -> int:
             return [it[0] for it in ret].index(row_name_)
