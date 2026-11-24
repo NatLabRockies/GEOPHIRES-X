@@ -331,12 +331,17 @@ def ReadParameter(ParameterReadIn: ParameterEntry, ParamToModify, model) -> None
     # these Parameter Types don't have units so don't do anything fancy, and ignore it if the user has supplied units
     if isinstance(ParamToModify, boolParameter) or isinstance(ParamToModify, strParameter):
         if isinstance(ParamToModify, boolParameter):
-            if ParameterReadIn.sValue in ['0', 'false', 'False', 'f', 'F', 'no', 'No', 'n', 'N']:
+            val_sanitized = ('' if ParameterReadIn.sValue is None else ParameterReadIn.sValue).strip().lower()
+            if val_sanitized in ['0', 'false', 'f', 'no',  'n']:
                 ParamToModify.value = False
-            elif ParameterReadIn.sValue in ['1', 'true', 'True', 't', 'T', 'yes', 'Yes', 'y', 'Y']:
+            elif val_sanitized in ['1', 'true', 't', 'yes', 'y']:
                 ParamToModify.value = True
             else:
                 ParamToModify.value = bool(ParameterReadIn.sValue)
+                model.logger.warning(
+                    f'Non-boolean value "{ParameterReadIn.sValue}" given for '
+                    f'{ParamToModify.Name} treated as {ParamToModify.value}.'
+                )
         else:
             ParamToModify.value = ParameterReadIn.sValue
         ParamToModify.Provided = True  # set provided to true because we are using a user provide value now
