@@ -1564,38 +1564,87 @@ class EconomicsSamTestCase(BaseTestCase):
             )
         )
 
-    def test_calendar_year_cash_flow_profile(self):
-        # Default (no Calendar Year provided): row 1 is CONSTRUCTION
+    def test_construction_start_calendar_year_cash_flow_profile(self):
+        # Default (no Construction Start Calendar Year provided): row 1 is CONSTRUCTION
         m_default = self._new_model(Path(self._egs_test_file_path()))
         cf_default = m_default.economics.sam_economics_calculations.sam_cash_flow_profile
         self.assertIsNone(cf_default[0][0])
         self.assertEqual(cf_default[0][1], 'Year 0')
         self.assertEqual(cf_default[1][0], 'CONSTRUCTION')
 
-        # Single construction year with Calendar Year = 2026
-        m_single = self._new_model(Path(self._egs_test_file_path()), additional_params={'Calendar Year': 2026})
+        # Single construction year with Construction Start Calendar Year = 2026
+        m_single = self._new_model(
+            Path(self._egs_test_file_path()),
+            additional_params={'Construction Start Calendar Year': 2026},
+        )
         cf_single = m_single.economics.sam_economics_calculations.sam_cash_flow_profile
         self.assertIsNone(cf_single[0][0])
         self.assertEqual(cf_single[0][1], 'Year 0')
-        self.assertIsNone(cf_single[1][0])
+        self.assertEqual(cf_single[1][0], 'Calendar year')
         self.assertEqual(len(cf_single[1]), len(cf_single[0]))
         self.assertEqual(cf_single[1][1:4], ['2026', '2027', '2028'])
         self.assertEqual(cf_single[1][-1], str(2026 + len(cf_single[0]) - 2))
         self.assertEqual(cf_single[2][0], 'CONSTRUCTION')
 
-        tabulated_output = get_sam_cash_flow_profile_tabulated_output(m_single)
-        self.assertIn('2026', tabulated_output)
-        self.assertNotIn('2,026', tabulated_output)
+        # Economic metrics are identical with and without Construction Start Calendar Year
+        self.assertEqual(m_single.economics.ProjectNPV.value, m_default.economics.ProjectNPV.value)
+        self.assertEqual(m_single.economics.AfterTaxIRR.value, m_default.economics.AfterTaxIRR.value)
+        self.assertEqual(m_single.economics.LCOE.value, m_default.economics.LCOE.value)
 
-        # Multi-year construction (3 years: Year -2, Year -1, Year 0) with Calendar Year = 2026
+        # Assert directly on the Calendar year line in tabulated output (no thousands comma separators)
+        tabulated_output = get_sam_cash_flow_profile_tabulated_output(m_single)
+        calendar_lines = [line for line in tabulated_output.splitlines() if line.lstrip().startswith('Calendar year')]
+        self.assertEqual(len(calendar_lines), 1)
+        calendar_line_tokens = calendar_lines[0].split()
+        self.assertEqual(calendar_line_tokens[:5], ['Calendar', 'year', '2026', '2027', '2028'])
+        self.assertNotIn('2,026', calendar_lines[0])
+
+        # Multi-year construction (3 years: Year -2, Year -1, Year 0) with Construction Start Calendar Year = 2026
         m_multi = self._new_model(
             Path(self._egs_test_file_path()),
-            additional_params={'Construction Years': 3, 'Calendar Year': 2026},
+            additional_params={'Construction Years': 3, 'Construction Start Calendar Year': 2026},
         )
         cf_multi = m_multi.economics.sam_economics_calculations.sam_cash_flow_profile
         self.assertEqual(cf_multi[0][1:5], ['Year -2', 'Year -1', 'Year 0', 'Year 1'])
+        self.assertEqual(cf_multi[1][0], 'Calendar year')
         self.assertEqual(cf_multi[1][1:5], ['2026', '2027', '2028', '2029'])
         self.assertEqual(cf_multi[2][0], 'CONSTRUCTION')
+
+        # Round-trip test: .out -> GeophiresXResult -> as_csv()
+        client = GeophiresXClient()
+        res_default = client.get_geophires_result(
+            ImmutableGeophiresInputParameters(from_file_path=Path(self._egs_test_file_path()))
+        )
+        res_with_cal_year = client.get_geophires_result(
+            ImmutableGeophiresInputParameters(
+                from_file_path=Path(self._egs_test_file_path()),
+                params={'Construction Start Calendar Year': 2026},
+            )
+        )
+        self.assertEqual(
+            res_with_cal_year.result['ECONOMIC PARAMETERS']['Project NPV']['value'],
+            res_default.result['ECONOMIC PARAMETERS']['Project NPV']['value'],
+        )
+        self.assertEqual(
+            res_with_cal_year.result['ECONOMIC PARAMETERS']['After-tax IRR']['value'],
+            res_default.result['ECONOMIC PARAMETERS']['After-tax IRR']['value'],
+        )
+        self.assertEqual(
+            res_with_cal_year.result['SUMMARY OF RESULTS']['LCOE']['value'],
+            res_default.result['SUMMARY OF RESULTS']['LCOE']['value'],
+        )
+
+        parsed_cf = res_with_cal_year.result['SAM CASH FLOW PROFILE']
+        self.assertEqual(parsed_cf[1][0], 'Calendar year')
+        self.assertEqual(parsed_cf[1][1:4], [2026, 2027, 2028])
+
+        csv_text = res_with_cal_year.as_csv()
+        csv_calendar_rows = [
+            line.split(',') for line in csv_text.splitlines() if line.startswith('SAM CASH FLOW PROFILE,Calendar year,')
+        ]
+        self.assertEqual(len(csv_calendar_rows), len(parsed_cf[0]) - 1)
+        self.assertEqual(csv_calendar_rows[0], ['SAM CASH FLOW PROFILE', 'Calendar year', '0', '2026', ''])
+        self.assertEqual(csv_calendar_rows[1], ['SAM CASH FLOW PROFILE', 'Calendar year', '1', '2027', ''])
 
     @staticmethod
     def _new_model(

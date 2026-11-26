@@ -1895,8 +1895,8 @@
       "minimum": 0.0,
       "maximum": 1.0
     },
-    "Calendar Year": {
-      "description": "Optional starting calendar year for the project cash flow profile (corresponding to the first year in the cash flow table, i.e., the first construction year). When provided, a row displaying calendar years is added directly below the Year row in the SAM cash flow profile. SAM Single Owner PPA economic model only.",
+    "Construction Start Calendar Year": {
+      "description": "Optional starting calendar year for the project cash flow profile (corresponding to the first year in the cash flow table, i.e., the first construction year). When provided, a Calendar year row is added directly below the Year row in the SAM cash flow profile. SAM Single Owner PPA economic model only.",
       "type": "integer",
       "units": null,
       "category": "Economics",

@@ -84,7 +84,7 @@ class SamEconomicsCalculations:
 
     capacity_payment_revenue_sources: list[CapacityPaymentRevenueSource] = field(default_factory=list)
 
-    calendar_year: int | None = None
+    construction_start_calendar_year: int | None = None
 
     @property
     def _pre_revenue_years_count(self) -> int:
@@ -126,9 +126,9 @@ class SamEconomicsCalculations:
         for construction_row in reversed(construction_rows):
             ret.insert(1, construction_row)
 
-        if self.calendar_year is not None:
-            calendar_years = [str(self.calendar_year + i) for i in range(len(ret[0]) - 1)]
-            ret.insert(1, [None, *calendar_years])
+        if self.construction_start_calendar_year is not None:
+            calendar_years = [str(self.construction_start_calendar_year + i) for i in range(len(ret[0]) - 1)]
+            ret.insert(1, ['Calendar year', *calendar_years])
 
         def _get_row_index(row_name_: str) -> int:
             return [it[0] for it in ret].index(row_name_)

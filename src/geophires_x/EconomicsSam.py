@@ -236,7 +236,11 @@ def calculate_sam_economics(model: Model) -> SamEconomicsCalculations:
         electricity_plant_frac_of_capex=model.economics.CAPEX_heat_electricity_plant_ratio.quantity()
         .to('dimensionless')
         .magnitude,
-        calendar_year=model.economics.calendar_year.value if model.economics.calendar_year.Provided else None,
+        construction_start_calendar_year=(
+            model.economics.construction_start_calendar_year.value
+            if model.economics.construction_start_calendar_year.Provided
+            else None
+        ),
     )
 
     sam_economics.overnight_capital_cost.value = (
