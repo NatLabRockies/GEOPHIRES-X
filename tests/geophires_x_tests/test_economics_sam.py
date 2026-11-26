@@ -1633,8 +1633,8 @@ class EconomicsSamTestCase(BaseTestCase):
             res_default.result['ECONOMIC PARAMETERS']['After-tax IRR']['value'],
         )
         self.assertEqual(
-            res_with_cal_year.result['SUMMARY OF RESULTS']['LCOE']['value'],
-            res_default.result['SUMMARY OF RESULTS']['LCOE']['value'],
+            res_with_cal_year.result['SUMMARY OF RESULTS']['Electricity breakeven price']['value'],
+            res_default.result['SUMMARY OF RESULTS']['Electricity breakeven price']['value'],
         )
 
         parsed_cf = res_with_cal_year.result['SAM CASH FLOW PROFILE']
