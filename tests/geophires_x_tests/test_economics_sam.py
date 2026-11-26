@@ -1613,12 +1613,15 @@ class EconomicsSamTestCase(BaseTestCase):
         # Round-trip test: .out -> GeophiresXResult -> as_csv()
         client = GeophiresXClient()
         res_default = client.get_geophires_result(
-            ImmutableGeophiresInputParameters(from_file_path=Path(self._egs_test_file_path()))
+            ImmutableGeophiresInputParameters(
+                from_file_path=Path(self._egs_test_file_path()),
+                params={'Economic Model': 5},
+            )
         )
         res_with_cal_year = client.get_geophires_result(
             ImmutableGeophiresInputParameters(
                 from_file_path=Path(self._egs_test_file_path()),
-                params={'Construction Start Calendar Year': 2026},
+                params={'Economic Model': 5, 'Construction Start Calendar Year': 2026},
             )
         )
         self.assertEqual(
@@ -1635,6 +1638,7 @@ class EconomicsSamTestCase(BaseTestCase):
         )
 
         parsed_cf = res_with_cal_year.result['SAM CASH FLOW PROFILE']
+        self.assertIsNotNone(parsed_cf)
         self.assertEqual(parsed_cf[1][0], 'Calendar year')
         self.assertEqual(parsed_cf[1][1:4], [2026, 2027, 2028])
 
