@@ -1588,7 +1588,7 @@ class EconomicsSamTestCase(BaseTestCase):
 
         # Economic metrics are identical with and without Construction Start Calendar Year
         self.assertEqual(m_single.economics.ProjectNPV.value, m_default.economics.ProjectNPV.value)
-        self.assertEqual(m_single.economics.AfterTaxIRR.value, m_default.economics.AfterTaxIRR.value)
+        self.assertEqual(m_single.economics.after_tax_irr.value, m_default.economics.after_tax_irr.value)
         self.assertEqual(m_single.economics.LCOE.value, m_default.economics.LCOE.value)
 
         # Assert directly on the Calendar year line in tabulated output (no thousands comma separators)
