@@ -74,6 +74,7 @@ depreciation basis, debt sizing, and resulting metrics (LCOE, IRR, NPV) correctl
 construction.
 Debt drawn during construction, including capitalized IDC, is effectively refinanced as term debt at COD and repaid over
 `Debt Tenor` years starting in Year 1.
+Optionally, provide `Construction Start Calendar Year` to label the initial construction year with a calendar year and display a `Calendar year` row directly below the `Year` header in the SAM cash flow profile.
 
 See [SAM Economic Models: Multiple Construction Years documentation](SAM-EM_Multiple-Construction-Years.html).
 

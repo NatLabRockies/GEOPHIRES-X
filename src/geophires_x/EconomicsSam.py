@@ -236,6 +236,11 @@ def calculate_sam_economics(model: Model) -> SamEconomicsCalculations:
         electricity_plant_frac_of_capex=model.economics.CAPEX_heat_electricity_plant_ratio.quantity()
         .to('dimensionless')
         .magnitude,
+        construction_start_calendar_year=(
+            model.economics.construction_start_calendar_year.value
+            if model.economics.construction_start_calendar_year.Provided
+            else None
+        ),
     )
 
     sam_economics.overnight_capital_cost.value = (
@@ -553,6 +558,8 @@ def get_sam_cash_flow_profile_tabulated_output(model: Model, **tabulate_kw_args)
     # fmt:on
 
     def get_entry_display(entry: Any) -> str:
+        if isinstance(entry, str):
+            return entry
         if is_float(entry):
             if not isnan(float(entry)):
                 if not is_int(entry):
